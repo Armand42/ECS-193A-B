@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Speech Preparation</string>
+    <string name="button_send">Send</string>
+    <string name="temp_speech_button">Speech 1</string>
+    <string name="edit_settings_button">Edit Settings</string>
+    <string name="view_past_recordings_button">View Past Recordings</string>
+    <string name="start_button">Start</string>
+    <string name="speech_settings_title">Speech Settings</string>
+
+    <string name="title_activity_new_speech">NewSpeech</string>
+    <string name="enter_text">Enter Text</string>
+    <string name="enter_text_hint">Enter speech here</string>
+    <string name="save_button">Save</string>
+    <string name="stop_recording_button">Stop</string>
+    <string name="to_main_menu_button">Main Menu</string>
+    <string name="speech_performance_display">How did I do?</string>
+</resources>
