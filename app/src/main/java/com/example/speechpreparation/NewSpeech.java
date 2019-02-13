@@ -20,14 +20,27 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 public class NewSpeech extends AppCompatActivity {
+    String SPEECH_SCRIPT_PATH;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_speech);
-        Intent intent = getIntent();
 
+        SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + "speech-scripts";
+
+        // Check if speech script directory exists
+        File f = new File(SPEECH_SCRIPT_PATH);
+        if (f.exists() && f.isDirectory()) {
+            System.out.println("we already in there fam");
+        }
+        else { // If not, create it
+            File folder = getFilesDir();
+            f = new File(folder, "speech-scripts");
+            f.mkdir();
+        }
     }
+
     public void goToMainMenu(View view){
         Intent intent = new Intent(this, MainMenu.class);
         startActivity(intent);
@@ -45,47 +58,41 @@ public class NewSpeech extends AppCompatActivity {
         writeToFile(speechName, speechText);
 
         //Read text from file
-        readFromFile(speechName);
+        //readFromFile(speechName);
+
+        printAllFilesInDir();
     }
-
-    private void readFromFile(String filename) {
-        //Create a new file that points to the root directory, with the given name:
-        File file = new File(getExternalFilesDir(null), filename);
-
-        StringBuilder text = new StringBuilder();
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-
-            while ((line = br.readLine()) != null) {
-                text.append(line);
-                text.append('\n');
-            }
-            br.close();
-            Toast readToast = Toast.makeText(getApplicationContext(),
-                    text, Toast.LENGTH_SHORT);
-            readToast.show();
-        }
-        catch (IOException e) {
-            //You'll need to add proper error handling here
-            Toast readToast = Toast.makeText(getApplicationContext(),
-                    e.toString(), Toast.LENGTH_SHORT);
-            readToast.show();
-        }
-    }
-
+//
+//    private void readFromFile(String filename) {
+//        //Create a new file that points to the root directory, with the given name:
+//        File file = new File(getExternalFilesDir(null), filename);
+//
+//        StringBuilder text = new StringBuilder();
+//
+//        try {
+//            BufferedReader br = new BufferedReader(new FileReader(file));
+//            String line;
+//
+//            while ((line = br.readLine()) != null) {
+//                text.append(line);
+//                text.append('\n');
+//            }
+//            br.close();
+//            Toast readToast = Toast.makeText(getApplicationContext(),
+//                    text, Toast.LENGTH_SHORT);
+//            readToast.show();
+//        }
+//        catch (IOException e) {
+//            //You'll need to add proper error handling here
+//            Toast readToast = Toast.makeText(getApplicationContext(),
+//                    e.toString(), Toast.LENGTH_SHORT);
+//            readToast.show();
+//        }
+//    }
+//
     private void writeToFile(String filename, String speechText) {
-        //Checking the availability state of the External Storage.
-        String state = Environment.getExternalStorageState();
-        if (!Environment.MEDIA_MOUNTED.equals(state)) {
-
-            //If it isn't mounted - we can't write into it.
-            return;
-        }
-
-        //Create a new file that points to the root directory, with the given name:
-        File file = new File(getExternalFilesDir(null), filename);
+        //Create a new file in our speech scripts dir with given filename
+        File file = new File(SPEECH_SCRIPT_PATH, filename);
 
         //This point and below is responsible for the write operation
         FileOutputStream outputStream = null;
@@ -108,6 +115,15 @@ public class NewSpeech extends AppCompatActivity {
                     e.toString(), Toast.LENGTH_SHORT);
             toast.show();
             e.printStackTrace();
+        }
+    }
+
+    private void printAllFilesInDir() {
+        File dir = new File(SPEECH_SCRIPT_PATH);
+        // Get all files saved to speech scripts
+        File[] files = dir.listFiles();
+        for (File file : files) {
+            System.out.println(file);
         }
     }
 }
