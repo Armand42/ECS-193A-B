@@ -9,16 +9,22 @@
     tools:context=".SpeechSettings">
 
     <Button
-        android:id="@+id/button7"
+        android:id="@+id/saveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="71dp"
+        android:layout_marginStart="83dp"
+        android:layout_marginLeft="83dp"
+        android:layout_marginTop="114dp"
+        android:layout_marginEnd="47dp"
+        android:layout_marginRight="47dp"
+        android:layout_marginBottom="73dp"
         android:onClick="goToSpeechMenu"
         android:text="@string/save_button"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/cancelButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/displayTimerSwitch" />
 
     <SeekBar
         android:id="@+id/maxTime"
@@ -31,7 +37,7 @@
         android:layout_marginRight="91dp"
         android:layout_marginBottom="58dp"
         android:max="60"
-        app:layout_constraintBottom_toTopOf="@+id/switch1"
+        app:layout_constraintBottom_toTopOf="@+id/videoPlaybackSwitch"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toTopOf="parent"
@@ -52,7 +58,7 @@
         tools:layout_editor_absoluteY="209dp" />
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/videoPlaybackSwitch"
         android:layout_width="276dp"
         android:layout_height="39dp"
         android:layout_marginStart="44dp"
@@ -63,28 +69,19 @@
         android:layout_marginBottom="35dp"
         android:text="@string/speech_settings_video_playback_toggle"
         android:theme="@style/SwitchTheme"
-        app:layout_constraintBottom_toTopOf="@+id/switch2"
+        app:layout_constraintBottom_toTopOf="@+id/displayTimerSwitch"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/maxTime" />
 
     <Switch
-        android:id="@+id/switch2"
+        android:id="@+id/displayTimerSwitch"
         android:layout_width="276dp"
         android:layout_height="39dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginLeft="44dp"
-        android:layout_marginTop="35dp"
-        android:layout_marginEnd="91dp"
-        android:layout_marginRight="91dp"
-        android:layout_marginBottom="156dp"
         android:text="@string/speech_settings_timer_toggle"
         android:theme="@style/SwitchTheme"
-        app:layout_constraintBottom_toTopOf="@+id/button7"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.46"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switch1" />
+        tools:layout_editor_absoluteX="44dp"
+        tools:layout_editor_absoluteY="454dp" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
@@ -92,5 +89,23 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="20dp" />
+
+    <Button
+        android:id="@+id/cancelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="46dp"
+        android:layout_marginLeft="46dp"
+        android:layout_marginTop="114dp"
+        android:layout_marginEnd="79dp"
+        android:layout_marginRight="79dp"
+        android:layout_marginBottom="74dp"
+        android:onClick="goToSpeechMenu"
+        android:text="@string/cancel_button"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/saveButton"
+        app:layout_constraintTop_toBottomOf="@+id/displayTimerSwitch" />
 
 </android.support.constraint.ConstraintLayout>

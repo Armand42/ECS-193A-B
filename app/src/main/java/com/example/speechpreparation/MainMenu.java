@@ -4,16 +4,19 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.io.File;
 
-public class MainMenu extends AppCompatActivity {
+public class MainMenu extends AppCompatActivity implements AdapterView.OnItemClickListener {
+    ListView listView;
+    File[] filesfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_menu);
         getIntent();
@@ -21,17 +24,19 @@ public class MainMenu extends AppCompatActivity {
 
         File dir = new File(getFilesDir() + File.separator + "speech-scripts");
         // Get all files saved to speech scripts
-//        File[] files = dir.listFiles();
+        filesfile = dir.listFiles();
 
         //get file names
-        String[] files = dir.list();
+        String[] filesname = dir.list();
 
-        if(files != null) {
-            ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, files);
+        if (filesfile != null) {
+            ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, filesname);
 
             // Connect this adapter to a listview to be populated
-            ListView listView = (ListView) findViewById(R.id.speechNames);
+            listView = (ListView) findViewById(R.id.speechNames);
             listView.setAdapter(itemsAdapter);
+
+            listView.setOnItemClickListener(this);
         }
     }
 
@@ -40,13 +45,18 @@ public class MainMenu extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void goToSpeechMenu(View view){
+    public void goToSpeechMenu(View view, String filePath){
         Intent intent = new Intent(this, SpeechView.class);
+        intent.putExtra("filePath", filePath);
         startActivity(intent);
     }
 
-//    public void goToDrive(View view) {
-//        Intent intent = new Intent(this, GoogleDriveActivity.class);
-//        startActivity(intent);
-//    }
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        TextView temp = (TextView) view;
+//        String speechName = listView.getItemAtPosition(position).toString();
+        String speechName = filesfile[position].toString();
+//        Toast.makeText(getApplicationContext(), Value, Toast.LENGTH_SHORT).show();
+        goToSpeechMenu(view, speechName);
+    }
 }
