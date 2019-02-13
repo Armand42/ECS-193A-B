@@ -62,34 +62,7 @@ public class NewSpeech extends AppCompatActivity {
 
         printAllFilesInDir();
     }
-//
-//    private void readFromFile(String filename) {
-//        //Create a new file that points to the root directory, with the given name:
-//        File file = new File(getExternalFilesDir(null), filename);
-//
-//        StringBuilder text = new StringBuilder();
-//
-//        try {
-//            BufferedReader br = new BufferedReader(new FileReader(file));
-//            String line;
-//
-//            while ((line = br.readLine()) != null) {
-//                text.append(line);
-//                text.append('\n');
-//            }
-//            br.close();
-//            Toast readToast = Toast.makeText(getApplicationContext(),
-//                    text, Toast.LENGTH_SHORT);
-//            readToast.show();
-//        }
-//        catch (IOException e) {
-//            //You'll need to add proper error handling here
-//            Toast readToast = Toast.makeText(getApplicationContext(),
-//                    e.toString(), Toast.LENGTH_SHORT);
-//            readToast.show();
-//        }
-//    }
-//
+
     private void writeToFile(String filename, String speechText) {
         //Create a new file in our speech scripts dir with given filename
         File file = new File(SPEECH_SCRIPT_PATH, filename);
