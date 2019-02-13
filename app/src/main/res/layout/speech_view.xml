@@ -29,6 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="67dp"
         android:layout_marginBottom="100dp"
+        android:onClick="goToPlayBack"
         android:text="@string/view_past_recordings_button"
         app:layout_constraintBottom_toTopOf="@+id/button3"
         app:layout_constraintEnd_toEndOf="parent"

@@ -26,4 +26,8 @@ public class SpeechView extends AppCompatActivity {
         Intent intent = new Intent(this, SpeechRecord.class);
         startActivity(intent);
     }
+
+    public void goToPlayBack(View view){
+        Intent intent = new Intent(this, PlayBack.class);
+    }
 }
