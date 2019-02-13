@@ -14,6 +14,7 @@ public class SpeechView extends AppCompatActivity {
 
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
+        this.setTitle("Speech Name Here");
     }
 
     /** Called when the user taps the Send button */

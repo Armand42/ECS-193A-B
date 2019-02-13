@@ -12,6 +12,7 @@ public class SpeechSettings extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.speech_settings);
         getIntent();
+        this.setTitle("Speech Settings");
 
     }
 

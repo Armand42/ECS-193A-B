@@ -12,6 +12,7 @@ public class SpeechRecord extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_speech_record);
         getIntent();
+        this.setTitle("Record a Speech");
     }
 
     public void goToMainMenu(View view) {

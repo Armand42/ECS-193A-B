@@ -8,9 +8,12 @@ import android.view.View;
 public class MainMenu extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_menu);
         getIntent();
+        this.setTitle("Speeches");
+//        String[] FileList = getApplicationContext().fileList();
     }
 
     public void goToNewSpeech(View view) {

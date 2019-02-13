@@ -22,6 +22,7 @@
                 android:value="com.example.speechpreparation.MainMenu" />
         </activity>
         <activity android:name=".MainMenu">
+            <!--android:theme="@style/AppTheme.Launcher">-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

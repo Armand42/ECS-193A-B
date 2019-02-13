@@ -5,35 +5,30 @@
     android:id="@+id/frameLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0099cc"
-    tools:context=".NewSpeech" >
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="108dp"
-        android:layout_height="39dp"
-        android:text="@string/enter_text"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="28dp" />
+    android:background="@android:color/background_light"
+    tools:context=".NewSpeech">
 
     <EditText
         android:id="@+id/editText"
-        android:layout_width="290dp"
-        android:layout_height="409dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="80dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginRight="32dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="50dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="149dp"
+        android:background="@drawable/rectangle"
         android:ems="10"
-        android:inputType="textMultiLine"
-        android:text="@string/enter_text_hint"
+        android:gravity="top|left"
+        android:hint="@string/enter_text_hint"
+        android:inputType="textCapSentences|textNoSuggestions|textMultiLine"
+        android:lines="15"
+        android:padding="8dp"
+        android:scrollbars="vertical"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toTopOf="@+id/button5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/button5"
@@ -41,7 +36,7 @@
         android:layout_height="52dp"
         android:layout_marginTop="40dp"
         android:layout_marginBottom="32dp"
-        android:onClick="goToMainMenu"
+        android:onClick="saveClicked"
         android:text="@string/save_button"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
