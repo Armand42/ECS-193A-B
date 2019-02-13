@@ -13,7 +13,7 @@ public class MainMenu extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        setTheme(R.style.AppTheme);
+        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_menu);
         getIntent();
@@ -23,11 +23,13 @@ public class MainMenu extends AppCompatActivity {
         // Get all files saved to speech scripts
         File[] files = dir.listFiles();
 
-        ArrayAdapter<File> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, files);
+        if(files != null) {
+            ArrayAdapter<File> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, files);
 
-        // Connect this adapter to a listview to be populated
-        ListView listView = (ListView) findViewById(R.id.speechNames);
-        listView.setAdapter(itemsAdapter);
+            // Connect this adapter to a listview to be populated
+            ListView listView = (ListView) findViewById(R.id.speechNames);
+            listView.setAdapter(itemsAdapter);
+        }
     }
 
     public void goToNewSpeech(View view) {
