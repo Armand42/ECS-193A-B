@@ -11,11 +11,16 @@ public class SpeechRecord extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_speech_record);
+        getIntent();
+        this.setTitle("Record a Speech");
         if (null == savedInstanceState) {
             getFragmentManager().beginTransaction()
                     .replace(R.id.container, com.example.speechpreparation.Camera2VideoFragment.newInstance())
                     .commit();
         }
+      
     }
+
+
 }
 
