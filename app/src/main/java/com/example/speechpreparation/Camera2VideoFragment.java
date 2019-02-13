@@ -296,6 +296,7 @@ public class Camera2VideoFragment extends Fragment
         mPlayBackVideo = (Button) view.findViewById(R.id.playback);
         mButtonVideo.setOnClickListener(this);
         mPlayBackVideo.setOnClickListener(this);
+        mIsFirstRecording=true;
     }
 
     @Override
@@ -606,7 +607,7 @@ public class Camera2VideoFragment extends Fragment
         if (mNextVideoAbsolutePath == null || mNextVideoAbsolutePath.isEmpty()) {
             mNextVideoAbsolutePath = getVideoFilePath(getActivity());
         }
-        Log.i("VIDEO PATH", mNextVideoAbsolutePath);
+        Log.e("VIDEO PATH", mNextVideoAbsolutePath);
         mMediaRecorder.setOutputFile(mNextVideoAbsolutePath);
         mMediaRecorder.setVideoEncodingBitRate(10000000);
         mMediaRecorder.setVideoFrameRate(30);
@@ -629,6 +630,7 @@ public class Camera2VideoFragment extends Fragment
         final File dir = context.getExternalFilesDir(null);
         return (dir == null ? "" : (dir.getAbsolutePath() + "/"))
                 + "hello.mp4";
+
     }
 
     private void startRecordingVideo() {

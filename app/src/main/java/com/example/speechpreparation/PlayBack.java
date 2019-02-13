@@ -20,7 +20,7 @@ public class PlayBack extends AppCompatActivity {
         MediaController mediaController= new MediaController(this);
         mediaController.setAnchorView(videoView);
         //Location of Media File
-        Uri videoUri = Uri.parse(getIntent().getExtras().getString("videoUri"));
+        Uri videoUri = Uri.parse(getVideoFilePath(getApplicationContext()));
         //Starting VideView By Setting MediaController and URI
         videoView.setMediaController(mediaController);
         videoView.setVideoURI(videoUri);
