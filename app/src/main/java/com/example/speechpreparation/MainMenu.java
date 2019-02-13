@@ -21,10 +21,13 @@ public class MainMenu extends AppCompatActivity {
 
         File dir = new File(getFilesDir() + File.separator + "speech-scripts");
         // Get all files saved to speech scripts
-        File[] files = dir.listFiles();
+//        File[] files = dir.listFiles();
+
+        //get file names
+        String[] files = dir.list();
 
         if(files != null) {
-            ArrayAdapter<File> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, files);
+            ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, files);
 
             // Connect this adapter to a listview to be populated
             ListView listView = (ListView) findViewById(R.id.speechNames);
