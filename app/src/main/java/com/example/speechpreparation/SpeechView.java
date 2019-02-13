@@ -37,6 +37,13 @@ public class SpeechView extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void goToPlayBack(View view){
+        Intent intent = new Intent(this, PlayBack.class);
+        intent.putExtra("filePath", filePath);
+        intent.putExtra("speechName", speechName);
+        startActivity(intent);
+    }
+
     public void goToScriptView(View view) {
         Intent intent = new Intent(this, ScriptView.class);
         intent.putExtra("filePath", filePath);

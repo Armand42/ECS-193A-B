@@ -14,6 +14,14 @@
     <string name="stop_recording_button">Stop</string>
     <string name="to_main_menu_button">Main Menu</string>
     <string name="speech_performance_display">How did I do?</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="description_info">Info</string>
+    <string name="permission_request">This sample needs permission for camera and audio recording.</string>
+    <string name="camera_error">This device doesn\'t support Camera2 API.</string>
+    <string name="record">Record</string>
+    <string name="stop">Stop</string>
+
     <string name="speech_settings_max_time">Maximum Speech Time</string>
     <string name="speech_settings_timer_toggle">Display Timer While Recording</string>
     <string name="speech_settings_video_playback_toggle">Video Playback</string>

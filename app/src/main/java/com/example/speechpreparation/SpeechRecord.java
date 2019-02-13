@@ -13,15 +13,14 @@ public class SpeechRecord extends AppCompatActivity {
         setContentView(R.layout.activity_speech_record);
         getIntent();
         this.setTitle("Record a Speech");
+        if (null == savedInstanceState) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.container, com.example.speechpreparation.Camera2VideoFragment.newInstance())
+                    .commit();
+        }
+      
     }
 
-    public void goToMainMenu(View view) {
-        Intent intent = new Intent(this, MainMenu.class);
-        startActivity(intent);
-    }
 
-    public void goToSpeechPerformance(View view){
-        Intent intent = new Intent(this, SpeechPerformance.class);
-        startActivity(intent);
-    }
 }
+
