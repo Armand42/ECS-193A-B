@@ -28,6 +28,7 @@
     <string name="view_recording_button">View Recording</string>
     <string name="to_speech_view_button">View Speech</string>
     <string name="cancel_button">Cancel</string>
+    <string name="new_speech">Add a new speech</string>
 
 
 </resources>

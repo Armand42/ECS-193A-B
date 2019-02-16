@@ -20,7 +20,7 @@ public class SpeechView extends AppCompatActivity {
         Intent intent = getIntent();
         filePath = intent.getStringExtra("filePath");
         Log.e("FILE:", filePath);
-        speechName = filePath.substring(filePath.lastIndexOf("\\")+1);
+        speechName = filePath.substring(filePath.lastIndexOf(File.separator)+1);
         setTitle(speechName);
     }
 
