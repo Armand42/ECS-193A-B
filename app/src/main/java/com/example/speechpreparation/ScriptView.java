@@ -20,7 +20,7 @@ public class ScriptView extends AppCompatActivity {
         setContentView(R.layout.activity_script_view);
 
         Intent intent = getIntent();
-        setTitle(intent.getStringExtra("speechName") + "script");
+        setTitle(intent.getStringExtra("speechName") + " script");
 
         try {
             readFromFile(intent.getStringExtra("filePath"));
