@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
+
 import java.io.File;
 
 public class SpeechView extends AppCompatActivity {
@@ -48,6 +50,28 @@ public class SpeechView extends AppCompatActivity {
         Intent intent = new Intent(this, ScriptView.class);
         intent.putExtra("filePath", filePath);
         intent.putExtra("speechName", speechName);
+        startActivity(intent);
+    }
+
+    /* Delete all associated files */
+    public void deleteSpeech(View view) {
+        // TODO: add "are you sure?" alert dialog on pressing this button
+
+        // Deletes script file
+        File script = new File(filePath);
+        if (script.delete()) {
+            Toast toast = Toast.makeText(getApplicationContext(), "Speech deleted", Toast.LENGTH_SHORT);
+            toast.show();
+        }
+        else
+        {
+            Toast toast = Toast.makeText(getApplicationContext(), "Error in deleting speech", Toast.LENGTH_SHORT);
+            toast.show();
+        }
+
+        // TODO: delete associated audio and video files
+
+        Intent intent = new Intent(this, MainMenu.class);
         startActivity(intent);
     }
 }

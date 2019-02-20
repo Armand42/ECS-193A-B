@@ -6,4 +6,5 @@
 
     <color name="black_overlay">#66000000</color>
     <color name="success">#83E489</color>
+    <color name="colorWarning">#A4033E</color>
 </resources>
