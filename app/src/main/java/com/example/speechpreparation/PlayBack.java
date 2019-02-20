@@ -1,6 +1,7 @@
 package com.example.speechpreparation;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -29,7 +30,9 @@ public class PlayBack extends AppCompatActivity {
     }
     private String getVideoFilePath(Context context) {
         final File dir = context.getExternalFilesDir(null);
+        Intent intent = getIntent();
+        String speechName = intent.getStringExtra("speechName");
         return (dir == null ? "" : (dir.getAbsolutePath() + "/"))
-                + "hello.mp4";
+                +  speechName + ".mp4";
     }
 }

@@ -51,6 +51,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="75dp"
+        android:onClick="goToPlayBack"
         android:text="@string/view_past_recordings_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -37,6 +37,8 @@ public class SpeechView extends AppCompatActivity {
 
     public void goToSpeechRecord(View view) {
         Intent intent = new Intent(this, SpeechRecord.class);
+        intent.putExtra("filePath", filePath);
+        intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
 

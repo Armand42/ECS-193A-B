@@ -335,10 +335,15 @@ public class Camera2VideoFragment extends Fragment
             }
             //use this to stop
             case R.id.playback: {
+
                 stopRecordingVideo();
                 Activity activity = getActivity();
+                String filePath = activity.getIntent().getStringExtra("filePath");
+                String speechName = activity.getIntent().getStringExtra("speechName");
+
                 Intent intent = new Intent(activity, SpeechPerformance.class);
-                intent.putExtra("videoUri", mCurrentVideoPath);
+                intent.putExtra("filePath", filePath);
+                intent.putExtra("speechName", speechName);
                 startActivity(intent);
                 break;
             }
@@ -629,8 +634,10 @@ public class Camera2VideoFragment extends Fragment
 
     private String getVideoFilePath(Context context) {
         final File dir = context.getExternalFilesDir(null);
+        Intent intent = getActivity().getIntent();
+        String speechName = intent.getStringExtra("speechName");
         return (dir == null ? "" : (dir.getAbsolutePath() + "/"))
-                + "hello.mp4";
+                + speechName+".mp4";
 
     }
 
