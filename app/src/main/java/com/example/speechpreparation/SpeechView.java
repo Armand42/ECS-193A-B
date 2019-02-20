@@ -21,6 +21,7 @@ public class SpeechView extends AppCompatActivity {
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         filePath = intent.getStringExtra("filePath");
+        speechName = intent.getStringExtra("speechName");
         Log.e("FILE:", filePath);
         speechName = filePath.substring(filePath.lastIndexOf(File.separator)+1);
         setTitle(speechName);
