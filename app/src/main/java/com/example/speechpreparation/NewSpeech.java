@@ -26,8 +26,24 @@ public class NewSpeech extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_speech);
-        this.setTitle("Enter a Speech");
 
+        // Get extras for editing a script (if they exist)
+        Intent intent = getIntent();
+        String scriptName = intent.getStringExtra("filename");
+        String scriptText = intent.getStringExtra("scriptText");
+        if (scriptName != null) {
+            this.setTitle("Editing " + scriptName);
+            // Set the text in our speech name edit text to be our speechName
+            EditText speechName = (EditText)findViewById(R.id.speechName);
+            speechName.setText(scriptName);
+        }
+        else {
+            this.setTitle("Enter a Speech");
+        }
+        if (scriptText != null) {
+            EditText speechText = (EditText)findViewById(R.id.editText);
+            speechText.setText(scriptText);
+        }
         SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + "speech-scripts";
 
         // Check if speech script directory exists
