@@ -3,6 +3,8 @@ package com.example.speechpreparation;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +24,9 @@ public class ScriptView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_script_view);
 
+//        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+//        setSupportActionBar(myToolbar);
+
         Intent intent = getIntent();
         speechName = intent.getStringExtra("speechName");
         setTitle(speechName + " Script");
@@ -33,19 +38,13 @@ public class ScriptView extends AppCompatActivity {
         }
     }
 
-    public void goToNewSpeech(View view) {
-        Intent intent = new Intent(this, NewSpeech.class);
-        intent.putExtra("filename", speechName);
-        intent.putExtra("scriptText", scriptText);
-        startActivity(intent);
-    }
-
     private void readFromFile(String filepath) throws FileNotFoundException, IOException {
         // Create new file object from given filepath
         File file = new File(filepath);
 
         // Get text body
         TextView scriptBody = (TextView) findViewById(R.id.scriptBody);
+        scriptBody.setMovementMethod(new ScrollingMovementMethod());
 
         StringBuilder text = new StringBuilder();
 
