@@ -71,6 +71,15 @@ public class SpeechView extends AppCompatActivity {
             Toast toast = Toast.makeText(getApplicationContext(), "Error in deleting speech", Toast.LENGTH_SHORT);
             toast.show();
         }
+        File video = new File(getExternalFilesDir(null), speechName+".mp4");
+        if (video == null) {
+            Log.i("VIDEO DELETION:", "video does not exist");
+        }
+        else{
+            if(!video.delete()){
+                Log.e("VIDEO DELETION:", "video failed to be deleted");
+            }
+        }
 
         // TODO: delete associated audio and video files
 
