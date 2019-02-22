@@ -18,7 +18,11 @@
         android:theme="@style/AppTheme">
         <activity android:name=".PlayBack"></activity>
 
-        <activity android:name=".ScriptView"></activity>
+        <activity android:name=".ScriptView">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".SpeechView" />
+        </activity>
         <activity android:name=".GoogleDriveActivity" />
         <activity android:name=".SpeechPerformance" />
         <activity android:name=".SpeechRecord" />
@@ -44,7 +48,8 @@
         <activity
             android:name=".SpeechView"
             android:exported="true"
-            android:parentActivityName=".MainMenu">
+            android:parentActivityName=".MainMenu"
+            android:launchMode="singleTop">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
@@ -53,7 +58,8 @@
         </activity>
         <activity
             android:name=".SpeechSettings"
-            android:exported="true">
+            android:exported="true"
+            android:parentActivityName=".SpeechView">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data

@@ -62,6 +62,7 @@ public class NewSpeech extends AppCompatActivity {
         Intent intent = new Intent(this, MainMenu.class);
         startActivity(intent);
     }
+
     public void saveFile(View view) {
         /* Get speech text from editText */
         EditText editText = (EditText)findViewById(R.id.editText);
@@ -74,10 +75,9 @@ public class NewSpeech extends AppCompatActivity {
         /* Write speech text to file */
         writeToFile(speechName, speechText);
 
-        //Read text from file
-        //readFromFile(speechName);
-
-        printAllFilesInDir();
+        // Send back to this speech's menu
+        // Intent intent = new Intent(this, SpeechView.class);
+        // startActivity(intent);
     }
 
     private void writeToFile(String filename, String speechText) {
@@ -98,7 +98,7 @@ public class NewSpeech extends AppCompatActivity {
 
             // Show notification on successful save
             Toast toast = Toast.makeText(getApplicationContext(),
-                    "%s saved".format(filename), Toast.LENGTH_SHORT);
+                    "File saved!", Toast.LENGTH_SHORT);
             toast.show();
         } catch (Exception e) {
             Toast toast = Toast.makeText(getApplicationContext(),
