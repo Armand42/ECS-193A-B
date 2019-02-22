@@ -29,7 +29,7 @@ public class ScriptView extends AppCompatActivity {
 
         Intent intent = getIntent();
         speechName = intent.getStringExtra("speechName");
-        setTitle(speechName + " Script");
+        setTitle("Script: " + speechName);
 
         try {
             readFromFile(intent.getStringExtra("filePath"));

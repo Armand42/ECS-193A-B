@@ -33,7 +33,7 @@ public class NewSpeech extends AppCompatActivity {
         String scriptName = intent.getStringExtra("filename");
         String scriptText = intent.getStringExtra("scriptText");
         if (scriptName != null) {
-            this.setTitle("Editing " + scriptName);
+            this.setTitle("Edit: " + scriptName);
             // Set the text in our speech name edit text to be our speechName
             EditText speechName = (EditText)findViewById(R.id.speechName);
             speechName.setText(scriptName);
