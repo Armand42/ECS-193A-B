@@ -21,6 +21,7 @@ import java.io.OutputStreamWriter;
 
 public class NewSpeech extends AppCompatActivity {
     String SPEECH_SCRIPT_PATH;
+    File[] filePathNames;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +64,11 @@ public class NewSpeech extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void goToSpeechView(View view){
+        Intent intent = new Intent(this, SpeechView.class);
+        startActivity(intent);
+    }
+
     public void saveFile(View view) {
         /* Get speech text from editText */
         EditText editText = (EditText)findViewById(R.id.editText);
@@ -72,17 +78,22 @@ public class NewSpeech extends AppCompatActivity {
         EditText speechNameET = (EditText)findViewById(R.id.speechName);
         String speechName = speechNameET.getText().toString();
 
+        String filePath;
+
         /* Write speech text to file */
-        writeToFile(speechName, speechText);
+        filePath = writeToFile(speechName, speechText).toString();
+
 
         // Send back to this speech's menu
-        // Intent intent = new Intent(this, SpeechView.class);
-        // startActivity(intent);
+         Intent intent = new Intent(this, SpeechView.class);
+            intent.putExtra("filePath", filePath);
+            intent.putExtra("speechName", speechName);
+         startActivity(intent);
     }
 
-    private void writeToFile(String filename, String speechText) {
+    private File writeToFile(String speechName, String speechText) {
         //Create a new file in our speech scripts dir with given filename
-        File file = new File(SPEECH_SCRIPT_PATH, filename);
+        File file = new File(SPEECH_SCRIPT_PATH, speechName);
 
         //This point and below is responsible for the write operation
         FileOutputStream outputStream = null;
@@ -106,6 +117,8 @@ public class NewSpeech extends AppCompatActivity {
             toast.show();
             e.printStackTrace();
         }
+
+        return file;
     }
 
     private void printAllFilesInDir() {
