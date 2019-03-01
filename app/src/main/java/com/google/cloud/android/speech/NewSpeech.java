@@ -40,10 +40,7 @@ public class NewSpeech extends AppCompatActivity {
 
         // Check if speech script directory exists
         File f = new File(SPEECH_SCRIPT_PATH);
-        if (f.exists() && f.isDirectory()) {
-            System.out.println("we already in there fam");
-        }
-        else { // If not, create it
+        if (!f.exists() || !f.isDirectory()) {
             File folder = getFilesDir();
             f = new File(folder, "speech-scripts");
             f.mkdir();
@@ -60,7 +57,7 @@ public class NewSpeech extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void saveFile(View view) {
+    public void saveFile(View view) throws Exception {
         /* Get speech text from editText */
         EditText editText = (EditText)findViewById(R.id.editText);
         String speechText = editText.getText().toString();
@@ -71,46 +68,25 @@ public class NewSpeech extends AppCompatActivity {
 
         String filePath;
 
-        /* Write speech text to file */
-        filePath = writeToFile(speechName, speechText).toString();
-
-        File camera = getDir(speechName,MODE_PRIVATE);
-
-        // Send back to this speech's menu
-         Intent intent = new Intent(this, SpeechView.class);
-            intent.putExtra("filePath", filePath);
-            intent.putExtra("speechName", speechName);
-         startActivity(intent);
-    }
-
-    private File writeToFile(String speechName, String speechText) {
-        //Create a new file in our speech scripts dir with given filename
-        File file = new File(SPEECH_SCRIPT_PATH, speechName);
-
-        //This point and below is responsible for the write operation
-        FileOutputStream outputStream = null;
         try {
-            file.createNewFile();
-            //second argument of FileOutputStream constructor indicates whether
-            //to append or create new file if one exists -- for now we're creating a new file
-            outputStream = new FileOutputStream(file, false);
-
-            outputStream.write(speechText.getBytes());
-            outputStream.flush();
-            outputStream.close();
-
+            /* Write speech text to file */
+            filePath = FileService.writeToFile(speechName, speechText, SPEECH_SCRIPT_PATH);
             // Show notification on successful save
             Toast toast = Toast.makeText(getApplicationContext(),
                     "File saved!", Toast.LENGTH_SHORT);
             toast.show();
-        } catch (Exception e) {
-            Toast toast = Toast.makeText(getApplicationContext(),
-                    e.toString(), Toast.LENGTH_SHORT);
-            toast.show();
-            e.printStackTrace();
-        }
 
-        return file;
+            // Send back to this speech's menu
+            Intent intent = new Intent(this, SpeechView.class);
+            intent.putExtra("filePath", filePath);
+            intent.putExtra("speechName", speechName);
+            startActivity(intent);
+        }
+        catch (Exception e) {
+            Toast toast = Toast.makeText(getApplicationContext(),
+                          e.toString(), Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 
     private void printAllFilesInDir() {

@@ -22,53 +22,28 @@ public class ScriptView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_script_view);
 
-//        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-//        setSupportActionBar(myToolbar);
-
         Intent intent = getIntent();
         speechName = intent.getStringExtra("speechName");
         setTitle("Script: " + speechName);
 
         try {
-            readFromFile(intent.getStringExtra("filePath"));
+            scriptText = FileService.readFromFile(intent.getStringExtra("filePath"));
+            setScriptText();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    private void readFromFile(String filepath) throws FileNotFoundException, IOException {
-        // Create new file object from given filepath
-        File file = new File(filepath);
-
-        // Get text body
-        TextView scriptBody = (TextView) findViewById(R.id.scriptBody);
-        scriptBody.setMovementMethod(new ScrollingMovementMethod());
-
-        StringBuilder text = new StringBuilder();
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-
-            while ((line = br.readLine()) != null) {
-                text.append(line);
-                text.append('\n');
-            }
-            br.close();
-//            Toast readToast = Toast.makeText(getApplicationContext(),
-//                    text, Toast.LENGTH_SHORT);
-//            readToast.show();
-
-            // Set text of scriptBody to be what we read from the file
-            scriptText = text.toString();
-            scriptBody.setText(text);
-        }
-        catch (IOException e) {
-            //You'll need to add proper error handling here
             Toast readToast = Toast.makeText(getApplicationContext(),
-                    e.toString(), Toast.LENGTH_SHORT);
+                              e.toString(), Toast.LENGTH_SHORT);
             readToast.show();
         }
     }
 
+    private void setScriptText() {
+        // Get text body
+        TextView scriptBody = (TextView) findViewById(R.id.scriptBody);
+        // Make script scrollable
+        scriptBody.setMovementMethod(new ScrollingMovementMethod());
+
+        // Set text of scriptBody to be what we read from the file
+        scriptBody.setText(scriptText);
+    }
 }

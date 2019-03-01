@@ -27,7 +27,6 @@ public class SpeechView extends AppCompatActivity {
         Intent intent = getIntent();
         filePath = intent.getStringExtra("filePath");
         speechName = intent.getStringExtra("speechName");
-        Log.e("FILE:", filePath);
         speechName = filePath.substring(filePath.lastIndexOf(File.separator)+1);
         setTitle(speechName);
     }
@@ -52,7 +51,7 @@ public class SpeechView extends AppCompatActivity {
     public void goToEditSpeech(View view) {
         Intent intent = new Intent(this, NewSpeech.class);
         try {
-            readFromFile(filePath);
+            scriptText = FileService.readFromFile(filePath);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -86,57 +85,19 @@ public class SpeechView extends AppCompatActivity {
     public void deleteSpeech(View view) {
         // TODO: add "are you sure?" alert dialog on pressing this button
 
-        // Deletes script file
-        File script = new File(filePath);
-        if (script.delete()) {
+        try {
+            String videoFilePath = getExternalFilesDir(null) + speechName+".mp4";
+            FileService.deleteSpeech(filePath, videoFilePath);
             Toast toast = Toast.makeText(getApplicationContext(), "Speech deleted", Toast.LENGTH_SHORT);
             toast.show();
         }
-        else
-        {
-            Toast toast = Toast.makeText(getApplicationContext(), "Error in deleting speech", Toast.LENGTH_SHORT);
+        catch (Exception e){
+            Toast toast = Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT);
             toast.show();
         }
-        File video = new File(getExternalFilesDir(null), speechName+".mp4");
-        if (video == null) {
-            Log.i("VIDEO DELETION:", "video does not exist");
-        }
-        else{
-            if(!video.delete()){
-                Log.e("VIDEO DELETION:", "video failed to be deleted");
-            }
-        }
-
-        // TODO: delete associated audio and video files
 
         Intent intent = new Intent(this, MainMenu.class);
         startActivity(intent);
-    }
-
-    private void readFromFile(String filepath) throws FileNotFoundException, IOException {
-        // Create new file object from given filepath
-        File file = new File(filepath);
-
-        StringBuilder text = new StringBuilder();
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-
-            while ((line = br.readLine()) != null) {
-                text.append(line);
-                text.append('\n');
-            }
-            br.close();
-
-            // Set text of scriptBody to be what we read from the file
-            scriptText = text.toString();
-        }
-        catch (IOException e) {
-            Toast readToast = Toast.makeText(getApplicationContext(),
-                    e.toString(), Toast.LENGTH_SHORT);
-            readToast.show();
-        }
     }
 
 }
