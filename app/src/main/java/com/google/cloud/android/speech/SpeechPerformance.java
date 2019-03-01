@@ -38,7 +38,7 @@ public class SpeechPerformance extends AppCompatActivity {
         }
     }
     public void goToPlayBack(View view){
-        Intent intent = new Intent(this, PlayBack.class);
+        Intent intent = new Intent(this, PlayBack_List.class);
         intent.putExtra("filePath", filePath);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
