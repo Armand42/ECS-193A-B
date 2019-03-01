@@ -40,6 +40,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -48,6 +51,11 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
     private static final String FRAGMENT_MESSAGE_DIALOG = "message_dialog";
 
     private static final String STATE_RESULTS = "results";
+
+    private static String SPEECH_SCRIPT_PATH;
+
+    private String filePath;
+    String speechName;
 
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 1;
 
@@ -111,7 +119,8 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getIntent();
+        Intent intent = getIntent();
+        speechName = intent.getStringExtra("speechName");
 
         final Resources resources = getResources();
         final Resources.Theme theme = getTheme();
@@ -144,6 +153,21 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
                 stopVoiceRecorder();
             }
         });
+
+        SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + "api-result";
+
+//        try {
+//            filePath = FileService.writeToFile(speechName, "Result from the API:\n", SPEECH_SCRIPT_PATH);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+    }
+
+    public void goToSpeechPerformance(View view) {
+        Intent intent = new Intent(this, SpeechPerformance.class);
+        intent.putExtra("filePath", SPEECH_SCRIPT_PATH);
+        intent.putExtra("speechName", speechName);
+        startActivity(intent);
 
     }
 
@@ -270,6 +294,11 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
                                 if (isFinal) {
                                     mText.setText(null);
                                     mAdapter.addResult(text);
+                                    try {
+                                        appendToFile(SPEECH_SCRIPT_PATH, text);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
                                     mRecyclerView.smoothScrollToPosition(0);
                                 } else {
                                     mText.setText(text);
@@ -323,6 +352,26 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
 
         public ArrayList<String> getResults() {
             return mResults;
+        }
+
+    }
+
+
+    private void appendToFile(String speechScriptPath, String apiResultText)throws IOException {
+        File file = new File(speechScriptPath);
+
+        //This point and below is responsible for the write operation
+        FileOutputStream outputStream = null;
+        try {
+            //second argument of FileOutputStream constructor indicates whether
+            //to append or create new file if one exists -- for now we're creating a new file
+            outputStream = new FileOutputStream(file, true);
+
+            outputStream.write(apiResultText.getBytes());
+            outputStream.flush();
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
