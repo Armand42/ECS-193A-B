@@ -74,6 +74,7 @@ public class NewSpeech extends AppCompatActivity {
         /* Write speech text to file */
         filePath = writeToFile(speechName, speechText).toString();
 
+        File camera = getDir(speechName,MODE_PRIVATE);
 
         // Send back to this speech's menu
          Intent intent = new Intent(this, SpeechView.class);
