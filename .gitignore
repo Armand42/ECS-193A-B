@@ -1,6 +1,7 @@
 *.iml
 .gradle
 /local.properties
+<<<<<<< HEAD
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
@@ -11,3 +12,11 @@
 /build
 /captures
 .externalNativeBuild
+=======
+/.idea
+.DS_Store
+/build
+/captures
+
+app/src/main/res/raw/*.json
+>>>>>>> merged existing project to speech project
