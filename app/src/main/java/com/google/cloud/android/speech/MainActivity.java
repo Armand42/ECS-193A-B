@@ -154,13 +154,8 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
             }
         });
 
-        SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + "api-result";
+        SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + speechName;
 
-//        try {
-//            filePath = FileService.writeToFile(speechName, "Result from the API:\n", SPEECH_SCRIPT_PATH);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
 
     public void goToSpeechPerformance(View view) {
@@ -296,6 +291,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
                                     mAdapter.addResult(text);
                                     try {
                                         appendToFile(SPEECH_SCRIPT_PATH, text);
+                                        appendToFile(SPEECH_SCRIPT_PATH, " ");
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }
