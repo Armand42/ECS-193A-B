@@ -5,15 +5,21 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.ScrollingMovementMethod;
 import android.widget.MediaController;
+import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import java.io.File;
+import java.io.IOException;
 
 public class PlayBack extends AppCompatActivity {
     String speechName;
     String filePath;
     String videoName;
+    String scriptText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,11 +42,38 @@ public class PlayBack extends AppCompatActivity {
         videoView.setVideoURI(videoUri);
         videoView.requestFocus();
         videoView.start();
+    // Make script viewable
+        try {
+            scriptText = FileService.readFromFile(intent.getStringExtra("filePath"));
+            setScriptText();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast readToast = Toast.makeText(getApplicationContext(),
+                    e.toString(), Toast.LENGTH_SHORT);
+            readToast.show();
+        }
     }
+
+
     private String getVideoFilePath(Context context) {
         final File dir = getDir(speechName, MODE_PRIVATE);
 
         return (dir == null ? "" : (dir.getAbsolutePath() + "/"))
                 +  videoName;
     }
+    // Display speech in playback
+    private void setScriptText() {
+        // Get text body
+        TextView scriptBody = (TextView) findViewById(R.id.scriptBody);
+
+        // Make script scrollable
+        scriptBody.setMovementMethod(new ScrollingMovementMethod());
+
+        // Set text of scriptBody to be what we read from the file
+        scriptBody.setText(scriptText);
+
+    }
+
+    // Call scriptview function here somehow?
+
 }

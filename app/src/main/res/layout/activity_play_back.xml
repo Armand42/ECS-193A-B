@@ -40,9 +40,11 @@
             <TextView
                 android:id="@+id/scriptBody"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1.0" />
         </ScrollView>
+
+
     </RelativeLayout>
 
 
