@@ -51,6 +51,13 @@
 
         <include layout="@layout/item_result"/>
 
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="goToSpeechPerformance"
+            android:text="exit" />
+
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v7.widget.RecyclerView

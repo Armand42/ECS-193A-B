@@ -56,6 +56,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -64,6 +65,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class Camera2VideoFragment extends Fragment
         implements View.OnClickListener, FragmentCompat.OnRequestPermissionsResultCallback {
@@ -629,11 +633,13 @@ public class Camera2VideoFragment extends Fragment
     }
 
     private String getVideoFilePath(Context context) {
-        final File dir = context.getExternalFilesDir(null);
         Intent intent = getActivity().getIntent();
         String speechName = intent.getStringExtra("speechName");
+        final File dir = context.getDir(speechName, MODE_PRIVATE);
+        String fileNames[] = dir.list();
+
         return (dir == null ? "" : (dir.getAbsolutePath() + "/"))
-                + speechName+".mp4";
+                + speechName+"-"+fileNames.length+".mp4";
 
     }
 
@@ -717,6 +723,7 @@ public class Camera2VideoFragment extends Fragment
 
     private void stopRecordingVideo() {
         // UI
+
         mCurrentVideoPath = mNextVideoAbsolutePath;
 
         mIsRecordingVideo = false;
@@ -803,6 +810,7 @@ public class Camera2VideoFragment extends Fragment
         }
 
     }
+
 
 }
 
