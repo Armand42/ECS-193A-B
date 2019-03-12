@@ -18,7 +18,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Speech"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".PlayBack_List"></activity>
+        <activity android:name=".DiffView"></activity>
+        <activity android:name=".PlayBack_List" />
         <activity android:name=".MainActivity">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->

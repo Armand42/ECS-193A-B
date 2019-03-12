@@ -51,6 +51,13 @@ public class SpeechPerformance extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void goToDiffView(View view){
+        Intent intent = new Intent(this, DiffView.class);
+        intent.putExtra("filePath", filePath);
+        intent.putExtra("speechName", speechName);
+        startActivity(intent);
+    }
+
     public void goToMainMenu(View view){
         Intent intent = new Intent(this, MainMenu.class);
         startActivity(intent);
