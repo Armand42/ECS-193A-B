@@ -1,7 +1,10 @@
 package com.google.cloud.android.speech;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -83,21 +86,35 @@ public class SpeechView extends AppCompatActivity {
 
     /* Delete all associated files */
     public void deleteSpeech(View view) {
-        // TODO: add "are you sure?" alert dialog on pressing this button
+        new AlertDialog.Builder(this)
+                .setTitle("Delete this speech?")
+                .setMessage("All associated files will be lost.")
 
-        try {
-            String videoFilePath = getExternalFilesDir(null) + speechName+".mp4";
-            FileService.deleteSpeech(filePath, videoFilePath);
-            Toast toast = Toast.makeText(getApplicationContext(), "Speech deleted", Toast.LENGTH_SHORT);
-            toast.show();
-        }
-        catch (Exception e){
-            Toast toast = Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT);
-            toast.show();
-        }
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Continue with delete operation
+                        try {
+                            String videoFilePath = getExternalFilesDir(null) + speechName+".mp4";
+                            FileService.deleteSpeech(filePath, videoFilePath);
+                            Toast toast = Toast.makeText(getApplicationContext(), "Speech deleted", Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
+                        catch (Exception e){
+                            Toast toast = Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
 
-        Intent intent = new Intent(this, MainMenu.class);
-        startActivity(intent);
+                        Intent intent = new Intent(SpeechView.this, MainMenu.class);
+                        startActivity(intent);
+                    }
+                })
+
+                // A null listener allows the button to dismiss the dialog and take no further action.
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
 }
