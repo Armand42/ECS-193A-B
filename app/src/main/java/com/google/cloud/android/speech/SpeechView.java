@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -48,18 +50,6 @@ public class SpeechView extends AppCompatActivity {
         Intent intent = new Intent(this, SpeechSettings.class);
         intent.putExtra("filePath", filePath);
         intent.putExtra("speechName", speechName);
-        startActivity(intent);
-    }
-
-    public void goToEditSpeech(View view) {
-        Intent intent = new Intent(this, NewSpeech.class);
-        try {
-            scriptText = FileService.readFromFile(filePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        intent.putExtra("filename", speechName);
-        intent.putExtra("scriptText", scriptText);
         startActivity(intent);
     }
 
@@ -115,6 +105,26 @@ public class SpeechView extends AppCompatActivity {
                 .setNegativeButton(android.R.string.no, null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.speech_view_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_delete) {
+            View view = findViewById(R.id.action_delete);
+            deleteSpeech(view);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 }
