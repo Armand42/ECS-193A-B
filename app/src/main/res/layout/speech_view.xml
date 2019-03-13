@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".SpeechView">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        style="@style/HeaderBar"
+        android:layout_width="match_parent"
+        android:layout_height="61dp"
+        android:layout_marginBottom="8dp"
+        android:elevation="4dp"
+        app:popupTheme="@style/ActionBarPopupThemeOverlay"
+        app:theme="@style/ActionBarThemeOverlay" />
+
     <Button
         android:id="@+id/editSettings"
         android:layout_width="276dp"
