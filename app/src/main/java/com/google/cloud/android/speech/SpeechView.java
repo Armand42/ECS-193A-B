@@ -1,21 +1,14 @@
 package com.google.cloud.android.speech;
-
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 
 public class SpeechView extends AppCompatActivity {
@@ -23,23 +16,22 @@ public class SpeechView extends AppCompatActivity {
     String speechName;
     String scriptText;
 
-    private Toolbar mTopToolbar;
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.speech_view);
-
-        // Instantiate toolbar
-        mTopToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(mTopToolbar);
-
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         filePath = intent.getStringExtra("filePath");
         speechName = intent.getStringExtra("speechName");
         speechName = filePath.substring(filePath.lastIndexOf(File.separator)+1);
+
+        // Set toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setTitle(speechName);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     /** Called when the user taps the Send button */
@@ -123,13 +115,6 @@ public class SpeechView extends AppCompatActivity {
                 .setNegativeButton(android.R.string.no, null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
     }
 
 }

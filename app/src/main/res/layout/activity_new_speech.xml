@@ -20,11 +20,13 @@
 
     <Button
         android:id="@+id/button5"
-        android:layout_width="wrap_content"
+        android:layout_width="333dp"
         android:layout_height="52dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="28dp"
+        android:background="@color/success"
         android:onClick="saveFile"
         android:text="@string/save_button"
+        android:textColor="@color/cardview_light_background"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -32,9 +34,9 @@
 
     <EditText
         android:id="@+id/editText"
-        android:layout_width="249dp"
+        android:layout_width="333dp"
         android:layout_height="413dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/rectangle"
         android:ems="10"
         android:gravity="top|left"
@@ -50,15 +52,16 @@
 
     <EditText
         android:id="@+id/speechName"
-        android:layout_width="wrap_content"
+        android:layout_width="333dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="77dp"
-        android:layout_marginBottom="80dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="20dp"
         android:ems="10"
         android:hint="Name your speech"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toTopOf="@+id/editText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+        app:layout_constraintVertical_bias="1.0" />
 </android.support.constraint.ConstraintLayout>

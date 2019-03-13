@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
+import android.view.Menu;
 import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -72,6 +74,13 @@ public class PlayBack extends AppCompatActivity {
         // Set text of scriptBody to be what we read from the file
         scriptBody.setText(scriptText);
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.base_menu, menu);
+        return true;
     }
 
     // Call scriptview function here somehow?

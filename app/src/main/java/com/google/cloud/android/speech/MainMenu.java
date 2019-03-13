@@ -96,6 +96,4 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
         goToSpeechMenu(view, filePath, speechName);
     }
 
-
-
 }

@@ -20,7 +20,11 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".BaseActivity"></activity>
         <activity android:name=".DiffView" />
-        <activity android:name=".PlayBack_List" />
+        <activity android:name=".PlayBack_List">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".SpeechView" />
+        </activity>
         <activity android:name=".MainActivity">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
@@ -45,7 +49,6 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_new_speech"
             android:parentActivityName=".MainMenu"
-            android:theme="@style/FullscreenTheme"
             android:windowSoftInputMode="adjustPan">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

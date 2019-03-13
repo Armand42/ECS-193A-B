@@ -22,9 +22,12 @@ public class NewSpeech extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_speech);
 
-        // Instantiate toolbar
-        mTopToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(mTopToolbar);
+        // Set toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setTitle("New speech");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Get extras for editing a script (if they exist)
         Intent intent = getIntent();
@@ -52,13 +55,6 @@ public class NewSpeech extends AppCompatActivity {
             f = new File(folder, "speech-scripts");
             f.mkdir();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
     }
 
 
@@ -111,5 +107,12 @@ public class NewSpeech extends AppCompatActivity {
         for (File file : files) {
             System.out.println(file);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.base_menu, menu);
+        return true;
     }
 }
