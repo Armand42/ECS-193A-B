@@ -3,6 +3,7 @@ package com.google.cloud.android.speech;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -11,7 +12,7 @@ import java.io.IOException;
 
 import static com.google.cloud.android.speech.FileService.readFromFile;
 
-public class SpeechPerformance extends AppCompatActivity {
+public class SpeechPerformance extends BaseActivity {
     String filePath;
     String speechName;
 
@@ -61,5 +62,12 @@ public class SpeechPerformance extends AppCompatActivity {
     public void goToMainMenu(View view){
         Intent intent = new Intent(this, MainMenu.class);
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.base_menu, menu);
+        return true;
     }
 }

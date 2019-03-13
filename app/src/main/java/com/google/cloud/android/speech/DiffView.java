@@ -3,6 +3,7 @@ package com.google.cloud.android.speech;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +21,13 @@ public class DiffView extends AppCompatActivity {
         setContentView(R.layout.activity_diff_view);
 
         Intent intent = getIntent();
+
+        // Set toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setTitle("New speech");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         this.setTitle("Speeches");
         // Make script viewable

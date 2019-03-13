@@ -3,7 +3,9 @@ package com.google.cloud.android.speech;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -24,6 +26,13 @@ public class PlayBack_List extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_back__list);
+
+        // Set toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setTitle(speechName);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         this.setTitle("Speeches");
 
@@ -71,6 +80,13 @@ public class PlayBack_List extends AppCompatActivity {
         intent.putExtra("videoName", videoName);
         Log.i("VIDEONAME:", videoName);
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.base_menu, menu);
+        return true;
     }
 
 

@@ -3,6 +3,8 @@ package com.google.cloud.android.speech;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -13,11 +15,19 @@ import java.io.FileOutputStream;
 public class NewSpeech extends AppCompatActivity {
     String SPEECH_SCRIPT_PATH;
     File[] filePathNames;
+    private Toolbar mTopToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_speech);
+
+        // Set toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setTitle("New speech");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Get extras for editing a script (if they exist)
         Intent intent = getIntent();
@@ -46,6 +56,7 @@ public class NewSpeech extends AppCompatActivity {
             f.mkdir();
         }
     }
+
 
     public void goToMainMenu(View view){
         Intent intent = new Intent(this, MainMenu.class);
@@ -96,5 +107,12 @@ public class NewSpeech extends AppCompatActivity {
         for (File file : files) {
             System.out.println(file);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.base_menu, menu);
+        return true;
     }
 }
