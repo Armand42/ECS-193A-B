@@ -12,48 +12,97 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
+
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingBottom="30dp"
+    android:paddingLeft="80dp"
+    android:paddingRight="80dp"
+    android:paddingTop="0dp"
+    android:orientation="vertical">
 
     <com.google.cloud.android.speech.AutoFitTextureView
         android:id="@+id/texture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/texture"
+        android:layout_width="wrap_content"
+        android:layout_height="350dp"
         android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:background="#4285f4">
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="47dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/restart"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:layout_gravity="top|left"
+            android:text="Restart" />
 
         <Button
             android:id="@+id/video"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="44dp"
             android:layout_gravity="center"
             android:text="Start" />
+
         <Button
             android:id="@+id/playback"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="Stop"/>
-        <Button
-            android:id="@+id/restart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:text="Restart"/>
+            android:layout_height="44dp"
+            android:layout_gravity="top|right"
+            android:text="Stop" />
+    </LinearLayout>
 
+
+    <FrameLayout
+        android:layout_width="256dp"
+        android:layout_height="332dp"
+        android:layout_below="@+id/texture"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="270dp"
+        android:background="@color/cardview_light_background">
 
     </FrameLayout>
 
+
+<RelativeLayout
+android:layout_weight=".5"
+android:layout_width="match_parent"
+android:layout_height="match_parent">
+
+<ScrollView
+    android:id="@+id/scriptBodyWrapper"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
+    android:fillViewport="true"
+    android:scrollbars="vertical">
+
+    <TextView
+        android:id="@+id/scriptBody"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0" />
+</ScrollView>
+
+
 </RelativeLayout>
+
+
+
+
+
+</LinearLayout>
+
 
