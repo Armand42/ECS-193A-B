@@ -61,43 +61,41 @@
     </LinearLayout>
 
 
-    <FrameLayout
-        android:layout_width="256dp"
-        android:layout_height="332dp"
-        android:layout_below="@+id/texture"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginBottom="270dp"
-        android:background="@color/cardview_light_background">
-
-    </FrameLayout>
 
 
-<RelativeLayout
-android:layout_weight=".5"
-android:layout_width="match_parent"
-android:layout_height="match_parent">
 
-<ScrollView
-    android:id="@+id/scriptBodyWrapper"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginLeft="4dp"
-    android:layout_marginRight="4dp"
-    android:fillViewport="true"
-    android:scrollbars="vertical">
+        <RelativeLayout
+            android:layout_weight=".5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/scriptBody"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1.0" />
-</ScrollView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="0dp"
+                android:orientation="vertical">
+
+                <ScrollView
+                    android:id="@+id/scriptBodyWrapper"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:fillViewport="true"
+                    android:scrollbars="vertical">
+
+                    <TextView
+                        android:id="@+id/scriptBody"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="TextView" />
+                </ScrollView>
+            </LinearLayout>
+
+        </RelativeLayout>
 
 
-</RelativeLayout>
 
 
 
