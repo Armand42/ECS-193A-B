@@ -1,15 +1,18 @@
 package com.google.cloud.android.speech;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Switch;
 
 public class SpeechSettings extends AppCompatActivity {
     String filePath;
     String speechName;
+    Switch videoPlayback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,21 +30,33 @@ public class SpeechSettings extends AppCompatActivity {
 
         speechName = intent.getStringExtra("speechName");
 
-//        speechName = filePath.substring(filePath.lastIndexOf("\\")+1);
         this.setTitle("Speech Settings");
+
+        videoPlayback = (Switch) findViewById(R.id.videoPlaybackSwitch);
+        SharedPreferences sharedPreferences = getSharedPreferences(speechName,MODE_PRIVATE);
+        videoPlayback.setChecked(sharedPreferences.getBoolean("videoPlayback", false));
+    }
+
+    public void addToSharedPreferences() {
+        //CREATE the shared preference file and add necessary values
+        SharedPreferences sharedPref = getSharedPreferences(speechName, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean("videoPlayback", videoPlayback.isChecked());
+        editor.commit();
     }
 
     @Override
     public void onBackPressed(){
         Intent intent = new Intent(this, SpeechView.class);
         intent.putExtra("speechName", speechName);
+        addToSharedPreferences();
         startActivity(intent);
-        return;
     }
 
     public void goToSpeechMenu (View view){
         Intent intent = new Intent(this, SpeechView.class);
         intent.putExtra("speechName", speechName);
+        addToSharedPreferences();
         startActivity(intent);
     }
 

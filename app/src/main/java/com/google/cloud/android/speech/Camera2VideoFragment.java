@@ -45,6 +45,7 @@ import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.ActivityCompat;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
@@ -54,6 +55,7 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -74,6 +76,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class Camera2VideoFragment extends Fragment
         implements View.OnClickListener, FragmentCompat.OnRequestPermissionsResultCallback {
 
+    String scriptText;
     private static final int SENSOR_ORIENTATION_DEFAULT_DEGREES = 90;
     private static final int SENSOR_ORIENTATION_INVERSE_DEGREES = 270;
     private static final SparseIntArray DEFAULT_ORIENTATIONS = new SparseIntArray();
@@ -299,6 +302,14 @@ public class Camera2VideoFragment extends Fragment
         mButtonVideo.setOnClickListener(this);
         mPlayBackVideo.setOnClickListener(this);
         mIsFirstRecording=true;
+        String speechName = getActivity().getIntent().getStringExtra("speechName");
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(speechName, MODE_PRIVATE);
+        try {
+            scriptText = FileService.readFromFile(sharedPref.getString("filepath",null));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        setScriptText();
     }
 
     @Override
@@ -818,6 +829,19 @@ public class Camera2VideoFragment extends Fragment
 
     }
 
+
+    // Display speech in playback
+    private void setScriptText() {
+        // Get text body
+        TextView scriptBody = (TextView) getActivity().findViewById(R.id.scriptBody);
+
+        // Make script scrollable
+        scriptBody.setMovementMethod(new ScrollingMovementMethod());
+
+        // Set text of scriptBody to be what we read from the file
+        scriptBody.setText(scriptText);
+
+    }
 
 }
 

@@ -21,6 +21,7 @@ public class SpeechView extends AppCompatActivity {
     String filePath;
     String speechName;
     String scriptText;
+    Boolean videoPlaybackState;
 
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
@@ -34,7 +35,7 @@ public class SpeechView extends AppCompatActivity {
         filePath = sharedPreferences.getString("filepath", "error");
 //        if(sharedPreferences.contains("filePath"))
         speechName = intent.getStringExtra("speechName");
-
+        videoPlaybackState = sharedPreferences.getBoolean("videoPlayback", false);
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setTitle(speechName);
@@ -59,7 +60,12 @@ public class SpeechView extends AppCompatActivity {
     }
 
     public void goToSpeechRecord(View view) {
-        Intent intent = new Intent(this, SpeechRecord.class);
+        Intent intent;
+        if(videoPlaybackState) {
+            intent = new Intent(this, SpeechRecord.class);
+        } else{
+            intent = new Intent(this, MainActivity.class);
+        }
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
