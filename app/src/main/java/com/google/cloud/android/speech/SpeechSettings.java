@@ -25,7 +25,6 @@ public class SpeechSettings extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        filePath = intent.getStringExtra("filePath");
         speechName = intent.getStringExtra("speechName");
 
 //        speechName = filePath.substring(filePath.lastIndexOf("\\")+1);
@@ -36,7 +35,6 @@ public class SpeechSettings extends AppCompatActivity {
     public void onBackPressed(){
         Intent intent = new Intent(this, SpeechView.class);
         intent.putExtra("speechName", speechName);
-        intent.putExtra("filePath", filePath);
         startActivity(intent);
         return;
     }
@@ -44,7 +42,6 @@ public class SpeechSettings extends AppCompatActivity {
     public void goToSpeechMenu (View view){
         Intent intent = new Intent(this, SpeechView.class);
         intent.putExtra("speechName", speechName);
-        intent.putExtra("filePath", filePath);
         startActivity(intent);
     }
 

@@ -2,6 +2,7 @@ package com.google.cloud.android.speech;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +19,6 @@ import java.io.IOException;
 
 public class PlayBack extends AppCompatActivity {
     String speechName;
-    String filePath;
     String videoName;
     String scriptText;
 
@@ -29,7 +29,6 @@ public class PlayBack extends AppCompatActivity {
 
         Intent intent = getIntent();
         speechName = intent.getStringExtra("speechName");
-        filePath = intent.getStringExtra("filePath");
         videoName = intent.getStringExtra("videoName");
 
 
@@ -38,15 +37,16 @@ public class PlayBack extends AppCompatActivity {
         MediaController mediaController= new MediaController(this);
         mediaController.setAnchorView(videoView);
         //Location of Media File
-        Uri videoUri = Uri.parse(getVideoFilePath(getApplicationContext()));
+        Uri videoUri = Uri.parse(videoName);
         //Starting VideView By Setting MediaController and URI
         videoView.setMediaController(mediaController);
         videoView.setVideoURI(videoUri);
         videoView.requestFocus();
         videoView.start();
+        SharedPreferences sharedPreferences = getSharedPreferences(speechName,MODE_PRIVATE);
     // Make script viewable
         try {
-            scriptText = FileService.readFromFile(intent.getStringExtra("filePath"));
+            scriptText = FileService.readFromFile(sharedPreferences.getString("filepath",null));
             setScriptText();
         } catch (IOException e) {
             e.printStackTrace();

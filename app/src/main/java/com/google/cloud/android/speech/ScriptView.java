@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +17,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import android.content.SharedPreferences;
 
 public class ScriptView extends AppCompatActivity {
     String speechName;
@@ -36,9 +38,11 @@ public class ScriptView extends AppCompatActivity {
         Intent intent = getIntent();
         speechName = intent.getStringExtra("speechName");
         setTitle("Script: " + speechName);
+        SharedPreferences sharedPreferences = getSharedPreferences(speechName,MODE_PRIVATE);
 
         try {
-            scriptText = FileService.readFromFile(intent.getStringExtra("filePath"));
+            Log.d("FILEPATH:", sharedPreferences.getString("filepath",null));
+            scriptText = FileService.readFromFile(sharedPreferences.getString("filepath",null));
             setScriptText();
         } catch (IOException e) {
             e.printStackTrace();

@@ -5,10 +5,14 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+import android.content.SharedPreferences;
+import android.view.Display;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -24,9 +28,12 @@ public class SpeechView extends AppCompatActivity {
         setContentView(R.layout.speech_view);
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
-        filePath = intent.getStringExtra("filePath");
         speechName = intent.getStringExtra("speechName");
-        speechName = filePath.substring(filePath.lastIndexOf(File.separator)+1);
+        SharedPreferences sharedPreferences = getSharedPreferences(speechName,MODE_PRIVATE);
+        final File dir = getDir(speechName, MODE_PRIVATE);
+        filePath = sharedPreferences.getString("filepath", "error");
+//        if(sharedPreferences.contains("filePath"))
+        speechName = intent.getStringExtra("speechName");
 
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -39,7 +46,6 @@ public class SpeechView extends AppCompatActivity {
     /** Called when the user taps the Send button */
     public void goToSpeechToText(View view) {
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("filePath", filePath);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
@@ -48,28 +54,24 @@ public class SpeechView extends AppCompatActivity {
     /** Called when the user taps the Send button */
     public void goToSpeechSettings(View view) {
         Intent intent = new Intent(this, SpeechSettings.class);
-        intent.putExtra("filePath", filePath);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
 
     public void goToSpeechRecord(View view) {
         Intent intent = new Intent(this, SpeechRecord.class);
-        intent.putExtra("filePath", filePath);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
 
     public void goToPlayBack(View view){
         Intent intent = new Intent(this, PlayBack_List.class);
-        intent.putExtra("filePath", filePath);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
 
     public void goToScriptView(View view) {
         Intent intent = new Intent(this, ScriptView.class);
-        intent.putExtra("filePath", filePath);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
@@ -86,8 +88,11 @@ public class SpeechView extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         // Continue with delete operation
                         try {
-                            String videoFilePath = getExternalFilesDir(null) + speechName+".mp4";
-                            FileService.deleteSpeech(filePath, videoFilePath);
+                            //            FileService.deleteSpeech(filePath);
+                            File script = new File(filePath);
+                            if (!script.delete()) {
+                                throw new Exception("Error deleting script");
+                            }
                             Toast toast = Toast.makeText(getApplicationContext(), "Speech deleted", Toast.LENGTH_SHORT);
                             toast.show();
                         }
@@ -95,6 +100,16 @@ public class SpeechView extends AppCompatActivity {
                             Toast toast = Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT);
                             toast.show();
                         }
+                        //Delete  all videos
+                        final File dir = getDir(speechName, MODE_PRIVATE);
+                        SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
+                        for(int i =0 ; i<sharedPreferences.getInt("currVid", -1) ; i++)
+                        {
+                            File vid = new File(dir.getAbsolutePath() + "/" + speechName+" "+ i+".mp4" );
+                            vid.delete();
+                        }
+                        dir.delete();
+                        sharedPreferences.edit().clear().apply(); //clears all preferences
 
                         Intent intent = new Intent(SpeechView.this, MainMenu.class);
                         startActivity(intent);
