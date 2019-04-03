@@ -43,20 +43,11 @@ public class FileService {
     /*
     Deletes a speech and associated files (script and video(s))
      */
-    public static void deleteSpeech(String scriptFilePath, String videoFilePath) throws Exception {
+    public static void deleteSpeech(String scriptFilePath) throws Exception {
         // Deletes script file
         File script = new File(scriptFilePath);
-        File video = new File(videoFilePath);
         if (!script.delete()) {
             throw new Exception("Error deleting script");
-        }
-        if (video == null) {
-            throw new Exception("Video does not exist");
-        }
-        else{
-            if(!video.delete()){
-                Log.e("VIDEO DELETION:", "video failed to be deleted");
-            }
         }
     }
 

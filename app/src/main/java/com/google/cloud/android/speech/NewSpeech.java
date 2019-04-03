@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import android.content.SharedPreferences;
+
 
 public class NewSpeech extends AppCompatActivity {
     String SPEECH_SCRIPT_PATH;
@@ -89,8 +91,15 @@ public class NewSpeech extends AppCompatActivity {
 
             // Send back to this speech's menu
             Intent intent = new Intent(this, SpeechView.class);
-            intent.putExtra("filePath", filePath);
             intent.putExtra("speechName", speechName);
+
+            //CREATE the shared preference file and add necessary values
+            SharedPreferences sharedPref = getSharedPreferences(speechName, MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("filepath", filePath);
+            editor.putInt("currVid",0);
+            editor.commit();
+
             startActivity(intent);
         }
         catch (Exception e) {

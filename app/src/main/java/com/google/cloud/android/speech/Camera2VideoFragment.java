@@ -65,6 +65,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import android.content.SharedPreferences;
+
 
 
 import static android.content.Context.MODE_PRIVATE;
@@ -338,11 +340,9 @@ public class Camera2VideoFragment extends Fragment
 
                 stopRecordingVideo();
                 Activity activity = getActivity();
-                String filePath = activity.getIntent().getStringExtra("filePath");
                 String speechName = activity.getIntent().getStringExtra("speechName");
 
                 Intent intent = new Intent(activity, SpeechPerformance.class);
-                intent.putExtra("filePath", filePath);
                 intent.putExtra("speechName", speechName);
                 startActivity(intent);
                 break;
@@ -636,10 +636,10 @@ public class Camera2VideoFragment extends Fragment
         Intent intent = getActivity().getIntent();
         String speechName = intent.getStringExtra("speechName");
         final File dir = context.getDir(speechName, MODE_PRIVATE);
-        String fileNames[] = dir.list();
-
+        //CREATE the shared preference file and get necessary values
+        SharedPreferences sharedPreferences= context.getSharedPreferences(speechName, MODE_PRIVATE);
         return (dir == null ? "" : (dir.getAbsolutePath() + "/"))
-                + speechName+"-"+fileNames.length+".mp4";
+                + speechName+" "+sharedPreferences.getInt("currVid",-1)+".mp4";
 
     }
 
@@ -731,7 +731,14 @@ public class Camera2VideoFragment extends Fragment
         // Stop recording
         mMediaRecorder.stop();
         mMediaRecorder.reset();
-        Log.i("VIDEO PATH", mCurrentVideoPath);
+
+        //update the currVideoNum
+        Intent intent = getActivity().getIntent();
+        String speechName = intent.getStringExtra("speechName");
+        SharedPreferences sharedPreferences= getContext().getSharedPreferences(speechName, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("currVid",1 + sharedPreferences.getInt("currVid",-1));
+        editor.apply();
 
         Activity activity = getActivity();
         if (null != activity) {

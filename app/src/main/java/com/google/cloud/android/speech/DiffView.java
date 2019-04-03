@@ -1,6 +1,7 @@
 package com.google.cloud.android.speech;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -29,12 +30,15 @@ public class DiffView extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
         this.setTitle("Speeches");
         // Make script viewable
+        //CREATE the shared preference file and get necessary values
+        SharedPreferences sharedPreferences= getSharedPreferences(intent.getStringExtra("speechName"), MODE_PRIVATE);
         try {
-            scriptText = FileService.readFromFile(intent.getStringExtra("filePath"));
+            scriptText = FileService.readFromFile(sharedPreferences.getString("filepath",null));
             // Duplicate for now -- eventually replace with reading most recent speech to text result
-            speechToText = FileService.readFromFile(intent.getStringExtra("filePath"));
+            speechToText = FileService.readFromFile(sharedPreferences.getString("filepath",null));
             setScriptText();
         } catch (IOException e) {
             e.printStackTrace();

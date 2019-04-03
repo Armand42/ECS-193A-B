@@ -18,9 +18,9 @@ import java.io.File;
 
 public class PlayBack_List extends AppCompatActivity {
     ListView listView;
-    File[] filePathNames;
     String[] fileNames;
-    String filePath;
+    File[] filePathNames;
+
     String speechName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,19 +37,19 @@ public class PlayBack_List extends AppCompatActivity {
         this.setTitle("Speeches");
 
         Intent intent = getIntent();
-        filePath = intent.getStringExtra("filePath");
         speechName = intent.getStringExtra("speechName");
 
         File dir = getDir(speechName, MODE_PRIVATE);
-        // Get all files saved to speech scripts
-        filePathNames= dir.listFiles();
+
 
         //get file names
         fileNames = dir.list();
+        filePathNames= dir.listFiles();
+
 
         TextView noVid = (TextView) findViewById(R.id.text_view_id);
 
-        if (filePathNames != null) {
+        if (fileNames != null) {
             ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, fileNames);
 //            Log.i("filenames",fileNames[0]);
             // Connect this adapter to a listview to be populated
@@ -59,8 +59,8 @@ public class PlayBack_List extends AppCompatActivity {
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    String videoName = fileNames[position];
-                  goToPlayBack(view, videoName);
+                    String videoName = filePathNames[position].toString();
+                    goToPlayBack(view, videoName);
                 }
             });
         }
@@ -75,10 +75,9 @@ public class PlayBack_List extends AppCompatActivity {
     }
     public void goToPlayBack(View view, String videoName){
         Intent intent = new Intent(this, PlayBack.class);
-        intent.putExtra("filePath", filePath);
         intent.putExtra("speechName", speechName);
         intent.putExtra("videoName", videoName);
-        Log.i("VIDEONAME:", videoName);
+        Log.i("VIDEONAME in playback:", videoName);
         startActivity(intent);
     }
 

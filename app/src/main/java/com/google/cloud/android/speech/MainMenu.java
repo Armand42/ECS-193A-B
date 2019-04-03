@@ -17,7 +17,6 @@ import java.io.File;
 
 public class MainMenu extends AppCompatActivity implements AdapterView.OnItemClickListener {
     ListView listView;
-    File[] filePathNames;
     String[] fileNames;
     private Toolbar mTopToolbar;
 
@@ -34,12 +33,11 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
 
         File dir = new File(getFilesDir() + File.separator + "speech-scripts");
         // Get all files saved to speech scripts
-        filePathNames = dir.listFiles();
 
         //get file names
         fileNames = dir.list();
 
-        if (filePathNames != null) {
+        if (fileNames != null) {
             ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, fileNames);
 
             // Connect this adapter to a listview to be populated
@@ -79,9 +77,8 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
         startActivity(intent);
     }
 
-    public void goToSpeechMenu(View view, String filePath, String speechName){
+    public void goToSpeechMenu(View view, String speechName){
         Intent intent = new Intent(this, SpeechView.class);
-        intent.putExtra("filePath", filePath);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
@@ -90,10 +87,9 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         TextView temp = (TextView) view;
 //        String filePath = listView.getItemAtPosition(position).toString();
-        String filePath = filePathNames[position].toString();
         String speechName = fileNames[position];
 //        Toast.makeText(getApplicationContext(), Value, Toast.LENGTH_SHORT).show();
-        goToSpeechMenu(view, filePath, speechName);
+        goToSpeechMenu(view, speechName);
     }
 
 }
