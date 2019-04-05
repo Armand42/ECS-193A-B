@@ -20,6 +20,7 @@ import android.Manifest;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,6 +41,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -50,12 +53,11 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
 
     private static final String FRAGMENT_MESSAGE_DIALOG = "message_dialog";
 
-    private static final String STATE_RESULTS = "results";
-
     private static String SPEECH_SCRIPT_PATH;
 
     private String filePath;
     String speechName;
+    String scriptText;
 
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 1;
 
@@ -66,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
 
         @Override
         public void onVoiceStart() {
-            showStatus(true);
             if (mSpeechService != null) {
                 mSpeechService.startRecognizing(mVoiceRecorder.getSampleRate());
             }
@@ -81,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
 
         @Override
         public void onVoiceEnd() {
-            showStatus(false);
             if (mSpeechService != null) {
                 mSpeechService.finishRecognizing();
             }
@@ -89,15 +89,6 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
 
     };
 
-    // Resource caches
-    private int mColorHearing;
-    private int mColorNotHearing;
-
-    // View references
-    private TextView mStatus;
-    private TextView mText;
-    private ResultAdapter mAdapter;
-    private RecyclerView mRecyclerView;
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -105,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
         public void onServiceConnected(ComponentName componentName, IBinder binder) {
             mSpeechService = SpeechService.from(binder);
             mSpeechService.addListener(mSpeechServiceListener);
-            mStatus.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -121,22 +111,8 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
         setContentView(R.layout.activity_main);
         Intent intent = getIntent();
         speechName = intent.getStringExtra("speechName");
-
-        final Resources resources = getResources();
-        final Resources.Theme theme = getTheme();
-        mColorHearing = ResourcesCompat.getColor(resources, R.color.status_hearing, theme);
-        mColorNotHearing = ResourcesCompat.getColor(resources, R.color.status_not_hearing, theme);
-
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-        mStatus = (TextView) findViewById(R.id.status);
-        mText = (TextView) findViewById(R.id.text);
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        final ArrayList<String> results = savedInstanceState == null ? null :
-                savedInstanceState.getStringArrayList(STATE_RESULTS);
-        mAdapter = new ResultAdapter(results);
-        mRecyclerView.setAdapter(mAdapter);
+        SharedPreferences sharedPreferences = getSharedPreferences(speechName,MODE_PRIVATE);
+        filePath = sharedPreferences.getString("filepath", "error");
 
         final Button startButton = (Button) findViewById(R.id.startButton);
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -151,16 +127,41 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
             public void onClick(View v) {
                 // Code here executes on main thread after user presses button
                 stopVoiceRecorder();
+                goToSpeechPerformance(getCurrentFocus());
             }
         });
 
-        SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + speechName;
+        SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + speechName + "apiResult ";
+
+
+
+        try {
+            scriptText = FileService.readFromFile(filePath);
+            setScriptText();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast readToast = Toast.makeText(getApplicationContext(),
+                    e.toString(), Toast.LENGTH_SHORT);
+            readToast.show();
+        }
 
     }
 
+    private void setScriptText() {
+        // Get text body
+        TextView scriptBody = (TextView) findViewById(R.id.scriptBody);
+        // Make script scrollable
+        scriptBody.setMovementMethod(new ScrollingMovementMethod());
+
+        // Set text of scriptBody to be what we read from the file
+        scriptBody.setText(scriptText);
+    }
+
     public void goToSpeechPerformance(View view) {
+//        String speech = getFilesDir() + File.separator + speechName;
         Intent intent = new Intent(this, SpeechPerformance.class);
-        intent.putExtra("filePath", SPEECH_SCRIPT_PATH);
+        intent.putExtra("apiResult", SPEECH_SCRIPT_PATH);
+        intent.putExtra("filePath", filePath);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
 
@@ -200,16 +201,8 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (mAdapter != null) {
-            outState.putStringArrayList(STATE_RESULTS, mAdapter.getResults());
-        }
-    }
-
-    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-            @NonNull int[] grantResults) {
+                                           @NonNull int[] grantResults) {
         if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
             if (permissions.length == 1 && grantResults.length == 1
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -260,15 +253,6 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
                 .show(getSupportFragmentManager(), FRAGMENT_MESSAGE_DIALOG);
     }
 
-    private void showStatus(final boolean hearingVoice) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mStatus.setTextColor(hearingVoice ? mColorHearing : mColorNotHearing);
-            }
-        });
-    }
-
     @Override
     public void onMessageDialogDismissed() {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},
@@ -282,75 +266,23 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
                     if (isFinal) {
                         mVoiceRecorder.dismiss();
                     }
-                    if (mText != null && !TextUtils.isEmpty(text)) {
+                    if (!TextUtils.isEmpty(text)) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 if (isFinal) {
-                                    mText.setText(null);
-                                    mAdapter.addResult(text);
                                     try {
                                         appendToFile(SPEECH_SCRIPT_PATH, text);
                                         appendToFile(SPEECH_SCRIPT_PATH, " ");
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }
-                                    mRecyclerView.smoothScrollToPosition(0);
-                                } else {
-                                    mText.setText(text);
                                 }
                             }
                         });
                     }
                 }
             };
-
-    private static class ViewHolder extends RecyclerView.ViewHolder {
-
-        TextView text;
-
-        ViewHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.item_result, parent, false));
-            text = (TextView) itemView.findViewById(R.id.text);
-        }
-
-    }
-
-    private static class ResultAdapter extends RecyclerView.Adapter<ViewHolder> {
-
-        private final ArrayList<String> mResults = new ArrayList<>();
-
-        ResultAdapter(ArrayList<String> results) {
-            if (results != null) {
-                mResults.addAll(results);
-            }
-        }
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ViewHolder(LayoutInflater.from(parent.getContext()), parent);
-        }
-
-        @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.text.setText(mResults.get(position));
-        }
-
-        @Override
-        public int getItemCount() {
-            return mResults.size();
-        }
-
-        void addResult(String result) {
-            mResults.add(0, result);
-            notifyItemInserted(0);
-        }
-
-        public ArrayList<String> getResults() {
-            return mResults;
-        }
-
-    }
 
 
     private void appendToFile(String speechScriptPath, String apiResultText)throws IOException {

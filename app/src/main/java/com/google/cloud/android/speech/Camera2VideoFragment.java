@@ -367,6 +367,8 @@ public class Camera2VideoFragment extends Fragment
                     e.printStackTrace();
                 }
 
+//                SpeechService.recognizeInputStream(originalAudio);
+
                 //update the currVideoNum
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putInt("currVid",1 + sharedPreferences.getInt("currVid",-1));
