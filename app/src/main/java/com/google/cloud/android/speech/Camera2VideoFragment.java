@@ -77,6 +77,7 @@ public class Camera2VideoFragment extends Fragment
         implements View.OnClickListener, FragmentCompat.OnRequestPermissionsResultCallback {
 
     String scriptText;
+    String speechName;
     private static final int SENSOR_ORIENTATION_DEFAULT_DEGREES = 90;
     private static final int SENSOR_ORIENTATION_INVERSE_DEGREES = 270;
     private static final SparseIntArray DEFAULT_ORIENTATIONS = new SparseIntArray();
@@ -302,7 +303,7 @@ public class Camera2VideoFragment extends Fragment
         mButtonVideo.setOnClickListener(this);
         mPlayBackVideo.setOnClickListener(this);
         mIsFirstRecording=true;
-        String speechName = getActivity().getIntent().getStringExtra("speechName");
+        speechName = getActivity().getIntent().getStringExtra("speechName");
         SharedPreferences sharedPref = getActivity().getSharedPreferences(speechName, MODE_PRIVATE);
         try {
             scriptText = FileService.readFromFile(sharedPref.getString("filepath",null));
@@ -351,7 +352,25 @@ public class Camera2VideoFragment extends Fragment
 
                 stopRecordingVideo();
                 Activity activity = getActivity();
-                String speechName = activity.getIntent().getStringExtra("speechName");
+
+
+
+                final File dir = getContext().getDir(speechName, MODE_PRIVATE);
+                SharedPreferences sharedPreferences= getContext().getSharedPreferences(speechName, MODE_PRIVATE);
+                String originalAudio = (dir.getAbsolutePath() + "/")
+                        + speechName + " " + sharedPreferences.getInt("currVid",-1)+".mp3";
+
+
+                try {
+                    new VideoUtils().genVideoUsingMuxer(mCurrentVideoPath, originalAudio, -1, -1, true, false);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                //update the currVideoNum
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putInt("currVid",1 + sharedPreferences.getInt("currVid",-1));
+                editor.apply();
 
                 Intent intent = new Intent(activity, SpeechPerformance.class);
                 intent.putExtra("speechName", speechName);
@@ -645,7 +664,6 @@ public class Camera2VideoFragment extends Fragment
 
     private String getVideoFilePath(Context context) {
         Intent intent = getActivity().getIntent();
-        String speechName = intent.getStringExtra("speechName");
         final File dir = context.getDir(speechName, MODE_PRIVATE);
         //CREATE the shared preference file and get necessary values
         SharedPreferences sharedPreferences= context.getSharedPreferences(speechName, MODE_PRIVATE);
@@ -743,13 +761,7 @@ public class Camera2VideoFragment extends Fragment
         mMediaRecorder.stop();
         mMediaRecorder.reset();
 
-        //update the currVideoNum
-        Intent intent = getActivity().getIntent();
-        String speechName = intent.getStringExtra("speechName");
-        SharedPreferences sharedPreferences= getContext().getSharedPreferences(speechName, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("currVid",1 + sharedPreferences.getInt("currVid",-1));
-        editor.apply();
+
 
         Activity activity = getActivity();
         if (null != activity) {
