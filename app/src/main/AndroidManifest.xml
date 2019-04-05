@@ -19,7 +19,11 @@
         android:theme="@style/Theme.Speech"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".BaseActivity"></activity>
-        <activity android:name=".DiffView" />
+        <activity android:name=".DiffView">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".SpeechPerformance" />
+        </activity>
         <activity android:name=".PlayBack_List">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
