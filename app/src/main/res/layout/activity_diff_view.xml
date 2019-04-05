@@ -18,9 +18,9 @@
         app:theme="@style/ActionBarThemeOverlay" />
 
     <RelativeLayout
-        android:layout_weight=".5"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_weight=".5">
 
         <ScrollView
             android:id="@+id/speechToTextWrapper"
@@ -35,7 +35,8 @@
                 android:id="@+id/speechToTextBody"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.0" />
+                android:layout_weight="1.0"
+                android:padding="15dp" />
         </ScrollView>
 
     </RelativeLayout>
@@ -58,7 +59,8 @@
                 android:id="@+id/scriptBody"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.0" />
+                android:layout_weight="1.0"
+                android:padding="15dp" />
         </ScrollView>
 
 
