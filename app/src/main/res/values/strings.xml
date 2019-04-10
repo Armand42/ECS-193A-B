@@ -42,7 +42,7 @@
     <string name="record">Record</string>
     <string name="stop">Stop</string>
 
-    <string name="speech_settings_max_time">Maximum Speech Time</string>
+    <string name="speech_settings_max_time">Speech Length (Minutes)</string>
     <string name="speech_settings_timer_toggle">Display Timer While Recording</string>
     <string name="speech_settings_video_playback_toggle">Video Playback</string>
     <string name="view_recording_button">View Recording</string>
