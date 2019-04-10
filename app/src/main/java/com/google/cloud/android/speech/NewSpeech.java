@@ -52,6 +52,12 @@ public class NewSpeech extends AppCompatActivity {
 
         // Check if speech script directory exists
         File f = new File(SPEECH_SCRIPT_PATH);
+        if (f.exists()) {
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    "A speech with this name already exists.", Toast.LENGTH_SHORT);
+            toast.show();
+            return;
+        }
         if (!f.exists() || !f.isDirectory()) {
             File folder = getFilesDir();
             f = new File(folder, "speech-scripts");
