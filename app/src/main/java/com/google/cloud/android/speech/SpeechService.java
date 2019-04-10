@@ -49,9 +49,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -305,7 +302,7 @@ public class SpeechService extends Service {
                             .setConfig(RecognitionConfig.newBuilder()
                                     .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
                                     .setLanguageCode("en-US")
-                                    .setSampleRateHertz(16000)
+//                                    .setSampleRateHertz(16000)
                                     .build())
                             .setAudio(RecognitionAudio.newBuilder()
                                     .setContent(ByteString.readFrom(stream))

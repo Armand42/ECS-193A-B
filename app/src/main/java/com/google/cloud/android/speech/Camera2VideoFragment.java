@@ -353,24 +353,12 @@ public class Camera2VideoFragment extends Fragment
                 stopRecordingVideo();
                 Activity activity = getActivity();
 
-
-
-                final File dir = getContext().getDir(speechName, MODE_PRIVATE);
                 SharedPreferences sharedPreferences= getContext().getSharedPreferences(speechName, MODE_PRIVATE);
-                String originalAudio = (dir.getAbsolutePath() + "/")
-                        + speechName + " " + sharedPreferences.getInt("currVid",-1)+".mp3";
-
-
-                try {
-                    new VideoUtils().genVideoUsingMuxer(mCurrentVideoPath, originalAudio, -1, -1, true, false);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
 //                SpeechService.recognizeInputStream(originalAudio);
 
                 //update the currVideoNum
                 SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("videoFilePath", getVideoFilePath(getContext()));
                 editor.putInt("currVid",1 + sharedPreferences.getInt("currVid",-1));
                 editor.apply();
 
@@ -670,7 +658,7 @@ public class Camera2VideoFragment extends Fragment
         //CREATE the shared preference file and get necessary values
         SharedPreferences sharedPreferences= context.getSharedPreferences(speechName, MODE_PRIVATE);
         return (dir == null ? "" : (dir.getAbsolutePath() + "/"))
-                + speechName+" "+sharedPreferences.getInt("currVid",-1)+".mp4";
+                + speechName+sharedPreferences.getInt("currVid",-1)+".mp4";
 
     }
 
@@ -856,6 +844,7 @@ public class Camera2VideoFragment extends Fragment
         scriptBody.setText(scriptText);
 
     }
+
 
 }
 

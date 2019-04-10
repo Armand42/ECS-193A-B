@@ -38,7 +38,9 @@ public class DiffView extends AppCompatActivity {
         try {
             scriptText = FileService.readFromFile(sharedPreferences.getString("filepath",null));
             // Duplicate for now -- eventually replace with reading most recent speech to text result
-            speechToText = FileService.readFromFile(sharedPreferences.getString("filepath",null));
+//            speechToText = FileService.readFromFile(sharedPreferences.getString("apiResult",null));
+            speechToText = sharedPreferences.getString("apiResult",null);
+
             setScriptText();
         } catch (IOException e) {
             e.printStackTrace();
