@@ -51,6 +51,11 @@ public class SpeechView extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void goToTimer(View view) {
+        Intent intent = new Intent(this, Timer.class);
+        intent.putExtra("speechName", speechName);
+        startActivity(intent);
+    }
 
     /** Called when the user taps the Send button */
     public void goToSpeechSettings(View view) {

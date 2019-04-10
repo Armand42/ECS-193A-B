@@ -82,4 +82,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.34" />
 
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:onClick="goToTimer"
+        android:text="Timer Test"
+        app:layout_constraintBottom_toBottomOf="@+id/startButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/my_toolbar"
+        app:layout_constraintVertical_bias="0.556" />
+
 </android.support.constraint.ConstraintLayout>
