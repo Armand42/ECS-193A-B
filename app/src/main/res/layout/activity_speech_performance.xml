@@ -71,7 +71,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="268dp"
         android:onClick="pressedButton"
-        android:text="Button"
+        android:text="Process Audio File"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

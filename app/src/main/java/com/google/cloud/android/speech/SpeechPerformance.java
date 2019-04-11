@@ -35,6 +35,7 @@ public class SpeechPerformance extends BaseActivity {
     String speechName;
     String apiResult;
     String[] command;
+    Boolean videoPlayback;
     FFmpeg ffmpeg;
     private static String SPEECH_SCRIPT_PATH;
     private static String VIDEO_FILE_PATH;
@@ -50,30 +51,36 @@ public class SpeechPerformance extends BaseActivity {
 
         final File dir = getApplicationContext().getDir(speechName, MODE_PRIVATE);
         SPEECH_SCRIPT_PATH = sharedPreferences.getString("filepath", null) + "apiResult";
-        VIDEO_FILE_PATH = sharedPreferences.getString("videoFilePath", null);
-
+        videoPlayback = sharedPreferences.getBoolean("videoPlayback", false);
         Log.d("SPEECH_SCRIPT_PATH", SPEECH_SCRIPT_PATH);
 
-        if(VIDEO_FILE_PATH == null){
-            Log.d("VIDEO FILE PATH", "VIDEO PATH NULL");
-        }
-        AUDIO_FILE_PATH = dir.getAbsolutePath() + "/"  + speechName +sharedPreferences.getInt("currVid",-1)+ ".wav";
 
-        try {
-            loadFfmpegLibrary();
-        } catch (FFmpegNotSupportedException e) {
-            e.printStackTrace();
-        }
 
-        Log.i("VIDEO_FILE_PATH", VIDEO_FILE_PATH);
-        Log.i("AUDIO_FILE_PATH", AUDIO_FILE_PATH);
+        if(videoPlayback) {
+            VIDEO_FILE_PATH = sharedPreferences.getString("videoFilePath", null);
+
+            AUDIO_FILE_PATH = dir.getAbsolutePath() + "/" + speechName + sharedPreferences.getInt("currVid", -1) + ".wav";
+
+            if(VIDEO_FILE_PATH == null){
+                Log.d("VIDEO FILE PATH", "VIDEO PATH NULL");
+            }
+
+            try {
+                loadFfmpegLibrary();
+            } catch (FFmpegNotSupportedException e) {
+                e.printStackTrace();
+            }
+
+            Log.i("VIDEO_FILE_PATH", VIDEO_FILE_PATH);
+            Log.i("AUDIO_FILE_PATH", AUDIO_FILE_PATH);
 
 //        command = new String[]{"-i", VIDEO_FILE_PATH, "-vn", "-f", "s16le", "-acodec", "pcm_s16le" , AUDIO_FILE_PATH};
-        command = new String[]{"-i", VIDEO_FILE_PATH, AUDIO_FILE_PATH};
-        try {
-            executeFfmpegCommand(command);
-        } catch (FFmpegCommandAlreadyRunningException e) {
-            e.printStackTrace();
+            command = new String[]{"-i", VIDEO_FILE_PATH, AUDIO_FILE_PATH};
+            try {
+                executeFfmpegCommand(command);
+            } catch (FFmpegCommandAlreadyRunningException e) {
+                e.printStackTrace();
+            }
         }
 
     }
@@ -154,10 +161,9 @@ public class SpeechPerformance extends BaseActivity {
         startActivity(intent);
     }
 
-    public void goToDiffView(View view){
+    public void goToDiffView(View view) throws FileNotFoundException {
         Intent intent = new Intent(this, DiffView.class);
         intent.putExtra("speechName", speechName);
-        addToSharedPreferences( apiResult);
         startActivity(intent);
     }
 
@@ -199,8 +205,8 @@ public class SpeechPerformance extends BaseActivity {
         //CREATE the shared preference file and add necessary values
         SharedPreferences sharedPref = getSharedPreferences(speechName, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-//        editor.putString("apiResult", SPEECH_SCRIPT_PATH);
-        editor.putString("apiResult", apiResultText);
+        editor.putString("apiResult", SPEECH_SCRIPT_PATH);
+//        editor.putString("apiResult", apiResultText);
 
         editor.commit();
     }
@@ -233,6 +239,8 @@ public class SpeechPerformance extends BaseActivity {
 
         // Prepare Cloud Speech API
         bindService(new Intent(this, SpeechService.class), mServiceConnection, BIND_AUTO_CREATE);
+
+
     }
 
     @Override
@@ -245,6 +253,16 @@ public class SpeechPerformance extends BaseActivity {
         super.onStop();
     }
 
+    public void speechToText() throws FileNotFoundException {
+        Path path = get(AUDIO_FILE_PATH);
+        InputStream fin = null;
+        try {
+            fin = newInputStream(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mSpeechService.recognizeInputStream(fin);
+    }
 
     public void pressedButton(View view) throws FileNotFoundException {
         File file = new File(AUDIO_FILE_PATH);
