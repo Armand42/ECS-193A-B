@@ -23,10 +23,13 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -48,9 +51,15 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.TimerTask;
 
 
-public class MainActivity extends AppCompatActivity implements MessageDialogFragment.Listener {
+public class MainActivity extends AppCompatActivity
+        implements  MessageDialogFragment.Listener,
+                    TimerFragment.OnFragmentInteractionListener,
+                    TimerFragment.OnTimerStopListener{
+
+    TimerFragment timerFragment;
 
     private static final String FRAGMENT_MESSAGE_DIALOG = "message_dialog";
 
@@ -116,10 +125,19 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
         sharedPreferences = getSharedPreferences(speechName,MODE_PRIVATE);
         filePath = sharedPreferences.getString("filepath", "error");
 
+//        countdownText = findViewById(R.id.countdown_text);
+
+        Long timeLeftInMilliseconds = sharedPreferences.getLong("timerMilliseconds", 600000);
+
         final Button startButton = (Button) findViewById(R.id.startButton);
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Code here executes on main thread after user presses button
+
+                // Start timer
+                timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
+                timerFragment.startTimer();
+
                 startVoiceRecorder();
             }
         });
@@ -129,13 +147,14 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
             public void onClick(View v) {
                 // Code here executes on main thread after user presses button
                 stopVoiceRecorder();
+                // Save elapsed time and send to how did I do activity
+
+
                 goToSpeechPerformance(getCurrentFocus());
             }
         });
 
         SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + speechName + "apiResult ";
-
-
 
         try {
             scriptText = FileService.readFromFile(filePath);
@@ -145,6 +164,12 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
             Toast readToast = Toast.makeText(getApplicationContext(),
                     e.toString(), Toast.LENGTH_SHORT);
             readToast.show();
+        }
+
+        if (savedInstanceState == null) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.timer_container, com.google.cloud.android.speech.TimerFragment.newInstance(timeLeftInMilliseconds))
+                    .commit();
         }
 
     }
@@ -294,7 +319,21 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
         }
 
     }
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        //you can leave it empty
+    }
 
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        // TODO: Set instanceof check to make generic
+        timerFragment.setOnTimerStopListener(this);
+    }
+
+    @Override
+    public void onTimerStop(Long millisecondsLeft) {
+
+    }
     public void addToSharedPreferences(String apiResultText) {
 
         //CREATE the shared preference file and add necessary values
@@ -304,5 +343,4 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
 
         editor.commit();
     }
-
 }

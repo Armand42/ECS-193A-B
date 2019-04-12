@@ -32,7 +32,7 @@
     <string name="enter_text_hint">Enter speech here</string>
     <string name="save_button">Save</string>
     <string name="stop_recording_button">Stop</string>
-    <string name="to_main_menu_button">Main Menu</string>
+    <string name="to_speech_menu_button">Back to Speech Menu</string>
     <string name="speech_performance_display">How did I do?</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
