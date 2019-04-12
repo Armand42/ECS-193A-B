@@ -57,11 +57,6 @@ public class SpeechPerformance extends BaseActivity {
         startActivity(intent);
     }
 
-    public void goToMainMenu(View view){
-        Intent intent = new Intent(this, MainMenu.class);
-        startActivity(intent);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

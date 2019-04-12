@@ -12,7 +12,7 @@ public class SpeechRecord extends BaseActivity {
         setContentView(R.layout.activity_speech_record);
         getIntent();
         this.setTitle("Record a Speech");
-        if (null == savedInstanceState) {
+        if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
                     .replace(R.id.container, com.google.cloud.android.speech.Camera2VideoFragment.newInstance())
                     .commit();
