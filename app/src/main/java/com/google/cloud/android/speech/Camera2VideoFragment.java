@@ -60,7 +60,10 @@ import android.widget.Toast;
 
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -86,6 +89,8 @@ public class Camera2VideoFragment extends Fragment
     private static final String TAG = "Camera2VideoFragment";
     private static final int REQUEST_VIDEO_PERMISSIONS = 1;
     private static final String FRAGMENT_DIALOG = "dialog";
+
+    private SpeechService mSpeechService;
 
     private static final String[] VIDEO_PERMISSIONS = {
             Manifest.permission.CAMERA,
@@ -354,8 +359,7 @@ public class Camera2VideoFragment extends Fragment
                 Activity activity = getActivity();
 
                 SharedPreferences sharedPreferences= getContext().getSharedPreferences(speechName, MODE_PRIVATE);
-//                SpeechService.recognizeInputStream(originalAudio);
-
+                
                 //update the currVideoNum
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("videoFilePath", getVideoFilePath(getContext()));

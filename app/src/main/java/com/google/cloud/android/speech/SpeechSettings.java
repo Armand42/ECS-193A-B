@@ -7,12 +7,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Switch;
 
 public class SpeechSettings extends AppCompatActivity {
     String filePath;
     String speechName;
     Switch videoPlayback;
+    EditText speechTime;
+    long speechLengthMs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,11 +33,19 @@ public class SpeechSettings extends AppCompatActivity {
 
         speechName = intent.getStringExtra("speechName");
 
-        this.setTitle("Speech Settings");
-
+        /* Get views */
         videoPlayback = (Switch) findViewById(R.id.videoPlaybackSwitch);
+        speechTime = (EditText) findViewById(R.id.speechTime);
+
+        /* Get shared preferences */
         SharedPreferences sharedPreferences = getSharedPreferences(speechName,MODE_PRIVATE);
+        // Get speech length from shared prefs (default value of 10 minutes)
+        speechLengthMs = sharedPreferences.getLong("timerMilliseconds", 600000);
+        // Set speechLength editText to be this value (in minutes = /60000)
+        speechTime.setText(Long.toString(speechLengthMs/60000));
+
         videoPlayback.setChecked(sharedPreferences.getBoolean("videoPlayback", false));
+        this.setTitle("Speech Settings");
     }
 
     public void addToSharedPreferences() {
@@ -42,6 +53,9 @@ public class SpeechSettings extends AppCompatActivity {
         SharedPreferences sharedPref = getSharedPreferences(speechName, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean("videoPlayback", videoPlayback.isChecked());
+        EditText maxTimerText = (EditText) findViewById(R.id.speechTime);
+        long seconds = Long.parseLong(maxTimerText.getText().toString());
+        editor.putLong("timerMilliseconds", seconds * 60000);
         editor.commit();
     }
 

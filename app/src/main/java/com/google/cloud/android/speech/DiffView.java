@@ -25,13 +25,11 @@ public class DiffView extends AppCompatActivity {
 
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setTitle("New speech");
+        this.setTitle("Diff View");
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
-        this.setTitle("Speeches");
         // Make script viewable
         //CREATE the shared preference file and get necessary values
         SharedPreferences sharedPreferences= getSharedPreferences(intent.getStringExtra("speechName"), MODE_PRIVATE);
