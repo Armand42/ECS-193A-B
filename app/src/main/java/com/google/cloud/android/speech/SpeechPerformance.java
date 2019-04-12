@@ -6,9 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.Manifest;
 import android.content.ComponentName;
-import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
@@ -20,7 +18,6 @@ import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedExceptio
 
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -50,7 +47,7 @@ public class SpeechPerformance extends BaseActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
 
         final File dir = getApplicationContext().getDir(speechName, MODE_PRIVATE);
-        SPEECH_SCRIPT_PATH = sharedPreferences.getString("filepath", null) + "apiResult";
+        SPEECH_SCRIPT_PATH = dir.getAbsolutePath() + "/" + speechName + "apiResult";
         videoPlayback = sharedPreferences.getBoolean("videoPlayback", false);
         Log.d("SPEECH_SCRIPT_PATH", SPEECH_SCRIPT_PATH);
 
@@ -206,16 +203,11 @@ public class SpeechPerformance extends BaseActivity {
         SharedPreferences sharedPref = getSharedPreferences(speechName, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("apiResult", SPEECH_SCRIPT_PATH);
-//        editor.putString("apiResult", apiResultText);
 
         editor.commit();
     }
 
-
-
-
     private SpeechService mSpeechService;
-
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -267,7 +259,6 @@ public class SpeechPerformance extends BaseActivity {
     public void pressedButton(View view) throws FileNotFoundException {
         File file = new File(AUDIO_FILE_PATH);
         Path path = get(AUDIO_FILE_PATH);
-//        InputStream input = new Input
         InputStream fin = null;
         try {
             fin = newInputStream(path);
@@ -297,6 +288,4 @@ public class SpeechPerformance extends BaseActivity {
                         });
                 }
             };
-
-
 }

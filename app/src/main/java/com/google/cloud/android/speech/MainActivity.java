@@ -133,8 +133,8 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
             }
         });
 
-        SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + speechName + "apiResult ";
-
+        final File dir = getApplicationContext().getDir(speechName, MODE_PRIVATE);
+        SPEECH_SCRIPT_PATH = dir.getAbsolutePath() + "/" + speechName + "apiResult";
 
 
         try {
