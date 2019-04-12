@@ -39,6 +39,7 @@
         android:layout_width="153dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="80dp"
+        android:onClick="goToSpeechPerformance"
         android:text="EXIT"
         app:layout_constraintBottom_toTopOf="@+id/scriptBodyWrapper"
         app:layout_constraintEnd_toEndOf="@+id/startButton"
