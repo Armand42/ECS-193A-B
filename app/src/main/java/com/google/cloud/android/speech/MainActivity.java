@@ -37,6 +37,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -72,6 +73,7 @@ public class MainActivity extends AppCompatActivity
 
     private SpeechService mSpeechService;
 
+    private SharedPreferences sharedPreferences;
     private VoiceRecorder mVoiceRecorder;
     private final VoiceRecorder.Callback mVoiceCallback = new VoiceRecorder.Callback() {
 
@@ -120,7 +122,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Intent intent = getIntent();
         speechName = intent.getStringExtra("speechName");
-        SharedPreferences sharedPreferences = getSharedPreferences(speechName,MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(speechName,MODE_PRIVATE);
         filePath = sharedPreferences.getString("filepath", "error");
 
 //        countdownText = findViewById(R.id.countdown_text);
@@ -185,8 +187,6 @@ public class MainActivity extends AppCompatActivity
     public void goToSpeechPerformance(View view) {
 //        String speech = getFilesDir() + File.separator + speechName;
         Intent intent = new Intent(this, SpeechPerformance.class);
-        intent.putExtra("apiResult", SPEECH_SCRIPT_PATH);
-        intent.putExtra("filePath", filePath);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
 
@@ -246,17 +246,6 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_file:
-                mSpeechService.recognizeInputStream(getResources().openRawResource(R.raw.audio));
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     private void startVoiceRecorder() {
         if (mVoiceRecorder != null) {
             mVoiceRecorder.stop();
@@ -311,6 +300,8 @@ public class MainActivity extends AppCompatActivity
 
 
     private void appendToFile(String speechScriptPath, String apiResultText)throws IOException {
+        addToSharedPreferences(apiResultText);
+        Log.d("AUDIO ONLY", "APPENDING TO FILE");
         File file = new File(speechScriptPath);
 
         //This point and below is responsible for the write operation
@@ -328,7 +319,6 @@ public class MainActivity extends AppCompatActivity
         }
 
     }
-
     @Override
     public void onFragmentInteraction(Uri uri) {
         //you can leave it empty
@@ -343,5 +333,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onTimerStop(Long millisecondsLeft) {
 
+    }
+    public void addToSharedPreferences(String apiResultText) {
+
+        //CREATE the shared preference file and add necessary values
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("apiResult", SPEECH_SCRIPT_PATH);
+//        editor.putString("apiResult", apiResultText);
+
+        editor.commit();
     }
 }
