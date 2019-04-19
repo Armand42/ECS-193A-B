@@ -2,14 +2,24 @@ package com.google.cloud.android.speech;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.method.ScrollingMovementMethod;
+import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.LinkedList;
+
+import static com.google.cloud.android.speech.diff_match_patch.Operation.DELETE;
+import static com.google.cloud.android.speech.diff_match_patch.Operation.EQUAL;
+import static com.google.cloud.android.speech.diff_match_patch.Operation.INSERT;
 
 public class DiffView extends AppCompatActivity {
 
@@ -49,6 +59,63 @@ public class DiffView extends AppCompatActivity {
 
     // Display speech in playback
     private void setScriptText() {
+
+        // New diff object
+
+        diff_match_patch dmp = new diff_match_patch();
+        dmp.Diff_Timeout = 0;
+
+        int currPos1 = 0, currPos2 = 0, templength = 0;
+        int lastSpace1 =0, lastSpace2 =0, nextSpace1 = 0, nextSpace2=0;
+        diff_match_patch.Operation prevOperation = EQUAL;
+
+
+        LinkedList<diff_match_patch.Diff> me = dmp.diff_main(scriptText, speechToText, false);
+        // PRINT OUT ALL CONTENT FROM STRING
+        SpannableString script = new SpannableString(scriptText);
+        SpannableString speech = new SpannableString(speechToText);
+
+        for(diff_match_patch.Diff temp: me)
+        {
+            switch(temp.operation)
+            {
+                case EQUAL:
+//                    if (prevOperation == DELETE)
+//                    {
+//                        String temporary = scriptText.substring(currPos1);
+//                        int space = (temporary.indexOf(" ") == -1) ? currPos1 + temp.text.length()  : scriptText.indexOf(' ', currPos1);
+//                        script.setSpan(new ForegroundColorSpan(Color.RED), currPos1, space, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+//                    }
+//
+//                    if(prevOperation == INSERT) {
+//                        String temporary = speechToText.substring(currPos2);
+//                        int space = (temporary.indexOf(" ") == -1) ? currPos2 + temp.text.length()  : speechToText.indexOf(' ', currPos2);
+//                        speech.setSpan(new ForegroundColorSpan(Color.RED), currPos2, space, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+//
+//                    }
+
+                    currPos1 += temp.text.length();
+                    currPos2 += temp.text.length();
+                    lastSpace1 = (scriptText.lastIndexOf(' ',currPos1)==-1) ? lastSpace1 : scriptText.lastIndexOf(' ',currPos1) ;
+                    lastSpace2 = (speechToText.lastIndexOf(' ',currPos2)==-1) ? lastSpace2 : speechToText.lastIndexOf(' ',currPos2);
+                    prevOperation = EQUAL;
+                    break;
+                case INSERT://for 2
+                    templength = temp.text.length();
+                    speech.setSpan(new ForegroundColorSpan(Color.RED), lastSpace2, currPos2+templength, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                    currPos2 += templength;
+                    prevOperation = INSERT;
+
+                    break;
+                case DELETE: //for 1
+                    templength = temp.text.length();
+                    script.setSpan(new ForegroundColorSpan(Color.RED), lastSpace1, currPos1+templength, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                    currPos1 += templength;
+                    prevOperation = DELETE;
+                    break;
+            }
+        }
+
         // Get text body
         TextView scriptBody = (TextView) findViewById(R.id.scriptBody);
 
@@ -56,12 +123,12 @@ public class DiffView extends AppCompatActivity {
         scriptBody.setMovementMethod(new ScrollingMovementMethod());
 
         // Set text of scriptBody to be what we read from the file
-        scriptBody.setText(scriptText);
+        scriptBody.setText(script);
 
         TextView speechToTextBody = (TextView) findViewById(R.id.speechToTextBody);
 
         speechToTextBody.setMovementMethod(new ScrollingMovementMethod());
 
-        speechToTextBody.setText(speechToText);
+        speechToTextBody.setText(speech);
     }
 }
