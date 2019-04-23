@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import static android.content.Context.MODE_PRIVATE;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,6 +32,8 @@ public class TimerFragment extends Fragment {
     private long timeLeftInMilliseconds; // 10 mins
     private long totalSpeechLengthMs;
     private boolean timerRunning;
+
+    private IMainActivity mIMainActivity;
 
     OnTimerStopListener callback;
 
@@ -55,10 +59,11 @@ public class TimerFragment extends Fragment {
      * @return A new instance of fragment TimerFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TimerFragment newInstance(Long timeLeftMs) {
+    public static TimerFragment newInstance(Long timeLeftMs, String speechName) {
         TimerFragment fragment = new TimerFragment();
         Bundle args = new Bundle();
         args.putLong("timeLeftMs", timeLeftMs);
+        args.putString("speechName", speechName);
         fragment.setArguments(args);
         return fragment;
     }
@@ -83,14 +88,6 @@ public class TimerFragment extends Fragment {
         Bundle bundle = getArguments();
         timeLeftInMilliseconds = bundle.getLong("timeLeftMs");
         totalSpeechLengthMs = bundle.getLong("timeLeftMs");
-//        countdownButton = rootView.findViewById(R.id.countdown_button);
-//
-//        countdownButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                startStop();
-//            }
-//        });
 
         // Return the inflated layout for this fragment
         return rootView;
@@ -113,6 +110,10 @@ public class TimerFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
+        // Get the context and instantiate interface
+        mIMainActivity = (IMainActivity) getActivity();
+
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -155,7 +156,9 @@ public class TimerFragment extends Fragment {
             @Override
             public void onTick(long millisUntilFinished) {
                 timeLeftInMilliseconds = millisUntilFinished;
-                updateTimer();
+                if ((totalSpeechLengthMs - millisUntilFinished) %1000 == 0) {
+                    updateTimer();
+                }
             }
 
             @Override
@@ -171,7 +174,7 @@ public class TimerFragment extends Fragment {
     public void stopTimer() {
         countDownTimer.cancel();
         timerRunning = false;
-        callback.onTimerStop(totalSpeechLengthMs - timeLeftInMilliseconds);
+        mIMainActivity.stopButtonPressed(totalSpeechLengthMs - timeLeftInMilliseconds);
     }
 
     public void updateTimer() {

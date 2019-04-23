@@ -12,6 +12,8 @@ import android.widget.TextView;
 import java.io.IOException;
 import android.content.SharedPreferences;
 
+import org.w3c.dom.Text;
+
 import static com.google.cloud.android.speech.FileService.readFromFile;
 
 public class SpeechPerformance extends BaseActivity {
@@ -23,12 +25,22 @@ public class SpeechPerformance extends BaseActivity {
         setContentView(R.layout.activity_speech_performance);
         Intent intent = getIntent();
         speechName = intent.getStringExtra("speechName");
+
+        TextView speechTime = (TextView) findViewById(R.id.speechTime);
+
         SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
+
+        // Set speech time textview to the elapsed time from this speech
+        long timeElapsed = sharedPreferences.getLong("timeElapsed", 0);
+        int minutes = (int) timeElapsed / 60000;
+        int seconds = (int) timeElapsed % 60000 / 1000;
+        speechTime.setText(String.format("Speech time: %02d:%02d", minutes, seconds));
         if (speechName != null) {
             String scriptText = null;
             try {
                 Log.d("FILEPATH:", sharedPreferences.getString("filepath",null));
                 scriptText = readFromFile(sharedPreferences.getString("filepath",null));
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

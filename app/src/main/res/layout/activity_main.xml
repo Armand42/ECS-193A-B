@@ -22,27 +22,51 @@
     android:layout_height="match_parent"
     tools:context="com.google.cloud.android.speech.MainActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        style="@style/HeaderBar"
+        android:layout_width="match_parent"
+        android:layout_height="61dp"
+        android:layout_marginBottom="8dp"
+        android:elevation="4dp"
+
+        app:popupTheme="@style/ActionBarPopupThemeOverlay"
+        app:theme="@style/ActionBarThemeOverlay" />
+
     <Button
         android:id="@+id/startButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="1dp"
-        android:text="START RECORDING"
-        app:layout_constraintBottom_toTopOf="@+id/stopButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/round_button"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="START"
+        android:textColor="#fff"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.601"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.966" />
 
     <Button
         android:id="@+id/stopButton"
-        android:layout_width="149dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="80dp"
-        android:text="EXIT"
-        app:layout_constraintBottom_toTopOf="@+id/scriptBodyWrapper"
-        app:layout_constraintEnd_toEndOf="@+id/startButton"
-        app:layout_constraintTop_toBottomOf="@+id/startButton" />
+        android:layout_width="48dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:background="@color/cardview_dark_background"
+        android:text="STOP"
+        android:textColor="@color/cardview_light_background"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.396"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.978" />
 
 
     <ScrollView
@@ -68,8 +92,14 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/timer_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/cardview_light_background"
+        android:layout_height="62dp"
+        android:background="@color/cardview_shadow_end_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.091"
         tools:context="com.google.cloud.android.speech.Timer" />
 
 </android.support.constraint.ConstraintLayout>

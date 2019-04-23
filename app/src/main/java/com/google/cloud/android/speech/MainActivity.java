@@ -56,7 +56,7 @@ import java.util.TimerTask;
 public class MainActivity extends AppCompatActivity
         implements  MessageDialogFragment.Listener,
                     TimerFragment.OnFragmentInteractionListener,
-                    TimerFragment.OnTimerStopListener{
+                    IMainActivity{
 
     TimerFragment timerFragment;
 
@@ -123,9 +123,14 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences sharedPreferences = getSharedPreferences(speechName,MODE_PRIVATE);
         filePath = sharedPreferences.getString("filepath", "error");
 
-//        countdownText = findViewById(R.id.countdown_text);
-
         Long timeLeftInMilliseconds = sharedPreferences.getLong("timerMilliseconds", 600000);
+
+        // Set toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setTitle("Practice: " + speechName);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         final Button startButton = (Button) findViewById(R.id.startButton);
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -135,6 +140,7 @@ public class MainActivity extends AppCompatActivity
                 // Start timer
                 timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
                 timerFragment.startTimer();
+                startButton.setVisibility(View.GONE);
 
                 startVoiceRecorder();
             }
@@ -145,10 +151,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v) {
                 // Code here executes on main thread after user presses button
                 stopVoiceRecorder();
-                // Save elapsed time and send to how did I do activity
-
-
-                goToSpeechPerformance(getCurrentFocus());
+                timerFragment.stopTimer();
             }
         });
 
@@ -156,6 +159,7 @@ public class MainActivity extends AppCompatActivity
 
         try {
             scriptText = FileService.readFromFile(filePath);
+            System.out.print("SCRIPT TEXT: " + scriptText);
             setScriptText();
         } catch (IOException e) {
             e.printStackTrace();
@@ -166,7 +170,7 @@ public class MainActivity extends AppCompatActivity
 
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .replace(R.id.timer_container, com.google.cloud.android.speech.TimerFragment.newInstance(timeLeftInMilliseconds))
+                    .replace(R.id.timer_container, com.google.cloud.android.speech.TimerFragment.newInstance(timeLeftInMilliseconds, speechName))
                     .commit();
         }
 
@@ -189,7 +193,6 @@ public class MainActivity extends AppCompatActivity
         intent.putExtra("filePath", filePath);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
-
     }
 
     @Override
@@ -335,13 +338,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onAttachFragment(Fragment fragment) {
-        // TODO: Set instanceof check to make generic
-        timerFragment.setOnTimerStopListener(this);
-    }
-
-    @Override
-    public void onTimerStop(Long millisecondsLeft) {
-
+    public void stopButtonPressed(Long speechTimeMs) {
+        System.out.println("SPEECH TIME PLS: " + speechTimeMs);
+        // Set time elapsed in shared prefs
+        SharedPreferences sharedPreferences = this.getSharedPreferences(speechName, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putLong("timeElapsed", speechTimeMs);
+        editor.commit();
+        goToSpeechPerformance(getCurrentFocus());
     }
 }
