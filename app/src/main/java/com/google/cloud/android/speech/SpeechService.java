@@ -351,7 +351,7 @@ public class SpeechService extends Service {
             // folder of this client app. You should never do this in your app. Instead, store
             // the file in your server and obtain an access token from there.
             // *******************
-            final InputStream stream = getResources().openRawResource(R.raw.credential);
+            final InputStream stream = getResources().openRawResource(R.raw.credentials);
             try {
                 final GoogleCredentials credentials = GoogleCredentials.fromStream(stream)
                         .createScoped(SCOPE);
