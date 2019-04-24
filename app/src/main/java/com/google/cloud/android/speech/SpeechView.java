@@ -94,6 +94,12 @@ public class SpeechView extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void goToDiffView(View view){
+        Intent intent = new Intent(this, DiffView.class);
+        intent.putExtra("speechName", speechName);
+        startActivity(intent);
+    }
+
     /* Delete all associated files */
     public void deleteSpeech(View view) {
         new AlertDialog.Builder(this)
@@ -159,5 +165,7 @@ public class SpeechView extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
 }

@@ -6,6 +6,23 @@
     android:layout_height="match_parent"
     tools:context=".SpeechView">
 
+    <Button
+        android:id="@+id/diffView"
+        android:layout_width="276dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:onClick="goToDiffView"
+        android:text="@string/diff_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.542" />
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
         style="@style/HeaderBar"

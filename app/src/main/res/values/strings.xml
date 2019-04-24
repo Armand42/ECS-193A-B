@@ -49,5 +49,6 @@
     <string name="to_speech_view_button">View Speech</string>
     <string name="cancel_button">Cancel</string>
     <string name="new_speech">Add a new speech</string>
+    <string name="diff_view">Diff View</string>
 
 </resources>
