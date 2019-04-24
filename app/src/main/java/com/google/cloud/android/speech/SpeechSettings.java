@@ -14,6 +14,7 @@ public class SpeechSettings extends AppCompatActivity {
     String filePath;
     String speechName;
     Switch videoPlayback;
+    Switch displaySpeech; // display speech while recording
     EditText speechTime;
     long speechLengthMs;
 
@@ -35,6 +36,8 @@ public class SpeechSettings extends AppCompatActivity {
 
         /* Get views */
         videoPlayback = (Switch) findViewById(R.id.videoPlaybackSwitch);
+        displaySpeech = (Switch) findViewById(R.id.displaySpeechSwitch);
+
         speechTime = (EditText) findViewById(R.id.speechTime);
 
         /* Get shared preferences */
@@ -45,6 +48,8 @@ public class SpeechSettings extends AppCompatActivity {
         speechTime.setText(Long.toString(speechLengthMs/60000));
 
         videoPlayback.setChecked(sharedPreferences.getBoolean("videoPlayback", false));
+        displaySpeech.setChecked(sharedPreferences.getBoolean("displaySpeech", false));
+
         this.setTitle("Speech Settings");
     }
 
@@ -53,6 +58,8 @@ public class SpeechSettings extends AppCompatActivity {
         SharedPreferences sharedPref = getSharedPreferences(speechName, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean("videoPlayback", videoPlayback.isChecked());
+        editor.putBoolean("displaySpeech", displaySpeech.isChecked());
+
         EditText maxTimerText = (EditText) findViewById(R.id.speechTime);
         long seconds = Long.parseLong(maxTimerText.getText().toString());
         editor.putLong("timerMilliseconds", seconds * 60000);

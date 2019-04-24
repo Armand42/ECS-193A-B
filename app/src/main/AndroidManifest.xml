@@ -89,6 +89,34 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".SpeechView" />
         </activity>
+        <activity
+            android:name=".MainActivity2"
+            android:exported="true"
+            android:parentActivityName=".SpeechView">
+
+        <!-- The meta-data tag is required if you support API level 15 and lower -->
+
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".SpeechView" />
+        </activity>
+
+
+        <activity android:name=".SpeechRecord2" />
+        <activity
+            android:name=".NewSpeech"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_new_speech"
+            android:parentActivityName=".MainMenu"
+            android:windowSoftInputMode="adjustPan">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainMenu" />
+        </activity>
+
+
+
+
     </application>
 
 </manifest>

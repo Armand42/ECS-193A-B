@@ -22,6 +22,7 @@ public class SpeechView extends AppCompatActivity {
     String speechName;
     String scriptText;
     Boolean videoPlaybackState;
+    Boolean viewScriptState;
 
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public class SpeechView extends AppCompatActivity {
 //        if(sharedPreferences.contains("filePath"))
         speechName = intent.getStringExtra("speechName");
         videoPlaybackState = sharedPreferences.getBoolean("videoPlayback", false);
+        viewScriptState = sharedPreferences.getBoolean("displaySpeech", false);
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setTitle(speechName);
@@ -57,12 +59,23 @@ public class SpeechView extends AppCompatActivity {
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
-
+    // SORT OF WORKS BOI NEED MORE VIEWS
     public void goToSpeechRecord(View view) {
         Intent intent;
-        if(videoPlaybackState) {
+        // If Video and Script
+        if(videoPlaybackState && viewScriptState) {
             intent = new Intent(this, SpeechRecord.class);
-        } else{
+        }
+        // If just video
+        else if (videoPlaybackState) {
+            intent = new Intent(this, SpeechRecord2.class);
+        }
+        // If just want the Audio
+        else if(viewScriptState) {
+            intent = new Intent(this, MainActivity2.class);
+        }
+        // If want Audio and Script
+        else{
             intent = new Intent(this, MainActivity.class);
         }
         intent.putExtra("speechName", speechName);
