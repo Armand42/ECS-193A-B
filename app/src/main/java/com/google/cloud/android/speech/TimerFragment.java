@@ -167,7 +167,6 @@ public class TimerFragment extends Fragment {
             }
         }.start();
 
-//        countdownButton.setText("PAUSE");
         timerRunning = true;
     }
 
