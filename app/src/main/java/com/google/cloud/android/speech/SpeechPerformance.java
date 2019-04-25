@@ -9,6 +9,7 @@ import android.view.View;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.widget.TextView;
 
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
@@ -45,6 +46,14 @@ public class SpeechPerformance extends BaseActivity {
         Intent intent = getIntent();
         speechName = intent.getStringExtra("speechName");
         SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
+
+        TextView speechTime = (TextView) findViewById(R.id.speechTime);
+
+        // Set speech time textview to the elapsed time from this speech
+        long timeElapsed = sharedPreferences.getLong("timeElapsed", 0);
+        int minutes = (int) timeElapsed / 60000;
+        int seconds = (int) timeElapsed % 60000 / 1000;
+        speechTime.setText(String.format("Speech time: %02d:%02d", minutes, seconds));
 
         final File dir = getApplicationContext().getDir(speechName, MODE_PRIVATE);
         SPEECH_SCRIPT_PATH = dir.getAbsolutePath() + "/" + speechName + "apiResult";
@@ -268,19 +277,19 @@ public class SpeechPerformance extends BaseActivity {
             new SpeechService.Listener() {
                 @Override
                 public void onSpeechRecognized(final String text, final boolean isFinal) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    appendToFile(SPEECH_SCRIPT_PATH, text);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                if (isFinal) {
-                                    apiResult = text;
-                                }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                appendToFile(SPEECH_SCRIPT_PATH, text);
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
-                        });
+                            if (isFinal) {
+                                apiResult = text;
+                            }
+                        }
+                    });
                 }
             };
 }

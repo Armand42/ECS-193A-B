@@ -60,20 +60,29 @@ public class DiffView extends AppCompatActivity {
     // Display speech in playback
     private void setScriptText() {
 
-        // New diff object
+        SpannableString script = new SpannableString(scriptText);
+        SpannableString speech = new SpannableString(speechToText);
 
+        // New diff object
         diff_match_patch dmp = new diff_match_patch();
         dmp.Diff_Timeout = 0;
 
         int currPos1 = 0, currPos2 = 0, templength = 0;
         int lastSpace1 =0, lastSpace2 =0, nextSpace1 = 0, nextSpace2=0;
         diff_match_patch.Operation prevOperation = EQUAL;
+        LinkedList<diff_match_patch.Diff> me;
+        if(scriptText.length()>speechToText.length()*1.25)
+        {
+            //this assumes that the user always starts the speech from the beginning
+            me = dmp.diff_main(scriptText.substring(0,(int)(speechToText.length() * 1.125)).toLowerCase(), speechToText.toLowerCase(), false);
+            script.setSpan(new ForegroundColorSpan(Color.RED), (int)(speechToText.length() * 1.125), scriptText.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
-
-        LinkedList<diff_match_patch.Diff> me = dmp.diff_main(scriptText, speechToText, false);
+        }
+        else {
+            me = dmp.diff_main(scriptText.toLowerCase(), speechToText.toLowerCase(), false);
+        }
         // PRINT OUT ALL CONTENT FROM STRING
-        SpannableString script = new SpannableString(scriptText);
-        SpannableString speech = new SpannableString(speechToText);
+
 
         for(diff_match_patch.Diff temp: me)
         {
@@ -102,19 +111,27 @@ public class DiffView extends AppCompatActivity {
                     break;
                 case INSERT://for 2
                     templength = temp.text.length();
-                    speech.setSpan(new ForegroundColorSpan(Color.RED), lastSpace2, currPos2+templength, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                    speech.setSpan(new ForegroundColorSpan(Color.RED), currPos2, currPos2+templength, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                     currPos2 += templength;
                     prevOperation = INSERT;
 
                     break;
                 case DELETE: //for 1
                     templength = temp.text.length();
-                    script.setSpan(new ForegroundColorSpan(Color.RED), lastSpace1, currPos1+templength, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                    script.setSpan(new ForegroundColorSpan(Color.RED), currPos1, currPos1+templength, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                     currPos1 += templength;
                     prevOperation = DELETE;
                     break;
             }
         }
+
+        ignore(scriptText,script,',');
+        ignore(scriptText,script,'.');
+        ignore(scriptText,script,'!');
+        ignore(scriptText,script,'?');
+        ignore(scriptText,script,':');
+        ignore(scriptText,script,';');
+        ignore(scriptText,script,'-');
 
         // Get text body
         TextView scriptBody = (TextView) findViewById(R.id.scriptBody);
@@ -130,5 +147,16 @@ public class DiffView extends AppCompatActivity {
         speechToTextBody.setMovementMethod(new ScrollingMovementMethod());
 
         speechToTextBody.setText(speech);
+    }
+
+    void ignore(String text1, SpannableString string1, char c)
+    {
+        int index = 0;
+        while(text1.indexOf(c, index+1)>0)
+        {
+            index = text1.indexOf(c, index+1);
+            string1.setSpan(new ForegroundColorSpan(Color.DKGRAY), index, index+1,Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+        }
     }
 }
