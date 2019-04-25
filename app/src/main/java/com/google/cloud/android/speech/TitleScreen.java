@@ -22,4 +22,9 @@ public class TitleScreen extends AppCompatActivity {
         Intent intent = new Intent(this, NewSpeech.class);
         startActivity(intent);
     }
+
+    public void goToHowItWorks(View view) {
+        Intent intent = new Intent(this, HowItWorks.class);
+        startActivity(intent);
+    }
 }
