@@ -162,7 +162,8 @@ public class MainActivity2 extends AppCompatActivity
 
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .replace(R.id.timer_container, com.google.cloud.android.speech.TimerFragment.newInstance(timeLeftInMilliseconds))
+                    .replace(R.id.timer_container, com.google.cloud.android.speech.TimerFragment
+                            .newInstance(timeLeftInMilliseconds, speechName))
                     .commit();
         }
 
