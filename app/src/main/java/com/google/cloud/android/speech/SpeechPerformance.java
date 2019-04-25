@@ -1,11 +1,12 @@
 package com.google.cloud.android.speech;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+<<<<<<< HEAD
 import android.content.ComponentName;
 import android.content.ServiceConnection;
 import android.os.IBinder;
@@ -20,30 +21,28 @@ import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedExceptio
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+=======
+import android.widget.EditText;
+import android.widget.TextView;
+
+>>>>>>> timer
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
+import android.content.SharedPreferences;
 
-import static java.nio.file.Files.newInputStream;
-import static java.nio.file.Paths.get;
+import org.w3c.dom.Text;
 
+import static com.google.cloud.android.speech.FileService.readFromFile;
 
 public class SpeechPerformance extends BaseActivity {
     String speechName;
-    String apiResult;
-    String[] command;
-    Boolean videoPlayback;
-    FFmpeg ffmpeg;
-    private static String SPEECH_SCRIPT_PATH;
-    private static String VIDEO_FILE_PATH;
-    private static String AUDIO_FILE_PATH;
-    private static final String TAG = "MyActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_speech_performance);
         Intent intent = getIntent();
         speechName = intent.getStringExtra("speechName");
+<<<<<<< HEAD
         SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
 
         final File dir = getApplicationContext().getDir(speechName, MODE_PRIVATE);
@@ -52,100 +51,34 @@ public class SpeechPerformance extends BaseActivity {
         Log.d("SPEECH_SCRIPT_PATH", SPEECH_SCRIPT_PATH);
 
 
+=======
+>>>>>>> timer
 
-        if(videoPlayback) {
-            VIDEO_FILE_PATH = sharedPreferences.getString("videoFilePath", null);
+        TextView speechTime = (TextView) findViewById(R.id.speechTime);
 
-            AUDIO_FILE_PATH = dir.getAbsolutePath() + "/" + speechName + sharedPreferences.getInt("currVid", -1) + ".wav";
+        SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
 
-            if(VIDEO_FILE_PATH == null){
-                Log.d("VIDEO FILE PATH", "VIDEO PATH NULL");
-            }
-
+        // Set speech time textview to the elapsed time from this speech
+        long timeElapsed = sharedPreferences.getLong("timeElapsed", 0);
+        int minutes = (int) timeElapsed / 60000;
+        int seconds = (int) timeElapsed % 60000 / 1000;
+        speechTime.setText(String.format("Speech time: %02d:%02d", minutes, seconds));
+        if (speechName != null) {
+            String scriptText = null;
             try {
-                loadFfmpegLibrary();
-            } catch (FFmpegNotSupportedException e) {
+                Log.d("FILEPATH:", sharedPreferences.getString("filepath",null));
+                scriptText = readFromFile(sharedPreferences.getString("filepath",null));
+
+            } catch (IOException e) {
                 e.printStackTrace();
             }
+            if (scriptText != null) {
 
-            Log.i("VIDEO_FILE_PATH", VIDEO_FILE_PATH);
-            Log.i("AUDIO_FILE_PATH", AUDIO_FILE_PATH);
-
-//        command = new String[]{"-i", VIDEO_FILE_PATH, "-vn", "-f", "s16le", "-acodec", "pcm_s16le" , AUDIO_FILE_PATH};
-            command = new String[]{"-i", VIDEO_FILE_PATH, AUDIO_FILE_PATH};
-            try {
-                executeFfmpegCommand(command);
-            } catch (FFmpegCommandAlreadyRunningException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-
-    public void loadFfmpegLibrary() throws FFmpegNotSupportedException{
-        if(ffmpeg == null) {
-            ffmpeg = FFmpeg.getInstance(this);
-            try {
-                ffmpeg.loadBinary(new FFmpegLoadBinaryResponseHandler() {
-
-                    @Override
-                    public void onStart() {
-                    }
-
-                    @Override
-                    public void onFailure() {
-                        Log.e("FFMPEG", "library failed to load");
-                    }
-
-                    @Override
-                    public void onSuccess() {
-                        Log.e("FFMPEG", "library loaded successfully");
-                    }
-
-                    @Override
-                    public void onFinish() {
-                    }
-                });
-            } catch (FFmpegNotSupportedException e) {
-                // Handle if FFmpeg is not supported by device
+                TextView speechText = (TextView) findViewById(R.id.APIResultView);
+                speechText.setText(scriptText);
             }
         }
     }
-
-    public void executeFfmpegCommand(final String[] cmd) throws FFmpegCommandAlreadyRunningException{
-        ffmpeg.execute(cmd, new ExecuteBinaryResponseHandler() {
-            @Override
-            public void onSuccess(String s) {
-                Log.e("FFMPEG", "executed successfully" + s);
-                super.onSuccess(s);
-            }
-
-            @Override
-            public void onProgress(String s) {
-                Log.e("FFMPEG", "execute in progress" + s);
-                super.onProgress(s);
-            }
-
-            @Override
-            public void onFailure(String s) {
-                Log.e("FFMPEG", "execute failed" + s);
-                super.onFailure(s);
-            }
-
-            @Override
-            public void onStart() {
-                Log.e("FFMPEG", "execute started");
-                super.onStart();
-            }
-
-            @Override
-            public void onFinish() {
-                Log.e("FFMPEG", "execute finished");
-                super.onFinish();
-            }
-        });
-    }
-
     public void goToPlayBack(View view){
         Intent intent = new Intent(this, PlayBack_List.class);
         intent.putExtra("speechName", speechName);
@@ -158,7 +91,7 @@ public class SpeechPerformance extends BaseActivity {
         startActivity(intent);
     }
 
-    public void goToDiffView(View view) throws FileNotFoundException {
+    public void goToDiffView(View view){
         Intent intent = new Intent(this, DiffView.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
@@ -170,6 +103,7 @@ public class SpeechPerformance extends BaseActivity {
         getMenuInflater().inflate(R.menu.base_menu, menu);
         return true;
     }
+<<<<<<< HEAD
 
 
     private void appendToFile(String speechScriptPath, String apiResultText)throws IOException {
@@ -284,3 +218,6 @@ public class SpeechPerformance extends BaseActivity {
                 }
             };
 }
+=======
+}
+>>>>>>> timer

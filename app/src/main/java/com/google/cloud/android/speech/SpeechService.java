@@ -352,6 +352,7 @@ public class SpeechService extends Service {
             // the file in your server and obtain an access token from there.
             // *******************
             final InputStream stream = getResources().openRawResource(R.raw.credentials);
+            final InputStream stream = getResources().openRawResource(R.raw.credential);
             try {
                 final GoogleCredentials credentials = GoogleCredentials.fromStream(stream)
                         .createScoped(SCOPE);
