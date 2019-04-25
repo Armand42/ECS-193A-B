@@ -18,7 +18,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Speech"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Timer"></activity>
         <activity android:name=".HowItWorks">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -74,11 +73,6 @@
         <activity android:name=".MainMenu">
 
             <!-- android:theme="@style/AppTheme.Launcher"> -->
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".SpeechView"

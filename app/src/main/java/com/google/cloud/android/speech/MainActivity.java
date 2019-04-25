@@ -179,14 +179,10 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-<<<<<<< HEAD
         final File dir = getApplicationContext().getDir(speechName, MODE_PRIVATE);
-        SPEECH_SCRIPT_PATH = dir.getAbsolutePath() + "/" + speechName + "apiResult";
 
-=======
         // Get speech result from API
         SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + speechName + "apiResult ";
->>>>>>> timer
         try {
             scriptText = FileService.readFromFile(filePath);
 //            System.out.print("SCRIPT TEXT: " + scriptText);

@@ -3,8 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Timer">
     android:layout_height="match_parent">
 
     <TextView
@@ -17,16 +15,5 @@
         android:layout_marginEnd="8dp"
         android:textSize="30sp"
         tools:text="10:00" />
-
-    <!--<Button-->
-        <!--android:id="@+id/countdown_button"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:layout_marginBottom="264dp"-->
-        <!--android:background="@color/success"-->
-        <!--android:text="Start"-->
-        <!--android:textColor="@color/cardview_light_background" />-->
 
 </RelativeLayout>
