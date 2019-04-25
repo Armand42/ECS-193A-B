@@ -156,9 +156,7 @@ public class TimerFragment extends Fragment {
             @Override
             public void onTick(long millisUntilFinished) {
                 timeLeftInMilliseconds = millisUntilFinished;
-                if ((totalSpeechLengthMs - millisUntilFinished) %1000 == 0) {
-                    updateTimer();
-                }
+                updateTimer();
             }
 
             @Override
