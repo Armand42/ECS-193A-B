@@ -1,22 +1,5 @@
+
 package com.google.cloud.android.speech;
-
-/*
- * Copyright 2016 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-
 
 import android.Manifest;
 import android.content.ComponentName;
@@ -25,6 +8,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -59,7 +43,7 @@ import java.util.TimerTask;
 public class MainActivity2 extends AppCompatActivity
         implements  MessageDialogFragment.Listener,
         TimerFragment.OnFragmentInteractionListener,
-        TimerFragment.OnTimerStopListener{
+        IMainActivity{
 
     TimerFragment timerFragment;
 
@@ -69,7 +53,9 @@ public class MainActivity2 extends AppCompatActivity
 
     private String filePath;
     String speechName;
+    String scriptText;
 
+    boolean recording = false;
 
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 1;
 
@@ -123,65 +109,100 @@ public class MainActivity2 extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
         Intent intent = getIntent();
+
+        // Handle metadata
         speechName = intent.getStringExtra("speechName");
         sharedPreferences = getSharedPreferences(speechName,MODE_PRIVATE);
         filePath = sharedPreferences.getString("filepath", "error");
-
-//        countdownText = findViewById(R.id.countdown_text);
+        recording = false;
+        System.out.println("recording: " + recording);
 
         Long timeLeftInMilliseconds = sharedPreferences.getLong("timerMilliseconds", 600000);
 
+        // Set toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setTitle("Practice: " + speechName);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Set timer on layout
+        if (savedInstanceState == null) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.timer_container, com.google.cloud.android.speech.TimerFragment.newInstance(timeLeftInMilliseconds, speechName))
+                    .commit();
+        }
+
+        // Handle start button click
         final Button startButton = (Button) findViewById(R.id.startButton);
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Code here executes on main thread after user presses button
-
-                // Start timer
                 timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
-                timerFragment.startTimer();
 
-                startVoiceRecorder();
-            }
-        });
+                // Stop button behavior
+                if (startButton.getText() == "STOP") {
+                    // Stop timer
+                    timerFragment.stopTimer();
 
-        final Button stopButton = (Button) findViewById(R.id.stopButton);
-        stopButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Code here executes on main thread after user presses button
-                stopVoiceRecorder();
-                // Save elapsed time and send to how did I do activity
+                    // Stop listening
+                    stopVoiceRecorder();
+                    recording = false;
+                }
+                else {
+                    // Start timer
+                    timerFragment.startTimer();
 
+                    // Change UI elements
+                    startButton.setText("STOP");
+                    startButton.setBackgroundTintList(getResources().getColorStateList(R.color.cardview_dark_background));
 
-                goToSpeechPerformance(getCurrentFocus());
+                    // Start listening
+                    startVoiceRecorder();
+                    recording = true;
+                }
             }
         });
 
         final File dir = getApplicationContext().getDir(speechName, MODE_PRIVATE);
-        SPEECH_SCRIPT_PATH = dir.getAbsolutePath() + "/" + speechName + "apiResult";
 
-
-        if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.timer_container, com.google.cloud.android.speech.TimerFragment
-                            .newInstance(timeLeftInMilliseconds, speechName))
-                    .commit();
+        // Get speech result from API
+        SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + speechName + "apiResult ";
+        try {
+            scriptText = FileService.readFromFile(filePath);
+//            System.out.print("SCRIPT TEXT: " + scriptText);
+            //setScriptText();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast readToast = Toast.makeText(getApplicationContext(),
+                    e.toString(), Toast.LENGTH_SHORT);
+            readToast.show();
         }
 
     }
 
+    /*private void setScriptText() {
+        // Get text body from layout
+        TextView scriptBody = (TextView) findViewById(R.id.scriptBody);
+        // Make script scrollable
+        scriptBody.setMovementMethod(new ScrollingMovementMethod());
 
+        // Set text of scriptBody to be what we read from the file
+        scriptBody.setText(scriptText);
+    }*/
 
     public void goToSpeechPerformance(View view) {
 //        String speech = getFilesDir() + File.separator + speechName;
         Intent intent = new Intent(this, SpeechPerformance.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
+        recording = true;
 
         // Prepare Cloud Speech API
         bindService(new Intent(this, SpeechService.class), mServiceConnection, BIND_AUTO_CREATE);
@@ -312,14 +333,13 @@ public class MainActivity2 extends AppCompatActivity
     }
 
     @Override
-    public void onAttachFragment(Fragment fragment) {
-
-        timerFragment.setOnTimerStopListener(this);
-    }
-
-    @Override
-    public void onTimerStop(Long millisecondsLeft) {
-
+    public void stopButtonPressed(Long speechTimeMs) {
+        // Set time elapsed in shared prefs
+        SharedPreferences sharedPreferences = this.getSharedPreferences(speechName, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putLong("timeElapsed", speechTimeMs);
+        editor.commit();
+        goToSpeechPerformance(getCurrentFocus());
     }
     public void addToSharedPreferences(String apiResultText) {
 
