@@ -8,26 +8,30 @@
 
     <TextView
         android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="255dp"
+        android:layout_height="48dp"
         android:layout_marginStart="34dp"
         android:layout_marginTop="89dp"
         android:layout_marginEnd="232dp"
         android:layout_marginBottom="610dp"
         android:text="@string/speech_performance_display"
-        android:textSize="24sp"
+        android:textColor="@android:color/background_dark"
+        android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.072"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.562" />
 
     <Button
         android:id="@+id/button10"
-        android:layout_width="259dp"
+        android:layout_width="254dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="460dp"
         android:layout_marginEnd="8dp"
+        android:background="@drawable/border_button_dark"
         android:onClick="goToSpeechView"
         android:text="@string/to_speech_menu_button"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,12 +41,13 @@
 
     <Button
         android:id="@+id/button11"
-        android:layout_width="253dp"
+        android:layout_width="254dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:background="@drawable/border_button_dark"
         android:onClick="goToPlayBack"
         android:text="@string/view_past_recordings_button"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -58,6 +63,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:background="@drawable/border_button_dark"
         android:onClick="goToDiffView"
         android:text="Diff View"
         app:layout_constraintEnd_toEndOf="parent"
