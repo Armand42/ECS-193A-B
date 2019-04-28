@@ -24,6 +24,7 @@
         android:layout_height="52dp"
         android:layout_marginBottom="28dp"
         android:background="@color/success"
+        android:fontFamily="@font/raleway"
         android:onClick="saveFile"
         android:text="@string/save_button"
         android:textColor="@color/cardview_light_background"

@@ -31,4 +31,5 @@
     <color name="black_overlay">#66000000</color>
     <color name="success">#36C5B9</color>
     <color name="colorWarning">#A4033E</color>
+    <color name="transparent">#00FFFFFF</color>
 </resources>
