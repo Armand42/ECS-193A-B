@@ -71,16 +71,16 @@ public class DiffView extends AppCompatActivity {
         int lastSpace1 =0, lastSpace2 =0, nextSpace1 = 0, nextSpace2=0;
         diff_match_patch.Operation prevOperation = EQUAL;
         LinkedList<diff_match_patch.Diff> me;
-        if(scriptText.length()>speechToText.length()*1.25)
-        {
-            //this assumes that the user always starts the speech from the beginning
-            me = dmp.diff_main(scriptText.substring(0,(int)(speechToText.length() * 1.125)).toLowerCase(), speechToText.toLowerCase(), false);
-            script.setSpan(new ForegroundColorSpan(Color.RED), (int)(speechToText.length() * 1.125), scriptText.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-
-        }
-        else {
-            me = dmp.diff_main(scriptText.toLowerCase(), speechToText.toLowerCase(), false);
-        }
+//        if(scriptText.length()>speechToText.length()*1.25)
+//        {
+//            //this assumes that the user always starts the speech from the beginning
+//            me = dmp.diff_main(scriptText.substring(0,(int)(speechToText.length() * 1.125)).toLowerCase(), speechToText.toLowerCase(), false);
+//            script.setSpan(new ForegroundColorSpan(Color.RED), (int)(speechToText.length() * 1.125), scriptText.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+//
+//        }
+//        else {
+            me = dmp.diff_lineMode(scriptText.replaceAll("[^a-zA-z]", " ").toLowerCase(), speechToText.toLowerCase());
+//        }
         // PRINT OUT ALL CONTENT FROM STRING
 
 

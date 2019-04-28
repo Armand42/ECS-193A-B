@@ -23,9 +23,9 @@ import java.net.URLEncoder;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 /*
  * Functions for diff, match and patch.
+
  * Computes the difference between two texts to create a patch.
  * Applies the patch onto another text, allowing for errors.
  *
@@ -342,6 +342,18 @@ public class diff_match_patch {
         return diffs;
     }
 
+
+    public LinkedList<Diff> diff_lineMode(String text1, String text2)  {
+        diff_match_patch dmp = new diff_match_patch();
+        LinesToCharsResult a = dmp.diff_linesToWords(text1, text2);
+        String lineText1 = a.chars1;
+        String lineText2 = a.chars2;
+        List<String> lineArray = a.lineArray;
+        LinkedList<Diff> diffs = dmp.diff_main(lineText1, lineText2, false);
+        dmp.diff_charsToLines(diffs, lineArray);
+        return diffs;
+    }
+
     /**
      * Find the 'middle snake' of a diff, split the problem in two
      * and return the recursively constructed diff.
@@ -514,15 +526,22 @@ public class diff_match_patch {
         return new LinesToCharsResult(chars1, chars2, lineArray);
     }
 
-    /**
-     * Split a text into a list of strings.  Reduce the texts to a string of
-     * hashes where each Unicode character represents one line.
-     * @param text String to encode.
-     * @param lineArray List of unique strings.
-     * @param lineHash Map of strings to indices.
-     * @param maxLines Maximum length of lineArray.
-     * @return Encoded string.
-     */
+
+    protected LinesToCharsResult diff_linesToWords(String text1, String text2) {
+        List<String> lineArray = new ArrayList<String>();
+        Map<String, Integer> lineHash = new HashMap<String, Integer>();
+        // e.g. linearray[4] == "Hello\n"
+        // e.g. linehash.get("Hello\n") == 4
+
+        // "\x00" is a valid character, but various debuggers don't like it.
+        // So we'll insert a junk entry to avoid generating a null character.
+        lineArray.add("");
+
+        // Allocate 2/3rds of the space for text1, the rest for text2.
+        String chars1 = diff_linesToCharsMunge(text1, lineArray, lineHash, 40000);
+        String chars2 = diff_linesToCharsMunge(text2, lineArray, lineHash, 65535);
+        return new LinesToCharsResult(chars1, chars2, lineArray);
+    }
     private String diff_linesToCharsMunge(String text, List<String> lineArray,
                                           Map<String, Integer> lineHash, int maxLines) {
         int lineStart = 0;
@@ -533,7 +552,7 @@ public class diff_match_patch {
         // text.split('\n') would would temporarily double our memory footprint.
         // Modifying text would create many large strings to garbage collect.
         while (lineEnd < text.length() - 1) {
-            lineEnd = text.indexOf('\n', lineStart);
+            lineEnd = text.indexOf(' ', lineStart);
             if (lineEnd == -1) {
                 lineEnd = text.length() - 1;
             }
