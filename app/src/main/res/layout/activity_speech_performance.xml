@@ -9,80 +9,65 @@
     <TextView
         android:id="@+id/textView3"
         android:layout_width="255dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="34dp"
-        android:layout_marginTop="89dp"
-        android:layout_marginEnd="232dp"
-        android:layout_marginBottom="610dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="80dp"
         android:text="@string/speech_performance_display"
         android:textColor="@android:color/background_dark"
         android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.072"
+        app:layout_constraintBottom_toTopOf="@+id/speechTime"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.562" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/button10"
         android:layout_width="254dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="460dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="12dp"
         android:background="@drawable/border_button_dark"
         android:onClick="goToSpeechView"
         android:text="@string/to_speech_menu_button"
+        app:layout_constraintBottom_toTopOf="@+id/diffView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/speechTime" />
 
 
     <Button
         android:id="@+id/button11"
         android:layout_width="254dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="105dp"
         android:background="@drawable/border_button_dark"
         android:onClick="goToPlayBack"
         android:text="@string/view_past_recordings_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button12"
-        app:layout_constraintVertical_bias="0.058" />
-
-    <Button
-        android:id="@+id/button12"
-        android:layout_width="254dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/border_button_dark"
-        android:onClick="goToDiffView"
-        android:text="Diff View"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button10" />
+        app:layout_constraintTop_toBottomOf="@+id/diffView" />
 
     <TextView
         android:id="@+id/speechTime"
         android:layout_width="143dp"
-        android:layout_height="24dp"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="308dp"
         android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/button10"
+        app:layout_constraintStart_toStartOf="@+id/textView3"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+    <Button
+        android:id="@+id/diffView"
+        android:layout_width="254dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/border_button_dark"
+        android:onClick="pressedButton"
+        android:text="Diff View"
+        app:layout_constraintBottom_toTopOf="@+id/button11"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.103"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.173" />
+        app:layout_constraintTop_toBottomOf="@+id/button10" />
+
 </android.support.constraint.ConstraintLayout>

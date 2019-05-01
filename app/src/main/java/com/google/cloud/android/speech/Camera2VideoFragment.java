@@ -22,9 +22,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Matrix;
@@ -42,6 +44,7 @@ import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.ActivityCompat;
@@ -62,8 +65,10 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -73,14 +78,27 @@ import java.util.concurrent.TimeUnit;
 import android.content.SharedPreferences;
 
 
+import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
+import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
+import com.github.hiteshsondhi88.libffmpeg.FFmpegLoadBinaryResponseHandler;
+import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
+import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
 
 import static android.content.Context.MODE_PRIVATE;
+import static java.nio.file.Files.newInputStream;
+import static java.nio.file.Paths.get;
 
 public class Camera2VideoFragment extends Fragment
         implements View.OnClickListener, FragmentCompat.OnRequestPermissionsResultCallback {
 
     String scriptText;
     String speechName;
+    String[] command;
+    FFmpeg ffmpeg;
+    SharedPreferences sharedPref;
+    private static String VIDEO_FILE_PATH;
+    private static String AUDIO_FILE_PATH;
+
     private static final int SENSOR_ORIENTATION_DEFAULT_DEGREES = 90;
     private static final int SENSOR_ORIENTATION_INVERSE_DEGREES = 270;
     private static final SparseIntArray DEFAULT_ORIENTATIONS = new SparseIntArray();
@@ -122,6 +140,8 @@ public class Camera2VideoFragment extends Fragment
     private Button mButtonVideo;
     private Button mPlayBackVideo;
 
+
+    private Button seeHowYouDidButton;
     /**
      * A reference to the opened {@link android.hardware.camera2.CameraDevice}.
      */
@@ -309,7 +329,7 @@ public class Camera2VideoFragment extends Fragment
         mPlayBackVideo.setOnClickListener(this);
         mIsFirstRecording=true;
         speechName = getActivity().getIntent().getStringExtra("speechName");
-        SharedPreferences sharedPref = getActivity().getSharedPreferences(speechName, MODE_PRIVATE);
+        sharedPref = getActivity().getSharedPreferences(speechName, MODE_PRIVATE);
         try {
             scriptText = FileService.readFromFile(sharedPref.getString("filepath",null));
         } catch (IOException e) {
@@ -359,16 +379,15 @@ public class Camera2VideoFragment extends Fragment
                 Activity activity = getActivity();
 
                 SharedPreferences sharedPreferences= getContext().getSharedPreferences(speechName, MODE_PRIVATE);
-                
+                VIDEO_FILE_PATH = getVideoFilePath(getContext());
                 //update the currVideoNum
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("videoFilePath", getVideoFilePath(getContext()));
+                editor.putString("videoFilePath", VIDEO_FILE_PATH);
                 editor.putInt("currVid",1 + sharedPreferences.getInt("currVid",-1));
                 editor.apply();
 
-                Intent intent = new Intent(activity, SpeechPerformance.class);
-                intent.putExtra("speechName", speechName);
-                startActivity(intent);
+                extractAudioFromVideo();
+
                 break;
             }
             case R.id.restart:{
@@ -757,12 +776,12 @@ public class Camera2VideoFragment extends Fragment
 
 
 
-        Activity activity = getActivity();
-        if (null != activity) {
-            Toast.makeText(activity, "Video saved: " + mNextVideoAbsolutePath,
-                    Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "Video saved: " + mNextVideoAbsolutePath);
-        }
+//        Activity activity = getActivity();
+//        if (null != activity) {
+//            Toast.makeText(activity, "Video saved: " + mNextVideoAbsolutePath,
+//                    Toast.LENGTH_SHORT).show();
+//            Log.d(TAG, "Video saved: " + mNextVideoAbsolutePath);
+//        }
         mNextVideoAbsolutePath = null;
         startPreview();
     }
@@ -849,6 +868,102 @@ public class Camera2VideoFragment extends Fragment
 
     }
 
+
+    private void extractAudioFromVideo(){
+            File dir = getContext().getDir(speechName, MODE_PRIVATE);
+            AUDIO_FILE_PATH = dir.getAbsolutePath() + "/" + speechName + sharedPref.getInt("currVid", -1) + ".wav";
+
+            if(VIDEO_FILE_PATH == null){
+                Log.d("VIDEO FILE PATH", "VIDEO PATH NULL");
+            }
+
+            try {
+                loadFfmpegLibrary();
+            } catch (FFmpegNotSupportedException e) {
+                e.printStackTrace();
+            }
+
+            Log.i("VIDEO_FILE_PATH", VIDEO_FILE_PATH);
+            Log.i("AUDIO_FILE_PATH", AUDIO_FILE_PATH);
+
+//        command = new String[]{"-i", VIDEO_FILE_PATH, "-vn", "-f", "s16le", "-acodec", "pcm_s16le" , AUDIO_FILE_PATH};
+            command = new String[]{"-i", VIDEO_FILE_PATH, AUDIO_FILE_PATH};
+            try {
+                executeFfmpegCommand(command);
+            } catch (FFmpegCommandAlreadyRunningException e) {
+                e.printStackTrace();
+            }
+        }
+
+    public void loadFfmpegLibrary() throws FFmpegNotSupportedException{
+        if(ffmpeg == null) {
+            ffmpeg = FFmpeg.getInstance(getContext());
+            try {
+                ffmpeg.loadBinary(new FFmpegLoadBinaryResponseHandler() {
+
+                    @Override
+                    public void onStart() {
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        Log.e("FFMPEG", "library failed to load");
+                    }
+
+                    @Override
+                    public void onSuccess() {
+                        Log.e("FFMPEG", "library loaded successfully");
+                    }
+
+                    @Override
+                    public void onFinish() {
+                    }
+                });
+            } catch (FFmpegNotSupportedException e) {
+                // Handle if FFmpeg is not supported by device
+            }
+        }
+    }
+
+    public void executeFfmpegCommand(final String[] cmd) throws FFmpegCommandAlreadyRunningException{
+        ffmpeg.execute(cmd, new ExecuteBinaryResponseHandler() {
+            @Override
+            public void onSuccess(String s) {
+                Log.e("FFMPEG", "executed successfully" + s);
+                super.onSuccess(s);
+            }
+
+            @Override
+            public void onProgress(String s) {
+                Log.e("FFMPEG", "execute in progress" + s);
+                super.onProgress(s);
+            }
+
+            @Override
+            public void onFailure(String s) {
+                Log.e("FFMPEG", "execute failed" + s);
+                super.onFailure(s);
+            }
+
+            @Override
+            public void onStart() {
+                Log.e("FFMPEG", "execute started");
+                super.onStart();
+            }
+
+            @Override
+            public void onFinish() {
+                Log.e("FFMPEG", "execute finished");
+
+                Intent intent = new Intent(getActivity(), SpeechPerformance.class);
+                intent.putExtra("speechName", speechName);
+                intent.putExtra("audioFilePath", AUDIO_FILE_PATH);
+                startActivity(intent);
+
+                super.onFinish();
+            }
+        });
+    }
 
 }
 
