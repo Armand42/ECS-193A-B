@@ -71,10 +71,10 @@ public class DiffView extends AppCompatActivity {
         int lastSpace1 =0, lastSpace2 =0, nextSpace1 = 0, nextSpace2=0;
         diff_match_patch.Operation prevOperation = EQUAL;
         LinkedList<diff_match_patch.Diff> me;
-        if(scriptText.length()>speechToText.length()*1.25)
+        if(scriptText.replaceAll("[^a-zA-z']", "").length()>speechToText.length()*1.25)
         {
             //this assumes that the user always starts the speech from the beginning
-            me = dmp.diff_lineMode(scriptText.substring(0,(int)(speechToText.length() * 1.3)).toLowerCase(), speechToText.toLowerCase());
+            me = dmp.diff_lineMode(scriptText.replaceAll("[^a-zA-z']", " ").substring(0,(int)(speechToText.length() * 1.3)).toLowerCase(), speechToText.toLowerCase());
             script.setSpan(new ForegroundColorSpan(Color.RED), (int)(speechToText.length() * 1.3), scriptText.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
         }
@@ -118,6 +118,7 @@ public class DiffView extends AppCompatActivity {
                     break;
                 case DELETE: //for 1
                     templength = temp.text.length();
+                    Log.e("DELETE:", temp.text);
                     script.setSpan(new ForegroundColorSpan(Color.RED), currPos1, currPos1+templength, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                     currPos1 += templength;
                     prevOperation = DELETE;
