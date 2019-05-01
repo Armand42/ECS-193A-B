@@ -325,7 +325,6 @@ public class Camera2VideoFragment extends Fragment
         mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
         mButtonVideo = (Button) view.findViewById(R.id.video);
         mPlayBackVideo = (Button) view.findViewById(R.id.playback);
-        seeHowYouDidButton = view.findViewById(R.id.see_how_you_did);
         mButtonVideo.setOnClickListener(this);
         mPlayBackVideo.setOnClickListener(this);
         mIsFirstRecording=true;
