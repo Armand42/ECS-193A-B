@@ -336,8 +336,6 @@ public class Camera2VideoFragment extends Fragment
             e.printStackTrace();
         }
         setScriptText();
-
-        seeHowYouDidButton.setVisibility(View.GONE);
     }
 
     @Override
