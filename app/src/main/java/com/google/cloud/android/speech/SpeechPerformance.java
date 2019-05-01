@@ -1,5 +1,6 @@
 package com.google.cloud.android.speech;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,14 +10,8 @@ import android.view.View;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.widget.Button;
 import android.widget.TextView;
-
-import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
-import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
-import com.github.hiteshsondhi88.libffmpeg.FFmpegLoadBinaryResponseHandler;
-import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
-import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
-
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -30,129 +25,77 @@ import static java.nio.file.Paths.get;
 
 
 public class SpeechPerformance extends BaseActivity {
-    String speechName;
-    String apiResult;
-    String[] command;
-    Boolean videoPlayback;
-    FFmpeg ffmpeg;
+    private String speechName;
+    private File dir;
     private static String SPEECH_SCRIPT_PATH;
-    private static String VIDEO_FILE_PATH;
     private static String AUDIO_FILE_PATH;
     private static final String TAG = "MyActivity";
+    private SpeechService mSpeechService;
+
+    SharedPreferences sharedPreferences;
+    Boolean videoPlaybackState;
+    private ProgressDialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_speech_performance);
         Intent intent = getIntent();
         speechName = intent.getStringExtra("speechName");
-        SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
 
         TextView speechTime = (TextView) findViewById(R.id.speechTime);
-
         // Set speech time textview to the elapsed time from this speech
         long timeElapsed = sharedPreferences.getLong("timeElapsed", 0);
         int minutes = (int) timeElapsed / 60000;
         int seconds = (int) timeElapsed % 60000 / 1000;
         speechTime.setText(String.format("Speech time: %02d:%02d", minutes, seconds));
 
-        final File dir = getApplicationContext().getDir(speechName, MODE_PRIVATE);
+        dir = getApplicationContext().getDir(speechName, MODE_PRIVATE);
         SPEECH_SCRIPT_PATH = dir.getAbsolutePath() + "/" + speechName + "apiResult";
-        videoPlayback = sharedPreferences.getBoolean("videoPlayback", false);
         Log.d("SPEECH_SCRIPT_PATH", SPEECH_SCRIPT_PATH);
+        AUDIO_FILE_PATH = intent.getStringExtra("audioFilePath");
+        dialog = new ProgressDialog(this);
 
+        videoPlaybackState = sharedPreferences.getBoolean("videoPlayback", false);
+    }
 
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
 
-        if(videoPlayback) {
-            VIDEO_FILE_PATH = sharedPreferences.getString("videoFilePath", null);
-
-            AUDIO_FILE_PATH = dir.getAbsolutePath() + "/" + speechName + sharedPreferences.getInt("currVid", -1) + ".wav";
-
-            if(VIDEO_FILE_PATH == null){
-                Log.d("VIDEO FILE PATH", "VIDEO PATH NULL");
-            }
-
-            try {
-                loadFfmpegLibrary();
-            } catch (FFmpegNotSupportedException e) {
-                e.printStackTrace();
-            }
-
-            Log.i("VIDEO_FILE_PATH", VIDEO_FILE_PATH);
-            Log.i("AUDIO_FILE_PATH", AUDIO_FILE_PATH);
-
-//        command = new String[]{"-i", VIDEO_FILE_PATH, "-vn", "-f", "s16le", "-acodec", "pcm_s16le" , AUDIO_FILE_PATH};
-            command = new String[]{"-i", VIDEO_FILE_PATH, AUDIO_FILE_PATH};
-            try {
-                executeFfmpegCommand(command);
-            } catch (FFmpegCommandAlreadyRunningException e) {
-                e.printStackTrace();
-            }
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder binder) {
+            mSpeechService = SpeechService.from(binder);
+            mSpeechService.addListener(mSpeechServiceListener);
         }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            mSpeechService = null;
+        }
+
+    };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Prepare Cloud Speech API
+        bindService(new Intent(this, SpeechService.class), mServiceConnection, BIND_AUTO_CREATE);
 
     }
 
-    public void loadFfmpegLibrary() throws FFmpegNotSupportedException{
-        if(ffmpeg == null) {
-            ffmpeg = FFmpeg.getInstance(this);
-            try {
-                ffmpeg.loadBinary(new FFmpegLoadBinaryResponseHandler() {
+    @Override
+    protected void onStop() {
+        // Stop Cloud Speech API
+        mSpeechService.removeListener(mSpeechServiceListener);
+        unbindService(mServiceConnection);
+        mSpeechService = null;
 
-                    @Override
-                    public void onStart() {
-                    }
-
-                    @Override
-                    public void onFailure() {
-                        Log.e("FFMPEG", "library failed to load");
-                    }
-
-                    @Override
-                    public void onSuccess() {
-                        Log.e("FFMPEG", "library loaded successfully");
-                    }
-
-                    @Override
-                    public void onFinish() {
-                    }
-                });
-            } catch (FFmpegNotSupportedException e) {
-                // Handle if FFmpeg is not supported by device
-            }
-        }
-    }
-
-    public void executeFfmpegCommand(final String[] cmd) throws FFmpegCommandAlreadyRunningException{
-        ffmpeg.execute(cmd, new ExecuteBinaryResponseHandler() {
-            @Override
-            public void onSuccess(String s) {
-                Log.e("FFMPEG", "executed successfully" + s);
-                super.onSuccess(s);
-            }
-
-            @Override
-            public void onProgress(String s) {
-                Log.e("FFMPEG", "execute in progress" + s);
-                super.onProgress(s);
-            }
-
-            @Override
-            public void onFailure(String s) {
-                Log.e("FFMPEG", "execute failed" + s);
-                super.onFailure(s);
-            }
-
-            @Override
-            public void onStart() {
-                Log.e("FFMPEG", "execute started");
-                super.onStart();
-            }
-
-            @Override
-            public void onFinish() {
-                Log.e("FFMPEG", "execute finished");
-                super.onFinish();
-            }
-        });
+        super.onStop();
     }
 
     public void goToPlayBack(View view){
@@ -167,7 +110,10 @@ public class SpeechPerformance extends BaseActivity {
         startActivity(intent);
     }
 
-    public void goToDiffView(View view) throws FileNotFoundException {
+    public void goToDiffView() throws FileNotFoundException {
+        if(dialog.isShowing()){
+            dialog.hide();
+        }
         Intent intent = new Intent(this, DiffView.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
@@ -201,7 +147,6 @@ public class SpeechPerformance extends BaseActivity {
 
     }
 
-
     public void addToSharedPreferences(String apiResultText) {
         //CREATE the shared preference file and add necessary values
         SharedPreferences sharedPref = getSharedPreferences(speechName, MODE_PRIVATE);
@@ -211,65 +156,23 @@ public class SpeechPerformance extends BaseActivity {
         editor.commit();
     }
 
-    private SpeechService mSpeechService;
-
-    private final ServiceConnection mServiceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder binder) {
-            mSpeechService = SpeechService.from(binder);
-            mSpeechService.addListener(mSpeechServiceListener);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            mSpeechService = null;
-        }
-
-    };
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        // Prepare Cloud Speech API
-        bindService(new Intent(this, SpeechService.class), mServiceConnection, BIND_AUTO_CREATE);
-
-
-    }
-
-    @Override
-    protected void onStop() {
-        // Stop Cloud Speech API
-        mSpeechService.removeListener(mSpeechServiceListener);
-        unbindService(mServiceConnection);
-        mSpeechService = null;
-
-        super.onStop();
-    }
-
-    public void speechToText() throws FileNotFoundException {
-        Path path = get(AUDIO_FILE_PATH);
-        InputStream fin = null;
-        try {
-            fin = newInputStream(path);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        mSpeechService.recognizeInputStream(fin);
-    }
 
     public void pressedButton(View view) throws FileNotFoundException {
-        File file = new File(AUDIO_FILE_PATH);
-        Path path = get(AUDIO_FILE_PATH);
-        InputStream fin = null;
-        try {
-            fin = newInputStream(path);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(videoPlaybackState) {
+            dialog.setMessage("Preparing your speech!");
+            dialog.show();
+            File file = new File(AUDIO_FILE_PATH);
+            Path path = get(AUDIO_FILE_PATH);
+            InputStream fin = null;
+            try {
+                fin = newInputStream(path);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            mSpeechService.recognizeInputStream(fin);
+        } else {
+            goToDiffView();
         }
-        mSpeechService.recognizeInputStream(fin);
     }
 
 
@@ -282,14 +185,21 @@ public class SpeechPerformance extends BaseActivity {
                         public void run() {
                             try {
                                 appendToFile(SPEECH_SCRIPT_PATH, text);
+
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                            if (isFinal) {
-                                apiResult = text;
+                            if(isFinal){
+                                try {
+                                    goToDiffView();
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     });
                 }
             };
+
+
 }

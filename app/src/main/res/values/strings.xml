@@ -26,6 +26,8 @@
     <string name="view_past_recordings_button">View Past Recordings</string>
     <string name="start_button">Start</string>
     <string name="speech_settings_title">Speech Settings</string>
+    <string name="see_how_you_did">See how you did!</string>
+
 
     <string name="title_activity_new_speech">NewSpeech</string>
     <string name="enter_text">Enter Text</string>
