@@ -74,12 +74,12 @@ public class DiffView extends AppCompatActivity {
         if(scriptText.length()>speechToText.length()*1.25)
         {
             //this assumes that the user always starts the speech from the beginning
-            me = dmp.diff_main(scriptText.substring(0,(int)(speechToText.length() * 1.125)).toLowerCase(), speechToText.toLowerCase(), false);
-            script.setSpan(new ForegroundColorSpan(Color.RED), (int)(speechToText.length() * 1.125), scriptText.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            me = dmp.diff_lineMode(scriptText.substring(0,(int)(speechToText.length() * 1.3)).toLowerCase(), speechToText.toLowerCase());
+            script.setSpan(new ForegroundColorSpan(Color.RED), (int)(speechToText.length() * 1.3), scriptText.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
         }
         else {
-            me = dmp.diff_main(scriptText.toLowerCase(), speechToText.toLowerCase(), false);
+            me = dmp.diff_lineMode(scriptText.replaceAll("[^a-zA-z']", " ").toLowerCase(), speechToText.toLowerCase());
         }
         // PRINT OUT ALL CONTENT FROM STRING
 
