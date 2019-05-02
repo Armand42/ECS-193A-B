@@ -7,6 +7,7 @@
     android:paddingLeft="80dp"
     android:paddingRight="80dp"
     android:paddingTop="0dp"
+    android:background="@color/colorPrimary"
     android:orientation="vertical">
 
 <RelativeLayout
@@ -22,6 +23,9 @@
         android:layout_marginEnd="0dp"
         android:foregroundGravity="center_vertical" />
 </RelativeLayout>
+
+
+
 
     <RelativeLayout
         android:layout_weight=".5"
@@ -39,9 +43,10 @@
 
             <TextView
                 android:id="@+id/scriptBody"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.0" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/rectangle"
+                 />
         </ScrollView>
 
 
