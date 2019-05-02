@@ -1,5 +1,6 @@
 package com.google.cloud.android.speech;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -11,20 +12,27 @@ import android.text.Spanned;
 import android.text.method.ScrollingMovementMethod;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.View;
+import android.widget.HorizontalScrollView;
+import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Observer;
 
 import static com.google.cloud.android.speech.diff_match_patch.Operation.DELETE;
 import static com.google.cloud.android.speech.diff_match_patch.Operation.EQUAL;
 import static com.google.cloud.android.speech.diff_match_patch.Operation.INSERT;
 
-public class DiffView extends AppCompatActivity {
+public class DiffView extends AppCompatActivity implements IScrollListener {
 
-    String scriptText;
-    String speechToText;
+    String scriptText, speechToText;
+
+    ObservableScrollView scriptScroll, speechToTextScroll;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +63,15 @@ public class DiffView extends AppCompatActivity {
                     e.toString(), Toast.LENGTH_SHORT);
             readToast.show();
         }
+
+        // Deal with synced ScrollViews
+        scriptScroll = (ObservableScrollView) this.findViewById(R.id.scriptScroll);
+        speechToTextScroll = (ObservableScrollView) this.findViewById(R.id.speechToTextScroll);
+
+        scriptScroll.setScrollViewListener(this);
+        speechToTextScroll.setScrollViewListener(this);
     }
 
-    // Display speech in playback
     private void setScriptText() {
 
         SpannableString script = new SpannableString(scriptText);
@@ -134,20 +148,15 @@ public class DiffView extends AppCompatActivity {
         ignore(scriptText,script,';');
         ignore(scriptText,script,'-');
 
-        // Get text body
+        // Script
         TextView scriptBody = (TextView) findViewById(R.id.scriptBody);
-
-        // Make script scrollable
-        scriptBody.setMovementMethod(new ScrollingMovementMethod());
-
-        // Set text of scriptBody to be what we read from the file
         scriptBody.setText(script);
 
+        // Speech to text
+        String speechText = "When in the Course of human events it becomes necessary for one people to dissolve the political bands which have connected them with another and to assume among the powers of the earth, the separate and equal station to which the Laws of Nature and of Nature's God entitle them, a decent respect to the opinions of mankind requires that they should declare the causes which impel them to the separation.\n\n   We hold these truths to be self-evident, that all men are created equal, that they are endowed by their Creator with certain unalienable Rights, that among these are Life, Liberty and the pursuit of Happiness. — That to secure these rights, Governments are instituted among Men, deriving their just powers from the consent of the governed, — That whenever any Form of Government becomes destructive of these ends, it is the Right of the People to alter or to abolish it, and to institute new Government, laying its foundation on such principles and organizing its powers in such form, as to them shall seem most likely to effect their Safety and Happiness. Prudence, indeed, will dictate that Governments long established should not be changed for light and transient causes; and accordingly all experience hath shewn that mankind are more disposed to suffer, while evils are sufferable than to right themselves by abolishing the forms to which they are accustomed. But when a long train of abuses and usurpations, pursuing invariably the same Object evinces a design to reduce them under absolute Despotism, it is their right, it is their duty, to throw off such Government, and to provide new Guards for their future security. — Such has been the patient sufferance of these Colonies; and such is now the necessity which constrains them to alter their former Systems of Government. The history of the present King of Great Britain is a history of repeated injuries and usurpations, all having in direct object the establishment of an absolute Tyranny over these States. To prove this, let Facts be submitted to a candid world. He has refused his Assent to Laws, the most wholesome and necessary for the public good. He has forbidden his Governors to pass Laws of immediate and pressing importance, unless suspended in their operation till his Assent should be obtained; and when so suspended, he has utterly neglected to attend to them.";
         TextView speechToTextBody = (TextView) findViewById(R.id.speechToTextBody);
+        speechToTextBody.setText(speechText);
 
-        speechToTextBody.setMovementMethod(new ScrollingMovementMethod());
-
-        speechToTextBody.setText(speech);
     }
 
     void ignore(String text1, SpannableString string1, char c)
@@ -158,6 +167,16 @@ public class DiffView extends AppCompatActivity {
             index = text1.indexOf(c, index+1);
             string1.setSpan(new ForegroundColorSpan(Color.DKGRAY), index, index+1,Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
+        }
+    }
+
+    @Override
+    public void onScrollChanged(ObservableScrollView scrollView, int x, int y, int oldx, int oldy) {
+
+        if (scrollView == scriptScroll) {
+            speechToTextScroll.scrollTo(x, y);
+        } else if (scrollView == speechToTextScroll) {
+            scriptScroll.scrollTo(x, y);
         }
     }
 }

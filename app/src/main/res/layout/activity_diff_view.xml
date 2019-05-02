@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -17,70 +18,70 @@
         app:popupTheme="@style/ActionBarPopupThemeOverlay"
         app:theme="@style/ActionBarThemeOverlay" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight=".5">
-
-        <ScrollView
-            android:id="@+id/speechToTextWrapper"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:fillViewport="true"
-            android:scrollbars="vertical">
-
-            <TextView
-                android:id="@+id/speechToTextBody"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.0"
-                android:background="@drawable/textview_border"
-                android:padding="15dp"/>
-
-
-        </ScrollView>
-
-
-    </RelativeLayout>
-    <View
+    <TextView
+        android:id="@+id/scriptTitle"
         android:layout_width="wrap_content"
-        android:layout_height="4dp"
-        android:background="@color/accent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_top_tab_green"
+        android:paddingLeft="16dp"
+        android:paddingTop="10dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="2dp"
+        android:text="Your Script"
+        android:textColor="@android:color/black" />
 
-
-        />
-
-    <RelativeLayout
+    <com.google.cloud.android.speech.ObservableScrollView
+        android:id="@+id/scriptScroll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight=".5">
+        android:layout_height="423dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/light_green_outline"
+        android:padding="16dp">
 
-        <ScrollView
-            android:id="@+id/scriptBodyWrapper"
-            android:layout_width="fill_parent"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:fillViewport="true"
-            android:scrollbars="vertical">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/scriptBody"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.0"
-                android:background="@drawable/textview_border"
-                android:padding="15dp" />
-        </ScrollView>
+                android:text="Script Text" />
 
+        </LinearLayout>
+    </com.google.cloud.android.speech.ObservableScrollView>
 
+    <TextView
+        android:id="@+id/speechToTextTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_top_tab_red"
+        android:paddingLeft="16dp"
+        android:paddingTop="10dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="2dp"
+        android:text="Your Speech-To-Text Result" />
 
+    <com.google.cloud.android.speech.ObservableScrollView
+        android:id="@+id/speechToTextScroll"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/light_pink_outline"
+        android:padding="16dp">
 
-    </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-
+            <TextView
+                android:id="@+id/speechToTextBody"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TextView" />
+        </LinearLayout>
+    </com.google.cloud.android.speech.ObservableScrollView>
 
 
 </LinearLayout>
