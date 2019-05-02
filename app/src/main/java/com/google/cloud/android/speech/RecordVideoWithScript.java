@@ -1,15 +1,14 @@
 package com.google.cloud.android.speech;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 
-public class SpeechRecord extends BaseActivity {
+public class RecordVideoWithScript extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_speech_record);
+        setContentView(R.layout.record_video_with_script);
         getIntent();
         this.setTitle("Record a Speech");
         if (savedInstanceState == null) {

@@ -20,16 +20,19 @@
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.google.cloud.android.speech.MainActivity2">
+    tools:context="com.google.cloud.android.speech.RecordAudioWithScript">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
         style="@style/HeaderBar"
-        android:layout_width="match_parent"
-        android:layout_height="61dp"
-        android:layout_marginBottom="8dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="142dp"
         android:elevation="4dp"
-
+        app:layout_constraintBottom_toTopOf="@+id/scriptBodyWrapper"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:popupTheme="@style/ActionBarPopupThemeOverlay"
         app:theme="@style/ActionBarThemeOverlay" />
 
@@ -39,7 +42,7 @@
         android:layout_height="50dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@color/transparent"
+        android:background="@drawable/round_button"
         android:gravity="center_vertical|center_horizontal"
         android:text="START"
         android:textColor="#fff"
@@ -54,32 +57,34 @@
 
     <ScrollView
         android:id="@+id/scriptBodyWrapper"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="103dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="482dp"
         android:fillViewport="true"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar">
 
         <TextView
             android:id="@+id/scriptBody"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
             android:padding="15dp" />
     </ScrollView>
 
     <FrameLayout
         android:id="@+id/timer_container"
         android:layout_width="match_parent"
-        android:layout_height="62dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="608dp"
         android:background="@color/cardview_shadow_end_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
         app:layout_constraintVertical_bias="0.091"
         tools:context="com.google.cloud.android.speech.Timer" />
 

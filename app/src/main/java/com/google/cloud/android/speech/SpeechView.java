@@ -5,17 +5,14 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 import android.content.SharedPreferences;
-import android.view.Display;
 
 
 import java.io.File;
-import java.io.IOException;
 
 public class SpeechView extends AppCompatActivity {
     String filePath;
@@ -48,7 +45,7 @@ public class SpeechView extends AppCompatActivity {
 
     /** Called when the user taps the Send button */
     public void goToSpeechToText(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, RecordAudioWithScript.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
@@ -64,19 +61,19 @@ public class SpeechView extends AppCompatActivity {
         Intent intent;
         // If Video and Script
         if(videoPlaybackState && viewScriptState) {
-            intent = new Intent(this, SpeechRecord.class);
+            intent = new Intent(this, RecordVideoWithScript.class);
         }
         // If just video
         else if (videoPlaybackState) {
-            intent = new Intent(this, SpeechRecord2.class);
+            intent = new Intent(this, RecordVideoWithoutScript.class);
         }
         // If just want the Audio
         else if(viewScriptState) {
-            intent = new Intent(this, MainActivity2.class);
+            intent = new Intent(this, RecordAudioWithScript.class);
         }
         // If want Audio and Script
         else{
-            intent = new Intent(this, MainActivity.class);
+            intent = new Intent(this, RecordAudioWithoutScript.class);
         }
         intent.putExtra("speechName", speechName);
         startActivity(intent);

@@ -161,7 +161,6 @@ public class SpeechPerformance extends BaseActivity {
         if(videoPlaybackState) {
             dialog.setMessage("Preparing your speech!");
             dialog.show();
-            File file = new File(AUDIO_FILE_PATH);
             Path path = get(AUDIO_FILE_PATH);
             InputStream fin = null;
             try {

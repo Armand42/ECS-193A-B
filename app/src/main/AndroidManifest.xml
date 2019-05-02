@@ -41,7 +41,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".SpeechView" />
         </activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".RecordAudioWithScript">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
@@ -59,7 +59,7 @@
         </activity>
         <activity android:name=".GoogleDriveActivity" />
         <activity android:name=".SpeechPerformance" />
-        <activity android:name=".SpeechRecord" />
+        <activity android:name=".RecordVideoWithScript" />
         <activity
             android:name=".NewSpeech"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -96,7 +96,7 @@
                 android:value=".SpeechView" />
         </activity>
         <activity
-            android:name=".MainActivity2"
+            android:name=".RecordAudioWithoutScript"
             android:exported="true"
             android:parentActivityName=".SpeechView">
 
@@ -108,7 +108,7 @@
         </activity>
 
 
-        <activity android:name=".SpeechRecord2" />
+        <activity android:name=".RecordVideoWithoutScript" />
         <activity
             android:name=".NewSpeech"
             android:configChanges="orientation|keyboardHidden|screenSize"

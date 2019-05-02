@@ -20,7 +20,7 @@
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.google.cloud.android.speech.MainActivity">
+    tools:context="com.google.cloud.android.speech.RecordAudioWithoutScript">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
@@ -39,7 +39,7 @@
         android:layout_height="50dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/round_button"
+        android:background="@color/transparent"
         android:gravity="center_vertical|center_horizontal"
         android:text="START"
         android:textColor="#fff"
