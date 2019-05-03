@@ -25,11 +25,14 @@
     android:paddingRight="0dp"
     android:paddingBottom="0dp">
 
+
     <com.google.cloud.android.speech.AutoFitTextureView
         android:id="@+id/texture"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
-        android:layout_marginEnd="0dp"
+        android:layout_height="900dp"
+        android:layout_marginLeft="70dp"
+        android:layout_marginRight="70dp"
+
         android:foregroundGravity="center_vertical" />
 
     <LinearLayout
@@ -93,7 +96,7 @@
                 <TextView
                     android:id="@+id/scriptBody"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/rectangle"
                     android:text="TextView"
 
