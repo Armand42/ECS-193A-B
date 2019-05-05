@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
@@ -48,21 +49,7 @@ public class NewSpeech extends AppCompatActivity {
             EditText speechText = (EditText)findViewById(R.id.editText);
             speechText.setText(scriptText);
         }
-        SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + "speech-scripts";
 
-        // Check if speech script directory exists
-        File f = new File(SPEECH_SCRIPT_PATH);
-        if (f.exists()) {
-            Toast toast = Toast.makeText(getApplicationContext(),
-                    "A speech with this name already exists.", Toast.LENGTH_SHORT);
-            toast.show();
-            return;
-        }
-        if (!f.exists() || !f.isDirectory()) {
-            File folder = getFilesDir();
-            f = new File(folder, "speech-scripts");
-            f.mkdir();
-        }
     }
 
 
@@ -87,31 +74,48 @@ public class NewSpeech extends AppCompatActivity {
 
         String filePath;
 
-        try {
-            /* Write speech text to file */
-            filePath = FileService.writeToFile(speechName, speechText, SPEECH_SCRIPT_PATH);
-            // Show notification on successful save
+        SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + speechName;
+
+        // Check if speech script directory exists
+        File f = new File(SPEECH_SCRIPT_PATH);
+        if (f.exists()) {
             Toast toast = Toast.makeText(getApplicationContext(),
-                    "File saved!", Toast.LENGTH_SHORT);
+                    "A speech with this name already exists.", Toast.LENGTH_SHORT);
             toast.show();
-
-            // Send back to this speech's menu
-            Intent intent = new Intent(this, SpeechView.class);
-            intent.putExtra("speechName", speechName);
-
-            //CREATE the shared preference file and add necessary values
-            SharedPreferences sharedPref = getSharedPreferences(speechName, MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString("filepath", filePath);
-            editor.putInt("currVid",0);
-            editor.commit();
-
-            startActivity(intent);
+            return;
         }
-        catch (Exception e) {
-            Toast toast = Toast.makeText(getApplicationContext(),
-                          e.toString(), Toast.LENGTH_SHORT);
-            toast.show();
+//        else if (!f.exists() || !f.isDirectory()) {
+        else if (!f.exists()) {
+            f = new File(SPEECH_SCRIPT_PATH, "speech-script");
+            f.mkdirs();
+
+            try {
+                /* Write speech text to file */
+                filePath = FileService.writeToFile(speechName, speechText,
+                        SPEECH_SCRIPT_PATH + File.separator + "speech-script");
+                Log.d("NEWSPEECH", filePath);
+                // Show notification on successful save
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "File saved!", Toast.LENGTH_SHORT);
+                toast.show();
+
+                // Send back to this speech's menu
+                Intent intent = new Intent(this, SpeechView.class);
+                intent.putExtra("speechName", speechName);
+
+                //CREATE the shared preference file and add necessary values
+                SharedPreferences sharedPref = getSharedPreferences(speechName, MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString("filepath", filePath);
+                editor.putInt("currRun", 0);
+                editor.commit();
+
+                startActivity(intent);
+            } catch (Exception e) {
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        e.toString(), Toast.LENGTH_SHORT);
+                toast.show();
+            }
         }
     }
 

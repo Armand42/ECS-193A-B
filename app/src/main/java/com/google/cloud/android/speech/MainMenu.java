@@ -35,8 +35,10 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
         mTopToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(mTopToolbar);
 
-        File dir = new File(getFilesDir() + File.separator + "speech-scripts");
+//        File dir = new File(getFilesDir() + File.separator + "speech-scripts");
         // Get all files saved to speech scripts
+
+        File dir = getFilesDir();
 
         //get file names
         fileNames = dir.list();

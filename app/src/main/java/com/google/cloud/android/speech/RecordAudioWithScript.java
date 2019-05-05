@@ -52,7 +52,7 @@ public class RecordAudioWithScript extends AppCompatActivity
 
     private static final String FRAGMENT_MESSAGE_DIALOG = "message_dialog";
 
-    private static String SPEECH_SCRIPT_PATH;
+    private static String apiResultPath;
 
     private String filePath;
     String speechName;
@@ -169,10 +169,14 @@ public class RecordAudioWithScript extends AppCompatActivity
             }
         });
 
-        final File dir = getApplicationContext().getDir(speechName, MODE_PRIVATE);
+        String speechFolderPath = getApplicationContext().getFilesDir() + File.separator
+                + speechName;
+        String newRunFolder = "run" + sharedPreferences.getInt("currRun",-1);
+        File f = new File(speechFolderPath, newRunFolder);
+        f.mkdirs();
 
-        // Get speech result from API
-        SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + speechName + "apiResult ";
+        apiResultPath = speechFolderPath + File.separator + newRunFolder + File.separator + "apiResult";
+
         try {
             scriptText = FileService.readFromFile(filePath);
 //            System.out.print("SCRIPT TEXT: " + scriptText);
@@ -297,8 +301,8 @@ public class RecordAudioWithScript extends AppCompatActivity
                             public void run() {
                                 if (isFinal) {
                                     try {
-                                        appendToFile(SPEECH_SCRIPT_PATH, text);
-                                        appendToFile(SPEECH_SCRIPT_PATH, " ");
+                                        appendToFile(apiResultPath, text);
+                                        appendToFile(apiResultPath, " ");
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }
@@ -348,9 +352,8 @@ public class RecordAudioWithScript extends AppCompatActivity
 
         //CREATE the shared preference file and add necessary values
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("apiResult", SPEECH_SCRIPT_PATH);
-//        editor.putString("apiResult", apiResultText);
-
+        editor.putString("apiResult", apiResultPath);
+        editor.putInt("currRun",1 + sharedPreferences.getInt("currRun",-1));
         editor.commit();
     }
 }

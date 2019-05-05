@@ -20,6 +20,7 @@ public class SpeechView extends AppCompatActivity {
     String scriptText;
     Boolean videoPlaybackState;
     Boolean viewScriptState;
+    String SPEECH_FOLDER_PATH;
 
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
@@ -110,7 +111,10 @@ public class SpeechView extends AppCompatActivity {
                         // Continue with delete operation
                         try {
                             //            FileService.deleteSpeech(filePath);
-                            File script = new File(filePath);
+                            SPEECH_FOLDER_PATH = getFilesDir() + File.separator + speechName;
+                            File script = new File(SPEECH_FOLDER_PATH);
+                            recursiveDelete(script);
+
                             if (!script.delete()) {
                                 throw new Exception("Error deleting script");
                             }
@@ -122,14 +126,17 @@ public class SpeechView extends AppCompatActivity {
                             toast.show();
                         }
                         //Delete  all videos
-                        final File dir = getDir(speechName, MODE_PRIVATE);
+//                        final File dir = getDir(speechName, MODE_PRIVATE);
                         SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
-                        for(int i =0 ; i<sharedPreferences.getInt("currVid", -1) ; i++)
-                        {
-                            File vid = new File(dir.getAbsolutePath() + "/" + speechName+" "+ i+".mp4" );
-                            vid.delete();
-                        }
-                        dir.delete();
+//                        for(int i =0 ; i<sharedPreferences.getInt("currVid", -1) ; i++)
+//                        {
+//                            File vid = new File(dir.getAbsolutePath() + "/" + speechName+" "+ i+".mp4" );
+//                            vid.delete();
+//                        }
+//                        dir.delete();
+
+
+
                         sharedPreferences.edit().clear().apply(); //clears all preferences
 
                         Intent intent = new Intent(SpeechView.this, MainMenu.class);
@@ -161,6 +168,17 @@ public class SpeechView extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void recursiveDelete(File fileOrDirectory) {
+
+        if (fileOrDirectory.isDirectory()) {
+            for (File child : fileOrDirectory.listFiles()) {
+                recursiveDelete(child);
+            }
+        }
+
+        fileOrDirectory.delete();
     }
 
 

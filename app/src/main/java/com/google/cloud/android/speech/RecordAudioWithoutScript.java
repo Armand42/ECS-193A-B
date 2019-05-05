@@ -37,11 +37,10 @@ public class RecordAudioWithoutScript extends AppCompatActivity
 
     private static final String FRAGMENT_MESSAGE_DIALOG = "message_dialog";
 
-    private static String SPEECH_SCRIPT_PATH;
+    private static String apiResultPath;
 
     private String filePath;
     String speechName;
-    String scriptText;
 
     boolean recording = false;
 
@@ -157,32 +156,14 @@ public class RecordAudioWithoutScript extends AppCompatActivity
             }
         });
 
-        final File dir = getApplicationContext().getDir(speechName, MODE_PRIVATE);
+        String speechFolderPath = getApplicationContext().getFilesDir() + File.separator + speechName;
+        String newRunFolder = "run" + sharedPreferences.getInt("currRun",-1);
+        File f = new File(speechFolderPath, newRunFolder);
+        f.mkdirs();
 
-        // Get speech result from API
-        SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + speechName + "apiResult ";
-        try {
-            scriptText = FileService.readFromFile(filePath);
-//            System.out.print("SCRIPT TEXT: " + scriptText);
-            //setScriptText();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast readToast = Toast.makeText(getApplicationContext(),
-                    e.toString(), Toast.LENGTH_SHORT);
-            readToast.show();
-        }
+        apiResultPath = speechFolderPath + File.separator + newRunFolder + File.separator + "apiResult";
 
     }
-
-    /*private void setScriptText() {
-        // Get text body from layout
-        TextView scriptBody = (TextView) findViewById(R.id.scriptBody);
-        // Make script scrollable
-        scriptBody.setMovementMethod(new ScrollingMovementMethod());
-
-        // Set text of scriptBody to be what we read from the file
-        scriptBody.setText(scriptText);
-    }*/
 
     public void goToSpeechPerformance(View view) {
 
@@ -202,7 +183,7 @@ public class RecordAudioWithoutScript extends AppCompatActivity
         // Start listening to voices
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 == PackageManager.PERMISSION_GRANTED) {
-            startVoiceRecorder();
+//            startVoiceRecorder();
         } else if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.RECORD_AUDIO)) {
             showPermissionMessageDialog();
@@ -286,8 +267,8 @@ public class RecordAudioWithoutScript extends AppCompatActivity
                             public void run() {
                                 if (isFinal) {
                                     try {
-                                        appendToFile(SPEECH_SCRIPT_PATH, text);
-                                        appendToFile(SPEECH_SCRIPT_PATH, " ");
+                                        appendToFile(apiResultPath, text);
+                                        appendToFile(apiResultPath, " ");
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }
@@ -327,7 +308,6 @@ public class RecordAudioWithoutScript extends AppCompatActivity
     @Override
     public void stopButtonPressed(Long speechTimeMs) {
         // Set time elapsed in shared prefs
-        SharedPreferences sharedPreferences = this.getSharedPreferences(speechName, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putLong("timeElapsed", speechTimeMs);
         editor.commit();
@@ -337,9 +317,8 @@ public class RecordAudioWithoutScript extends AppCompatActivity
 
         //CREATE the shared preference file and add necessary values
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("apiResult", SPEECH_SCRIPT_PATH);
-//        editor.putString("apiResult", apiResultText);
-
+        editor.putString("apiResult", apiResultPath);
+        editor.putInt("currRun",1 + sharedPreferences.getInt("currRun",-1));
         editor.commit();
     }
 }
