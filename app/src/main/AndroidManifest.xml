@@ -20,64 +20,86 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Speech"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".HowItWorks">
+        <activity android:name=".HowItWorks"
+            android:screenOrientation = "portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".TitleScreen" />
+                android:value=".TitleScreen"
+                android:screenOrientation="portrait"/>
         </activity>
-        <activity android:name=".TitleScreen">
+        <activity android:name=".TitleScreen"
+            android:screenOrientation = "portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".BaseActivity" />
-        <activity android:name=".DiffView">
+        <activity android:name=".BaseActivity"
+            android:screenOrientation = "portrait"/>
+        <activity android:name=".DiffView"
+            android:screenOrientation = "portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".SpeechPerformance" />
+                android:value=".SpeechPerformance"
+                android:screenOrientation="portrait"
+                />
         </activity>
-        <activity android:name=".PlayBack_List">
+        <activity android:name=".PlayBack_List"
+            android:screenOrientation = "portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".SpeechView" />
+                android:value=".SpeechView"
+                android:screenOrientation="portrait"
+                />
         </activity>
-        <activity android:name=".RecordAudioWithScript">
+        <activity android:name=".RecordAudioWithScript"
+            android:screenOrientation = "portrait">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".SpeechView" />
+                android:value=".SpeechView"
+                android:screenOrientation="portrait"/>
         </activity>
 
-        <service android:name=".SpeechService" />
+        <service android:name=".SpeechService"
+            android:screenOrientation = "portrait"/>
 
-        <activity android:name=".PlayBack" />
-        <activity android:name=".ScriptView">
+        <activity android:name=".PlayBack"
+            android:screenOrientation = "portrait"/>
+        <activity android:name=".ScriptView"
+            android:screenOrientation = "portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".SpeechView" />
+                android:value=".SpeechView"/>
         </activity>
-        <activity android:name=".GoogleDriveActivity" />
-        <activity android:name=".SpeechPerformance" />
-        <activity android:name=".RecordVideoWithScript" />
+        <activity android:name=".GoogleDriveActivity"
+            android:screenOrientation = "portrait"/>
+        <activity android:name=".SpeechPerformance"
+            android:screenOrientation = "portrait"/>
+        <activity android:name=".RecordVideoWithScript"
+            android:screenOrientation = "portrait"/>
         <activity
             android:name=".NewSpeech"
+            android:screenOrientation = "portrait"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_new_speech"
             android:parentActivityName=".MainMenu"
             android:windowSoftInputMode="adjustPan">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainMenu" />
+                android:value=".MainMenu"
+                android:screenOrientation="portrait"/>
         </activity>
-        <activity android:name=".MainMenu">
+        <activity android:name=".MainMenu"
+            android:screenOrientation = "portrait">
 
             <!-- android:theme="@style/AppTheme.Launcher"> -->
         </activity>
         <activity
             android:name=".SpeechView"
+            android:screenOrientation = "portrait"
             android:exported="true"
             android:launchMode="singleTop"
             android:parentActivityName=".MainMenu">
@@ -85,20 +107,24 @@
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainMenu" />
+                android:value=".MainMenu"
+                android:screenOrientation="portrait"/>
         </activity>
         <activity
             android:name=".SpeechSettings"
+            android:screenOrientation = "portrait"
             android:exported="true"
             android:parentActivityName=".SpeechView">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".SpeechView" />
+                android:value=".SpeechView"
+                android:screenOrientation="portrait"/>
         </activity>
         <activity
             android:name=".RecordAudioWithoutScript"
+            android:screenOrientation = "portrait"
             android:exported="true"
             android:parentActivityName=".SpeechView">
 
@@ -106,20 +132,24 @@
 
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
-            android:value=".SpeechView" />
+            android:value=".SpeechView"
+            android:screenOrientation="portrait"/>
         </activity>
 
 
-        <activity android:name=".RecordVideoWithoutScript" />
+        <activity android:name=".RecordVideoWithoutScript"
+            android:screenOrientation = "portrait"/>
         <activity
             android:name=".NewSpeech"
+            android:screenOrientation = "portrait"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_new_speech"
             android:parentActivityName=".MainMenu"
             android:windowSoftInputMode="adjustPan">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainMenu" />
+                android:value=".MainMenu"
+                android:screenOrientation="portrait"/>
         </activity>
 
 
