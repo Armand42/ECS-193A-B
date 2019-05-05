@@ -167,9 +167,11 @@ public class RecordAudioWithScript extends AppCompatActivity
             }
         });
 
-        String speechFolderPath = getApplicationContext().getFilesDir() + File.separator + "speeches"
-                + File.separator + speechName;
+        String speechFolderPath = getApplicationContext().getFilesDir() + File.separator
+                + speechName;
         String newRunFolder = "run" + sharedPreferences.getInt("currRun",-1);
+        File f = new File(speechFolderPath, newRunFolder);
+        f.mkdirs();
 
         apiResultPath = speechFolderPath + File.separator + newRunFolder + File.separator + "apiResult";
 

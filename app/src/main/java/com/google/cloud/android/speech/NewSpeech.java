@@ -74,7 +74,7 @@ public class NewSpeech extends AppCompatActivity {
 
         String filePath;
 
-        SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + "speeches" + File.separator + speechName;
+        SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + speechName;
 
         // Check if speech script directory exists
         File f = new File(SPEECH_SCRIPT_PATH);

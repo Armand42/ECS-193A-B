@@ -38,7 +38,7 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
 //        File dir = new File(getFilesDir() + File.separator + "speech-scripts");
         // Get all files saved to speech scripts
 
-        File dir = new File(getFilesDir() + File.separator + "speeches");
+        File dir = getFilesDir();
 
         //get file names
         fileNames = dir.list();

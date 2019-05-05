@@ -111,7 +111,7 @@ public class SpeechView extends AppCompatActivity {
                         // Continue with delete operation
                         try {
                             //            FileService.deleteSpeech(filePath);
-                            SPEECH_FOLDER_PATH = getFilesDir() + File.separator + "speeches" + File.separator + speechName;
+                            SPEECH_FOLDER_PATH = getFilesDir() + File.separator + speechName;
                             File script = new File(SPEECH_FOLDER_PATH);
                             recursiveDelete(script);
 

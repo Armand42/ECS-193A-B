@@ -50,8 +50,7 @@ public class SpeechPerformance extends BaseActivity {
         int seconds = (int) timeElapsed % 60000 / 1000;
         speechTime.setText(String.format("Speech time: %02d:%02d", minutes, seconds));
 
-        String speechFolderPath = getApplicationContext().getFilesDir() + File.separator + "speeches"
-                + File.separator + speechName;
+        String speechFolderPath = getApplicationContext().getFilesDir() + File.separator + speechName;
         String newRunFolder = "run" + (sharedPreferences.getInt("currRun",-1) - 1);
 
         apiResultPath = speechFolderPath + File.separator + newRunFolder + File.separator + "apiResult";
