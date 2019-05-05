@@ -35,6 +35,7 @@ public class SpeechPerformance extends BaseActivity {
     SharedPreferences sharedPreferences;
     Boolean videoPlaybackState;
     private ProgressDialog dialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +44,7 @@ public class SpeechPerformance extends BaseActivity {
         speechName = intent.getStringExtra("speechName");
         sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
 
-        TextView speechTime = (TextView) findViewById(R.id.speechTime);
+        TextView speechTime = findViewById(R.id.speechTime);
         // Set speech time textview to the elapsed time from this speech
         long timeElapsed = sharedPreferences.getLong("timeElapsed", 0);
         int minutes = (int) timeElapsed / 60000;
@@ -51,7 +52,7 @@ public class SpeechPerformance extends BaseActivity {
         speechTime.setText(String.format("Speech time: %02d:%02d", minutes, seconds));
 
         String speechFolderPath = getApplicationContext().getFilesDir() + File.separator + speechName;
-        String newRunFolder = "run" + (sharedPreferences.getInt("currRun",-1) - 1);
+        String newRunFolder = "run" + (sharedPreferences.getInt("currRun", -1) - 1);
 
         apiResultPath = speechFolderPath + File.separator + newRunFolder + File.separator + "apiResult";
 
@@ -101,20 +102,20 @@ public class SpeechPerformance extends BaseActivity {
         super.onStop();
     }
 
-    public void goToPlayBack(View view){
+    public void goToPlayBack(View view) {
         Intent intent = new Intent(this, PlayBack_List.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
 
-    public void goToSpeechView(View view){
+    public void goToSpeechView(View view) {
         Intent intent = new Intent(this, SpeechView.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
 
     public void goToDiffView() throws FileNotFoundException {
-        if(dialog.isShowing()){
+        if (dialog.isShowing()) {
             dialog.hide();
         }
         Intent intent = new Intent(this, DiffView.class);
@@ -130,7 +131,7 @@ public class SpeechPerformance extends BaseActivity {
     }
 
 
-    private void appendToFile(String speechScriptPath, String apiResultText)throws IOException {
+    private void appendToFile(String speechScriptPath, String apiResultText) throws IOException {
         addToSharedPreferences(apiResultText);
         File file = new File(speechScriptPath);
         Log.d(TAG, "APPENDING TO FILE");
@@ -161,7 +162,7 @@ public class SpeechPerformance extends BaseActivity {
 
 
     public void pressedButton(View view) throws FileNotFoundException {
-        if(videoPlaybackState) {
+        if (videoPlaybackState) {
             dialog.setMessage("Preparing your speech!");
             dialog.show();
             Path path = get(AUDIO_FILE_PATH);
@@ -191,7 +192,7 @@ public class SpeechPerformance extends BaseActivity {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                            if(isFinal){
+                            if (isFinal) {
                                 try {
                                     goToDiffView();
                                 } catch (FileNotFoundException e) {

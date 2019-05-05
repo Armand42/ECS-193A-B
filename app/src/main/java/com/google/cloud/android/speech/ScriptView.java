@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+
 import android.content.SharedPreferences;
 
 public class ScriptView extends AppCompatActivity {
@@ -38,16 +39,16 @@ public class ScriptView extends AppCompatActivity {
         Intent intent = getIntent();
         speechName = intent.getStringExtra("speechName");
         setTitle("Script: " + speechName);
-        SharedPreferences sharedPreferences = getSharedPreferences(speechName,MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
 
         try {
-            Log.d("FILEPATH:", sharedPreferences.getString("filepath",null));
-            scriptText = FileService.readFromFile(sharedPreferences.getString("filepath",null));
+            Log.d("FILEPATH:", sharedPreferences.getString("filepath", null));
+            scriptText = FileService.readFromFile(sharedPreferences.getString("filepath", null));
             setScriptText();
         } catch (IOException e) {
             e.printStackTrace();
             Toast readToast = Toast.makeText(getApplicationContext(),
-                              e.toString(), Toast.LENGTH_SHORT);
+                    e.toString(), Toast.LENGTH_SHORT);
             readToast.show();
         }
     }

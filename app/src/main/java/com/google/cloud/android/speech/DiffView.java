@@ -60,9 +60,6 @@ public class DiffView extends AppCompatActivity {
                     e.toString(), Toast.LENGTH_SHORT);
             readToast.show();
         }
-
-
-
     }
 
     // Display speech in playback
