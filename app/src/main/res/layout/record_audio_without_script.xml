@@ -20,6 +20,7 @@
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#fff"
     tools:context="com.google.cloud.android.speech.RecordAudioWithoutScript">
 
     <android.support.v7.widget.Toolbar
@@ -29,21 +30,20 @@
         android:layout_height="61dp"
         android:layout_marginBottom="8dp"
         android:elevation="4dp"
-
         app:popupTheme="@style/ActionBarPopupThemeOverlay"
         app:theme="@style/ActionBarThemeOverlay" />
 
     <Button
         android:id="@+id/startButton"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@color/transparent"
+        android:background="@drawable/border_circle_red"
         android:gravity="center_vertical|center_horizontal"
         android:text="START"
         android:textColor="#fff"
-        android:textSize="10sp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -51,36 +51,36 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.966" />
 
+    <com.gigamole.library.PulseView
+        android:id="@+id/pv"
+        android:layout_width="0dp"
+        android:layout_height="700dp"
+        app:pv_alpha="70"
+        app:pv_color="@color/black"
+        app:pv_icon="@drawable/ic_speakerpreplogo"
+        app:pv_icon_height="200dp"
+        app:pv_icon_width="200dp"
+        app:pv_interpolator="@android:anim/linear_interpolator"
+        app:pv_measure="height"
+        app:pv_spawn_period="500"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="61dp" />
 
-    <ScrollView
-        android:id="@+id/scriptBodyWrapper"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="103dp"
-        android:fillViewport="true"
-        android:scrollbars="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
 
-        <TextView
-            android:id="@+id/scriptBody"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="15dp" />
-    </ScrollView>
+
 
     <FrameLayout
         android:id="@+id/timer_container"
-        android:layout_width="match_parent"
-        android:layout_height="62dp"
+        android:layout_width="408dp"
+        android:layout_height="49dp"
+        android:layout_marginBottom="608dp"
         android:background="@color/cardview_shadow_end_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.091"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+        app:layout_constraintVertical_bias="1.0"
         tools:context="com.google.cloud.android.speech.Timer" />
 
 </android.support.constraint.ConstraintLayout>

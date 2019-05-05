@@ -138,10 +138,12 @@ public class RecordAudioWithScript extends AppCompatActivity
 
         // Handle start button click
         final Button startButton = (Button) findViewById(R.id.startButton);
+        //startButton.getBackground().setAlpha(200);
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Code here executes on main thread after user presses button
                 timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
+                startButton.getBackground().setAlpha(200);
 
                 // Stop button behavior
                 if (startButton.getText() == "STOP") {

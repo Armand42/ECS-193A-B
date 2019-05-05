@@ -32,4 +32,5 @@
     <color name="success">#36C5B9</color>
     <color name="colorWarning">#A4033E</color>
     <color name="transparent">#00FFFFFF</color>
+    <color name="black">#0C0A0A</color>
 </resources>

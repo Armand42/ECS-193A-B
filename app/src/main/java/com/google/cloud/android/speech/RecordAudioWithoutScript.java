@@ -21,6 +21,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.gigamole.library.PulseView;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -120,14 +122,19 @@ public class RecordAudioWithoutScript extends AppCompatActivity
         }
 
         // Handle start button click
+        final PulseView pulseView;
+        pulseView = (PulseView) findViewById(R.id.pv);
         final Button startButton = (Button) findViewById(R.id.startButton);
+
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                pulseView.startPulse();
                 // Code here executes on main thread after user presses button
                 timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
 
                 // Stop button behavior
                 if (startButton.getText() == "STOP") {
+                    pulseView.finishPulse();
                     // Stop timer
                     timerFragment.stopTimer();
 
@@ -178,6 +185,7 @@ public class RecordAudioWithoutScript extends AppCompatActivity
     }*/
 
     public void goToSpeechPerformance(View view) {
+
 //        String speech = getFilesDir() + File.separator + speechName;
         Intent intent = new Intent(this, SpeechPerformance.class);
         intent.putExtra("speechName", speechName);

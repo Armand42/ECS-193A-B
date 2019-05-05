@@ -25,28 +25,24 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
         style="@style/HeaderBar"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="142dp"
+        android:layout_width="match_parent"
+        android:layout_height="61dp"
+        android:layout_marginBottom="8dp"
         android:elevation="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/scriptBodyWrapper"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:popupTheme="@style/ActionBarPopupThemeOverlay"
         app:theme="@style/ActionBarThemeOverlay" />
 
     <Button
         android:id="@+id/startButton"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/round_button"
+        android:background="@drawable/border_circle_red"
         android:gravity="center_vertical|center_horizontal"
         android:text="START"
         android:textColor="#fff"
-        android:textSize="10sp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -59,7 +55,6 @@
         android:id="@+id/scriptBodyWrapper"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="482dp"
         android:fillViewport="true"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -76,8 +71,8 @@
 
     <FrameLayout
         android:id="@+id/timer_container"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="408dp"
+        android:layout_height="49dp"
         android:layout_marginBottom="608dp"
         android:background="@color/cardview_shadow_end_color"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -85,7 +80,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
-        app:layout_constraintVertical_bias="0.091"
+        app:layout_constraintVertical_bias="1.0"
         tools:context="com.google.cloud.android.speech.Timer" />
 
 </android.support.constraint.ConstraintLayout>

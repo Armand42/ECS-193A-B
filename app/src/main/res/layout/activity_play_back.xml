@@ -1,34 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/black"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingBottom="30dp"
-    android:paddingLeft="80dp"
-    android:paddingRight="80dp"
+    android:paddingBottom="0dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
     android:paddingTop="0dp"
-    android:background="@color/colorPrimary"
     android:orientation="vertical">
 
-<RelativeLayout
-    android:layout_weight=".5"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    <LinearLayout
 
-    <VideoView
-        android:id="@+id/vdVw"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="0dp"
-        android:foregroundGravity="center_vertical" />
-</RelativeLayout>
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
+        <FrameLayout
 
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black"
+            android:layout_gravity="center">
+            <VideoView
+                android:id="@+id/vdVw"
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="20dp"
+
+                android:layout_marginEnd="0dp"
+                android:foregroundGravity="center_vertical"/>
+
+        </FrameLayout>
+
+
+
+</LinearLayout>
 
 
 
     <RelativeLayout
-        android:layout_weight=".5"
+
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -36,7 +51,9 @@
             android:id="@+id/scriptBodyWrapper"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:layout_marginLeft="4dp"
+            android:layout_marginTop="0dp"
             android:layout_marginRight="4dp"
             android:fillViewport="true"
             android:scrollbars="vertical">
@@ -45,8 +62,7 @@
                 android:id="@+id/scriptBody"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/rectangle"
-                 />
+                android:background="@drawable/rectangle" />
         </ScrollView>
 
 
