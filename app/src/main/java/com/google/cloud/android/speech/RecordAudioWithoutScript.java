@@ -183,7 +183,6 @@ public class RecordAudioWithoutScript extends AppCompatActivity
         // Start listening to voices
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 == PackageManager.PERMISSION_GRANTED) {
-//            startVoiceRecorder();
         } else if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.RECORD_AUDIO)) {
             showPermissionMessageDialog();
@@ -212,7 +211,6 @@ public class RecordAudioWithoutScript extends AppCompatActivity
         if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
             if (permissions.length == 1 && grantResults.length == 1
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startVoiceRecorder();
             } else {
                 showPermissionMessageDialog();
             }
