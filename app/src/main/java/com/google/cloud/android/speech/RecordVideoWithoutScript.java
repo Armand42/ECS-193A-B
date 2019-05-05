@@ -13,7 +13,7 @@ public class RecordVideoWithoutScript extends BaseActivity {
         this.setTitle("Record a Speech");
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .replace(R.id.container, com.google.cloud.android.speech.Camera3VideoFragment.newInstance())
+                    .replace(R.id.container, com.google.cloud.android.speech.Camera2VideoFragment.newInstance())
                     .commit();
         }
 

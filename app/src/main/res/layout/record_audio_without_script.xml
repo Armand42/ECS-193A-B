@@ -52,24 +52,6 @@
         app:layout_constraintVertical_bias="0.966" />
 
 
-    <ScrollView
-        android:id="@+id/scriptBodyWrapper"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="103dp"
-        android:fillViewport="true"
-        android:scrollbars="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <TextView
-            android:id="@+id/scriptBody"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="15dp" />
-    </ScrollView>
-
     <FrameLayout
         android:id="@+id/timer_container"
         android:layout_width="match_parent"

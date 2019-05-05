@@ -27,7 +27,7 @@ import static java.nio.file.Paths.get;
 public class SpeechPerformance extends BaseActivity {
     private String speechName;
     private File dir;
-    private static String SPEECH_SCRIPT_PATH;
+    private static String apiResultPath;
     private static String AUDIO_FILE_PATH;
     private static final String TAG = "MyActivity";
     private SpeechService mSpeechService;
@@ -50,9 +50,13 @@ public class SpeechPerformance extends BaseActivity {
         int seconds = (int) timeElapsed % 60000 / 1000;
         speechTime.setText(String.format("Speech time: %02d:%02d", minutes, seconds));
 
-        dir = getApplicationContext().getDir(speechName, MODE_PRIVATE);
-        SPEECH_SCRIPT_PATH = dir.getAbsolutePath() + "/" + speechName + "apiResult";
-        Log.d("SPEECH_SCRIPT_PATH", SPEECH_SCRIPT_PATH);
+        String speechFolderPath = getApplicationContext().getFilesDir() + File.separator + "speeches"
+                + File.separator + speechName;
+        String newRunFolder = "run" + (sharedPreferences.getInt("currRun",-1) - 1);
+
+        apiResultPath = speechFolderPath + File.separator + newRunFolder + File.separator + "apiResult";
+
+        Log.d("apiResultPath", apiResultPath);
         AUDIO_FILE_PATH = intent.getStringExtra("audioFilePath");
         dialog = new ProgressDialog(this);
 
@@ -151,7 +155,7 @@ public class SpeechPerformance extends BaseActivity {
         //CREATE the shared preference file and add necessary values
         SharedPreferences sharedPref = getSharedPreferences(speechName, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("apiResult", SPEECH_SCRIPT_PATH);
+        editor.putString("apiResult", apiResultPath);
 
         editor.commit();
     }
@@ -183,7 +187,7 @@ public class SpeechPerformance extends BaseActivity {
                         @Override
                         public void run() {
                             try {
-                                appendToFile(SPEECH_SCRIPT_PATH, text);
+                                appendToFile(apiResultPath, text);
 
                             } catch (IOException e) {
                                 e.printStackTrace();

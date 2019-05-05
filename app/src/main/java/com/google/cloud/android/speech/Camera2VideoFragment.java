@@ -335,7 +335,10 @@ public class Camera2VideoFragment extends Fragment
         } catch (IOException e) {
             e.printStackTrace();
         }
-        setScriptText();
+
+        if(sharedPref.getBoolean("displaySpeech", false)) {
+            setScriptText();
+        }
     }
 
     @Override
@@ -378,15 +381,15 @@ public class Camera2VideoFragment extends Fragment
                 stopRecordingVideo();
                 Activity activity = getActivity();
 
-                SharedPreferences sharedPreferences= getContext().getSharedPreferences(speechName, MODE_PRIVATE);
                 VIDEO_FILE_PATH = getVideoFilePath(getContext());
-                //update the currVideoNum
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("videoFilePath", VIDEO_FILE_PATH);
-                editor.putInt("currVid",1 + sharedPreferences.getInt("currVid",-1));
-                editor.apply();
 
                 extractAudioFromVideo();
+
+                //update the currVideoNum
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString("videoFilePath", VIDEO_FILE_PATH);
+                editor.putInt("currRun",1 + sharedPref.getInt("currRun",-1));
+                editor.commit();
 
                 break;
             }
@@ -676,12 +679,14 @@ public class Camera2VideoFragment extends Fragment
     }
 
     private String getVideoFilePath(Context context) {
-        Intent intent = getActivity().getIntent();
-        final File dir = context.getDir(speechName, MODE_PRIVATE);
+        String speechFolderPath = context.getFilesDir() + File.separator + "speeches" + File.separator + speechName;
+        String newRunFolder = "run" + sharedPref.getInt("currRun",-1);
+        File f = new File(speechFolderPath, newRunFolder);
+        f.mkdirs();
+
+//        final File dir = context.getDir(speechName, MODE_PRIVATE);
         //CREATE the shared preference file and get necessary values
-        SharedPreferences sharedPreferences= context.getSharedPreferences(speechName, MODE_PRIVATE);
-        return (dir == null ? "" : (dir.getAbsolutePath() + "/"))
-                + speechName+sharedPreferences.getInt("currVid",-1)+".mp4";
+        return speechFolderPath + File.separator + newRunFolder + File.separator + "video.mp4";
 
     }
 
@@ -870,8 +875,14 @@ public class Camera2VideoFragment extends Fragment
 
 
     private void extractAudioFromVideo(){
-            File dir = getContext().getDir(speechName, MODE_PRIVATE);
-            AUDIO_FILE_PATH = dir.getAbsolutePath() + "/" + speechName + sharedPref.getInt("currVid", -1) + ".wav";
+        String speechFolderPath = getContext().getFilesDir() + File.separator + "speeches"
+                + File.separator + speechName;
+        String newRunFolder = "run" + sharedPref.getInt("currRun",-1);
+
+        AUDIO_FILE_PATH = speechFolderPath + File.separator + newRunFolder + File.separator
+                + "audio.wav";
+
+
 
             if(VIDEO_FILE_PATH == null){
                 Log.d("VIDEO FILE PATH", "VIDEO PATH NULL");
