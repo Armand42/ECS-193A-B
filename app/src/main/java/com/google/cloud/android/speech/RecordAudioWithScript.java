@@ -245,7 +245,6 @@ public class RecordAudioWithScript extends AppCompatActivity
         if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
             if (permissions.length == 1 && grantResults.length == 1
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startVoiceRecorder();
             } else {
                 showPermissionMessageDialog();
             }
