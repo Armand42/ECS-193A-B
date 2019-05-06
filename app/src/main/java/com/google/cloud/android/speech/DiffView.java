@@ -109,7 +109,7 @@ public class DiffView extends AppCompatActivity {
                 case INSERT://for 2
                     templength = temp.text.length();
                     speechStart = currPos2;
-                    speech.setSpan(new ForegroundColorSpan(Color.RED), currPos2, currPos2+=templength, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                    speech.setSpan(new ForegroundColorSpan(Color.RED), currPos2, (speechToText.length()<(currPos2+templength))?(speechToText.length()):(currPos2+=templength), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                     speechEnd = currPos2;
                     //speech.setSpan(new UnderlineSpan(),speechStart,speechEnd>speechToText.length()?speechToText.length():speechEnd,Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                     prevOperation = INSERT;
@@ -118,7 +118,7 @@ public class DiffView extends AppCompatActivity {
                 case DELETE: //for 1
                     templength = temp.text.length();
                     scriptStart = currPos1;
-                    script.setSpan(new ForegroundColorSpan(Color.RED), currPos1, currPos1+=templength, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                    script.setSpan(new ForegroundColorSpan(Color.RED), currPos1, (scriptText.length()<(currPos1+templength))?(scriptText.length()):(currPos1+=templength), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                     scriptEnd = currPos1;
                     //script.setSpan(new UnderlineSpan(),scriptStart,scriptEnd>scriptText.length()?scriptText.length():scriptEnd,Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 

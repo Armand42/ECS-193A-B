@@ -11,6 +11,7 @@ import android.content.ComponentName;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.LinkedList;
 
 import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Paths.get;
@@ -60,6 +62,7 @@ public class SpeechPerformance extends BaseActivity {
         dialog = new ProgressDialog(this);
 
         videoPlaybackState = sharedPreferences.getBoolean("videoPlayback", false);
+        setAccuracy();
     }
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -205,5 +208,69 @@ public class SpeechPerformance extends BaseActivity {
                 }
             };
 
+    private void setAccuracy()
+    {
+        TextView accuracyPercentage = (TextView) findViewById(R.id.accuracyPercentage);
+        String scriptText= "EMPTY SCRIPT FILE :(";
+        String speechToText = "EMPTY SPEECH FILE :(";
+        diff_match_patch dmp = new diff_match_patch();
+        LinkedList<diff_match_patch.Diff> myDiff;
+        double deletedWords = 0, insertedWords = 0, incorrectWords = 0 , totalWords = 0;
+
+        diff_match_patch.Operation prevOperation = diff_match_patch.Operation.EQUAL;
+
+        try {
+            scriptText = FileService.readFromFile(sharedPreferences.getString("filepath",null));
+            // Duplicate for now -- eventually replace with reading most recent speech to text result
+            speechToText = FileService.readFromFile(apiResultPath);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("FILE NOT FOUND:", e.toString());
+            Toast readToast = Toast.makeText(getApplicationContext(),
+                    e.toString(), Toast.LENGTH_SHORT);
+            readToast.show();
+        }
+        myDiff = dmp.diff_lineMode(scriptText.replaceAll("[^a-zA-z' ]", "").toLowerCase().concat(" "), speechToText.toLowerCase().replaceAll("[^a-zA-z' ]", "").concat(" "));
+
+        for(diff_match_patch.Diff temp : myDiff)
+        {
+            if(temp.text != " " || temp.text != "")
+            {
+                String[] words = temp.text.split("\\s+");
+                switch (temp.operation)
+                {
+                    case EQUAL:
+                        Log.e("DIFF","EQUAL - "+ temp.text);
+                        if (prevOperation == diff_match_patch.Operation.DELETE || prevOperation == diff_match_patch.Operation.INSERT)
+                        {
+                            double prevIncorrect = Math.max(deletedWords, insertedWords);
+                            incorrectWords += prevIncorrect;
+                            totalWords += prevIncorrect;
+                        }
+
+                        totalWords += words.length;
+                        deletedWords = insertedWords = 0;
+                        break;
+                    case DELETE:
+                        Log.e("DIFF","DELETE - "+ temp.text);
+
+                        deletedWords = words.length;
+                        prevOperation = diff_match_patch.Operation.DELETE;
+                        break;
+                    case INSERT:
+                        Log.e("DIFF","INSERT - "+ temp.text);
+
+                        insertedWords = words.length;
+                        prevOperation = diff_match_patch.Operation.INSERT;
+                        break;
+
+                }
+            }
+        }
+        Log.e("ACCURACY:","incorrect / total = " + incorrectWords + "/" + totalWords);
+        accuracyPercentage.setText(""+ (100-((int)(100* (incorrectWords/totalWords)))) +"%");
+
+    }
 
 }

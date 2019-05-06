@@ -57,7 +57,7 @@ public class RecordAudioWithScript extends AppCompatActivity
     private String filePath;
     String speechName;
     String scriptText;
-
+    Button startButton;
     boolean recording = false;
 
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 1;
@@ -137,7 +137,7 @@ public class RecordAudioWithScript extends AppCompatActivity
         }
 
         // Handle start button click
-        final Button startButton = (Button) findViewById(R.id.startButton);
+        startButton = (Button) findViewById(R.id.startButton);
         //startButton.getBackground().setAlpha(200);
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -165,6 +165,7 @@ public class RecordAudioWithScript extends AppCompatActivity
                     // Start listening
                     startVoiceRecorder();
                     recording = true;
+                    startButton.setEnabled(false);
                 }
             }
         });
@@ -298,6 +299,7 @@ public class RecordAudioWithScript extends AppCompatActivity
                             @Override
                             public void run() {
                                 if (isFinal) {
+                                    startButton.setEnabled(true);
                                     try {
                                         appendToFile(apiResultPath, text);
                                         appendToFile(apiResultPath, " ");
