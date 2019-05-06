@@ -114,7 +114,7 @@ public class SpeechView extends AppCompatActivity {
                             File speechFolder = new File(SPEECH_FOLDER_PATH);
                             recursiveDelete(speechFolder);
 
-                            if (!speechFolder.delete()) {
+                            if (speechFolder.exists()) {
                                 throw new Exception("Error deleting script");
                             }
                             Toast toast = Toast.makeText(getApplicationContext(), "Speech deleted", Toast.LENGTH_SHORT);

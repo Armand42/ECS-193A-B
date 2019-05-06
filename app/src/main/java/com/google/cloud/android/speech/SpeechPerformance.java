@@ -13,6 +13,9 @@ import android.os.IBinder;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -27,7 +30,6 @@ import static java.nio.file.Paths.get;
 
 public class SpeechPerformance extends BaseActivity {
     private String speechName;
-    private File dir;
     private static String apiResultPath;
     private static String AUDIO_FILE_PATH;
     private static final String TAG = "MyActivity";
@@ -62,7 +64,38 @@ public class SpeechPerformance extends BaseActivity {
         dialog = new ProgressDialog(this);
 
         videoPlaybackState = sharedPreferences.getBoolean("videoPlayback", false);
-        setAccuracy();
+        int percentAccuracy;
+
+        String jsonFilePath = speechFolderPath + File.separator + newRunFolder + File.separator + "metadata";
+        File jsonFile = new File(jsonFilePath);
+
+        if(!jsonFile.exists()) {
+            percentAccuracy = calculateAccuracy();
+            setAccuracy(percentAccuracy);
+
+            JSONObject jsonObj = new JSONObject();
+            try {
+                jsonObj.put("percentAccuracy", percentAccuracy);
+                jsonObj.put("currScriptNum", sharedPreferences.getInt("currScriptNum", -1));
+                jsonObj.put("timeElapsed", timeElapsed);
+                FileService.writeToFile("metadata", jsonObj.toString(),
+                        speechFolderPath + File.separator + newRunFolder);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                JSONObject jsonObj = new JSONObject(jsonFilePath);
+                percentAccuracy = jsonObj.getInt("percentAccuracy");
+                setAccuracy(percentAccuracy);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+
     }
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -122,7 +155,7 @@ public class SpeechPerformance extends BaseActivity {
         if (dialog.isShowing()) {
             dialog.hide();
         }
-        Intent intent = new Intent(this, DiffViewTest.class);
+        Intent intent = new Intent(this, DiffView.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
@@ -208,9 +241,9 @@ public class SpeechPerformance extends BaseActivity {
                 }
             };
 
-    private void setAccuracy()
+    private int calculateAccuracy()
     {
-        TextView accuracyPercentage = (TextView) findViewById(R.id.accuracyPercentage);
+
         String scriptText= "EMPTY SCRIPT FILE :(";
         String speechToText = "EMPTY SPEECH FILE :(";
         diff_match_patch dmp = new diff_match_patch();
@@ -231,7 +264,7 @@ public class SpeechPerformance extends BaseActivity {
                     e.toString(), Toast.LENGTH_SHORT);
             readToast.show();
         }
-        myDiff = dmp.diff_lineMode(scriptText.replaceAll("[^a-zA-z' ]", "").toLowerCase().concat(" "), speechToText.toLowerCase().replaceAll("[^a-zA-z' ]", "").concat(" "));
+        myDiff = dmp.diff_lineMode(scriptText.replaceAll("[^a-zA-z' ]", " ").toLowerCase().concat(" "), speechToText.toLowerCase().replaceAll("[^a-zA-z' ]", " ").concat(" "));
 
         for(diff_match_patch.Diff temp : myDiff)
         {
@@ -269,8 +302,14 @@ public class SpeechPerformance extends BaseActivity {
             }
         }
         Log.e("ACCURACY:","incorrect / total = " + incorrectWords + "/" + totalWords);
-        accuracyPercentage.setText(""+ (100-((int)(100* (incorrectWords/totalWords)))) +"%");
-
+        int percent = (100-((int)(100* (incorrectWords/totalWords))));
+        return percent;
     }
+
+    public void setAccuracy(int percent){
+        TextView accuracyPercentage = (TextView) findViewById(R.id.accuracyPercentage);
+        accuracyPercentage.setText(""+ percent +"%");
+    }
+
 
 }
