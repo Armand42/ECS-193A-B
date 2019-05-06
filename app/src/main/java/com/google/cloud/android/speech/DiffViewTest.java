@@ -1,6 +1,5 @@
 package com.google.cloud.android.speech;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -9,26 +8,19 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.method.ScrollingMovementMethod;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.view.View;
-import android.widget.HorizontalScrollView;
-import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Observer;
 
 import static com.google.cloud.android.speech.diff_match_patch.Operation.DELETE;
 import static com.google.cloud.android.speech.diff_match_patch.Operation.EQUAL;
 import static com.google.cloud.android.speech.diff_match_patch.Operation.INSERT;
 
-public class DiffView extends AppCompatActivity implements IScrollListener {
+public class DiffViewTest extends AppCompatActivity implements IScrollListener {
 
     String scriptText, speechToText;
 
@@ -37,7 +29,7 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_diff_view);
+        setContentView(R.layout.activity_diff_view_test);
 
         Intent intent = getIntent();
 

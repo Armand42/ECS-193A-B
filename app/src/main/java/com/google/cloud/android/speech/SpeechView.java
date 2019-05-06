@@ -92,7 +92,7 @@ public class SpeechView extends AppCompatActivity {
     }
 
     public void goToDiffView(View view){
-        Intent intent = new Intent(this, DiffView.class);
+        Intent intent = new Intent(this, DiffViewTest.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }

@@ -31,7 +31,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".BaseActivity" />
-        <activity android:name=".DiffView">
+        <activity android:name=".DiffViewTest">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".SpeechPerformance" />
