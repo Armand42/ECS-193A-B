@@ -9,11 +9,13 @@ import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import static com.google.cloud.android.speech.diff_match_patch.Operation.DELETE;
@@ -25,6 +27,10 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
     String scriptText, speechToText;
 
     ObservableScrollView scriptScroll, speechToTextScroll;
+    int scriptStart= -1,  scriptEnd= -1,  speechStart = -1,  speechEnd = -1, errorsIndex = 0;
+
+    //make an arraylist for all the errors
+    ArrayList<Errors> errors = new ArrayList<Errors>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,19 +114,12 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
             switch(temp.operation)
             {
                 case EQUAL:
-//                    if (prevOperation == DELETE)
-//                    {
-//                        String temporary = scriptText.substring(currPos1);
-//                        int space = (temporary.indexOf(" ") == -1) ? currPos1 + temp.text.length()  : scriptText.indexOf(' ', currPos1);
-//                        script.setSpan(new ForegroundColorSpan(Color.RED), currPos1, space, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-//                    }
-//
-//                    if(prevOperation == INSERT) {
-//                        String temporary = speechToText.substring(currPos2);
-//                        int space = (temporary.indexOf(" ") == -1) ? currPos2 + temp.text.length()  : speechToText.indexOf(' ', currPos2);
-//                        speech.setSpan(new ForegroundColorSpan(Color.RED), currPos2, space, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-//
-//                    }
+                    if (prevOperation == DELETE || prevOperation == INSERT)
+                    {
+                        Errors singleError = new Errors( scriptStart,  scriptEnd,  speechStart,  speechEnd);
+                        errors.add(singleError);
+                        scriptStart = scriptEnd = speechStart = speechEnd = -1;
+                    }
 
                     currPos1 += temp.text.length();
                     currPos2 += temp.text.length();
@@ -138,6 +137,7 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
                 case DELETE: //for 1
                     templength = temp.text.length();
                     Log.e("DELETE:", temp.text);
+                    scriptStart = currPos1;
                     script.setSpan(new ForegroundColorSpan(Color.RED), currPos1, currPos1+templength, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                     currPos1 += templength;
                     prevOperation = DELETE;
@@ -152,6 +152,9 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
         ignore(scriptText,script,':');
         ignore(scriptText,script,';');
         ignore(scriptText,script,'-');
+
+        // Set first underlines from errors array
+        setErrorUnderlines(script, speech);
 
         // Script
         TextView scriptBody = (TextView) findViewById(R.id.scriptBody);
@@ -182,5 +185,12 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
         } else if (scrollView == speechToTextScroll) {
             scriptScroll.scrollTo(x, y);
         }
+    }
+
+    private void setErrorUnderlines(SpannableString script, SpannableString speech)
+    {
+        Errors error = errors.get(errorsIndex);
+        speech.setSpan(new UnderlineSpan(), error.speechStart, error.speechEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        script.setSpan(new UnderlineSpan(), error.scriptStart, error.scriptEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
     }
 }

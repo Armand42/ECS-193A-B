@@ -35,4 +35,5 @@
     <color name="light_gray">#F1F1F1</color>
     <color name="light_green">#BFFFC7</color>
     <color name="light_pink">#FFADAD</color>
+    <color name="black">#000</color>
 </resources>

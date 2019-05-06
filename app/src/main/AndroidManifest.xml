@@ -37,7 +37,7 @@
         </activity>
         <activity android:name=".BaseActivity"
             android:screenOrientation = "portrait"/>
-        <activity android:name=".DiffView"
+        <activity android:name=".DiffViewTest"
             android:screenOrientation = "portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
