@@ -8,9 +8,12 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,10 +29,12 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
 
     String scriptText, speechToText;
 
+    SpannableString scriptFull, speechFull;
+
     ObservableScrollView scriptScroll, speechToTextScroll;
     int scriptStart= -1,  scriptEnd= -1,  speechStart = -1,  speechEnd = -1, errorsIndex = 0;
 
-    //make an arraylist for all the errors
+    // Make an arraylist for all the errors
     ArrayList<Errors> errors = new ArrayList<Errors>();
 
     @Override
@@ -70,6 +75,33 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
 
         scriptScroll.setScrollViewListener(this);
         speechToTextScroll.setScrollViewListener(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.diff_view_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        switch(id)
+        {
+            case R.id.action_focus_next:
+                setNextErrorFocus();
+                return true;
+            case R.id.action_focus_prev:
+                setPrevErrorFocus();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void setScriptText() {
@@ -129,17 +161,17 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
                     break;
                 case INSERT://for 2
                     templength = temp.text.length();
-                    speech.setSpan(new ForegroundColorSpan(Color.RED), currPos2, currPos2+templength, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                    currPos2 += templength;
+                    speechStart = currPos2;
+                    speech.setSpan(new ForegroundColorSpan(Color.RED), currPos2, (speechToText.length()<(currPos2+templength))?(speechToText.length()):(currPos2+=templength), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                    speechEnd = currPos2;
                     prevOperation = INSERT;
 
                     break;
                 case DELETE: //for 1
                     templength = temp.text.length();
-                    Log.e("DELETE:", temp.text);
                     scriptStart = currPos1;
-                    script.setSpan(new ForegroundColorSpan(Color.RED), currPos1, currPos1+templength, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                    currPos1 += templength;
+                    script.setSpan(new ForegroundColorSpan(Color.RED), currPos1, (scriptText.length()<(currPos1+templength))?(scriptText.length()):(currPos1+=templength), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                    scriptEnd = currPos1;
                     prevOperation = DELETE;
                     break;
             }
@@ -153,17 +185,13 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
         ignore(scriptText,script,';');
         ignore(scriptText,script,'-');
 
-        // Set first underlines from errors array
-        setErrorUnderlines(script, speech);
+        scriptFull = script;
+        speechFull = speech;
 
-        // Script
-        TextView scriptBody = (TextView) findViewById(R.id.scriptBody);
-        scriptBody.setText(script);
+        // Set first error focus highlights
+        setErrorFocus();
 
-        // Speech to text
-        TextView speechToTextBody = (TextView) findViewById(R.id.speechToTextBody);
-        speechToTextBody.setText(speech);
-
+        setDiffTexts();
     }
 
     void ignore(String text1, SpannableString string1, char c)
@@ -187,10 +215,72 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
         }
     }
 
-    private void setErrorUnderlines(SpannableString script, SpannableString speech)
+    private void setErrorFocus()
     {
         Errors error = errors.get(errorsIndex);
-        speech.setSpan(new UnderlineSpan(), error.speechStart, error.speechEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        script.setSpan(new UnderlineSpan(), error.scriptStart, error.scriptEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        int highlight = getResources().getColor(R.color.highlight);
+
+        // Set background colors to yellow
+        speechFull.setSpan(new BackgroundColorSpan(highlight), error.speechStart, error.speechEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        scriptFull.setSpan(new BackgroundColorSpan(highlight), error.scriptStart, error.scriptEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+
+        // Set text color to white
+        speechFull.setSpan(new ForegroundColorSpan(Color.WHITE), error.speechStart, error.speechEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        scriptFull.setSpan(new ForegroundColorSpan(Color.WHITE), error.scriptStart, error.scriptEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+
+        setDiffTexts();
+    }
+
+    private void unsetErrorFocus()
+    {
+        Errors error = errors.get(errorsIndex);
+        int transparent = getResources().getColor(R.color.transparent);
+
+        // Set background colors to transparent
+        speechFull.setSpan(new BackgroundColorSpan(transparent), error.speechStart, error.speechEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        scriptFull.setSpan(new BackgroundColorSpan(transparent), error.scriptStart, error.scriptEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+
+        // Set text color to red
+        speechFull.setSpan(new ForegroundColorSpan(Color.RED), error.speechStart, error.speechEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        scriptFull.setSpan(new ForegroundColorSpan(Color.RED), error.scriptStart, error.scriptEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+    }
+
+    private void setNextErrorFocus()
+    {
+        if (errorsIndex < errors.size()-1)
+        {
+            // Get curr error and set background to transparent
+            // Set text to red
+            unsetErrorFocus();
+
+            // Go to next error
+            errorsIndex++;
+            setErrorFocus();
+        }
+    }
+
+    private void setPrevErrorFocus()
+    {
+        if (errorsIndex > 0)
+        {
+            // Get curr error and set background to transparent
+            // Set text to red
+            unsetErrorFocus();
+
+            // Go to prev error
+            errorsIndex--;
+            setErrorFocus();
+        }
+    }
+
+    private void setDiffTexts()
+    {
+        // Script
+        TextView scriptBody = (TextView) findViewById(R.id.scriptBody);
+        scriptBody.setText(scriptFull);
+
+        // Speech to text
+        TextView speechToTextBody = (TextView) findViewById(R.id.speechToTextBody);
+        speechToTextBody.setText(speechFull);
     }
 }
