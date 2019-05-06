@@ -10,7 +10,6 @@ import android.view.View;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
 import android.os.IBinder;
-import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.File;
@@ -120,7 +119,7 @@ public class SpeechPerformance extends BaseActivity {
         if (dialog.isShowing()) {
             dialog.hide();
         }
-        Intent intent = new Intent(this, DiffView.class);
+        Intent intent = new Intent(this, DiffViewTest.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
