@@ -87,18 +87,20 @@ public class SpeechPerformance extends BaseActivity {
     protected void onStart() {
         super.onStart();
 
-        // Prepare Cloud Speech API
-        bindService(new Intent(this, SpeechService.class), mServiceConnection, BIND_AUTO_CREATE);
-
+        if(videoPlaybackState) {
+            // Prepare Cloud Speech API
+            bindService(new Intent(this, SpeechService.class), mServiceConnection, BIND_AUTO_CREATE);
+        }
     }
 
     @Override
     protected void onStop() {
-        // Stop Cloud Speech API
-        mSpeechService.removeListener(mSpeechServiceListener);
-        unbindService(mServiceConnection);
-        mSpeechService = null;
-
+        if(videoPlaybackState) {
+            // Stop Cloud Speech API
+            mSpeechService.removeListener(mSpeechServiceListener);
+            unbindService(mServiceConnection);
+            mSpeechService = null;
+        }
         super.onStop();
     }
 

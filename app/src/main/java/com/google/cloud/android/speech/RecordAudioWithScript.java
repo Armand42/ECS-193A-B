@@ -201,7 +201,7 @@ public class RecordAudioWithScript extends AppCompatActivity
     }
 
     public void goToSpeechPerformance(View view) {
-//        String speech = getFilesDir() + File.separator + speechName;
+        addToSharedPreferences();
         Intent intent = new Intent(this, SpeechPerformance.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
@@ -313,7 +313,6 @@ public class RecordAudioWithScript extends AppCompatActivity
 
 
     private void appendToFile(String speechScriptPath, String apiResultText)throws IOException {
-        addToSharedPreferences(apiResultText);
         Log.d("AUDIO ONLY", "APPENDING TO FILE");
         File file = new File(speechScriptPath);
 
@@ -346,7 +345,7 @@ public class RecordAudioWithScript extends AppCompatActivity
         editor.commit();
         goToSpeechPerformance(getCurrentFocus());
     }
-    public void addToSharedPreferences(String apiResultText) {
+    public void addToSharedPreferences() {
 
         //CREATE the shared preference file and add necessary values
         SharedPreferences.Editor editor = sharedPreferences.edit();
