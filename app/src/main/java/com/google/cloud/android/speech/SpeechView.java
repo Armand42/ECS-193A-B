@@ -110,12 +110,11 @@ public class SpeechView extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         // Continue with delete operation
                         try {
-                            //            FileService.deleteSpeech(filePath);
                             SPEECH_FOLDER_PATH = getFilesDir() + File.separator + speechName;
-                            File script = new File(SPEECH_FOLDER_PATH);
-                            recursiveDelete(script);
+                            File speechFolder = new File(SPEECH_FOLDER_PATH);
+                            recursiveDelete(speechFolder);
 
-                            if (!script.delete()) {
+                            if (!speechFolder.delete()) {
                                 throw new Exception("Error deleting script");
                             }
                             Toast toast = Toast.makeText(getApplicationContext(), "Speech deleted", Toast.LENGTH_SHORT);
@@ -125,17 +124,7 @@ public class SpeechView extends AppCompatActivity {
                             Toast toast = Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT);
                             toast.show();
                         }
-                        //Delete  all videos
-//                        final File dir = getDir(speechName, MODE_PRIVATE);
                         SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
-//                        for(int i =0 ; i<sharedPreferences.getInt("currVid", -1) ; i++)
-//                        {
-//                            File vid = new File(dir.getAbsolutePath() + "/" + speechName+" "+ i+".mp4" );
-//                            vid.delete();
-//                        }
-//                        dir.delete();
-
-
 
                         sharedPreferences.edit().clear().apply(); //clears all preferences
 

@@ -35,9 +35,6 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
         mTopToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(mTopToolbar);
 
-//        File dir = new File(getFilesDir() + File.separator + "speech-scripts");
-        // Get all files saved to speech scripts
-
         File dir = getFilesDir();
 
         //get file names
@@ -92,10 +89,7 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        TextView temp = (TextView) view;
-//        String filePath = listView.getItemAtPosition(position).toString();
         String speechName = fileNames[position];
-//        Toast.makeText(getApplicationContext(), Value, Toast.LENGTH_SHORT).show();
         goToSpeechMenu(view, speechName);
     }
 

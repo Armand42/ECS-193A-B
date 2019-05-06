@@ -50,7 +50,6 @@ public class DiffView extends AppCompatActivity {
         SharedPreferences sharedPreferences= getSharedPreferences(intent.getStringExtra("speechName"), MODE_PRIVATE);
         try {
             scriptText = FileService.readFromFile(sharedPreferences.getString("filepath",null));
-            // Duplicate for now -- eventually replace with reading most recent speech to text result
             speechToText = FileService.readFromFile(sharedPreferences.getString("apiResult",null));
 
             setScriptText();
