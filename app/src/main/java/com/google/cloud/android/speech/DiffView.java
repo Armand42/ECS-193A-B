@@ -112,7 +112,7 @@ public class DiffView extends AppCompatActivity {
                     speechStart = currPos2;
                     speech.setSpan(new ForegroundColorSpan(Color.RED), currPos2, currPos2+=templength, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                     speechEnd = currPos2;
-                    speech.setSpan(new UnderlineSpan(),speechStart,speechEnd>speechToText.length()?speechToText.length():speechEnd,Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                    //speech.setSpan(new UnderlineSpan(),speechStart,speechEnd>speechToText.length()?speechToText.length():speechEnd,Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                     prevOperation = INSERT;
 
                     break;
@@ -121,7 +121,7 @@ public class DiffView extends AppCompatActivity {
                     scriptStart = currPos1;
                     script.setSpan(new ForegroundColorSpan(Color.RED), currPos1, currPos1+=templength, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                     scriptEnd = currPos1;
-                    script.setSpan(new UnderlineSpan(),scriptStart,scriptEnd>scriptText.length()?scriptText.length():scriptEnd,Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                    //script.setSpan(new UnderlineSpan(),scriptStart,scriptEnd>scriptText.length()?scriptText.length():scriptEnd,Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 
                     prevOperation = DELETE;
                     break;
