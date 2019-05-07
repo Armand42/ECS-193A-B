@@ -39,17 +39,6 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/diffView"
-            android:layout_width="276dp"
-            android:layout_height="49dp"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/border_button_dark"
-            android:fontFamily="@font/raleway"
-            android:onClick="goToDiffView"
-            android:text="@string/diff_view"
-            android:textStyle="bold" />
-
-        <Button
             android:id="@+id/viewPastRecordings"
             android:layout_width="276dp"
             android:layout_height="49dp"
@@ -57,7 +46,7 @@
             android:background="@drawable/border_button_dark"
             android:fontFamily="@font/raleway"
             android:onClick="goToPlayBack"
-            android:text="@string/view_past_recordings_button"
+            android:text="@string/view_past_runs_button"
             android:textStyle="bold" />
 
         <Button

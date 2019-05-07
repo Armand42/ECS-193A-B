@@ -34,6 +34,7 @@ public class SpeechPerformance extends BaseActivity {
     private static String AUDIO_FILE_PATH;
     private static final String TAG = "MyActivity";
     private SpeechService mSpeechService;
+    private String prevActivity;
 
     SharedPreferences sharedPreferences;
     Boolean videoPlaybackState;
@@ -45,6 +46,8 @@ public class SpeechPerformance extends BaseActivity {
         setContentView(R.layout.activity_speech_performance);
         Intent intent = getIntent();
         speechName = intent.getStringExtra("speechName");
+        prevActivity = intent.getStringExtra("prevActivity");
+        String selectedRun = intent.getStringExtra("selectedRun");
         sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
 
         TextView speechTime = findViewById(R.id.speechTime);
@@ -55,9 +58,15 @@ public class SpeechPerformance extends BaseActivity {
         speechTime.setText(String.format("Speech time: %02d:%02d", minutes, seconds));
 
         String speechFolderPath = getApplicationContext().getFilesDir() + File.separator + speechName;
-        String newRunFolder = "run" + (sharedPreferences.getInt("currRun", -1) - 1);
+        String speechRunFolder;
 
-        apiResultPath = speechFolderPath + File.separator + newRunFolder + File.separator + "apiResult";
+        if(!prevActivity.equals("playbackList")){
+            speechRunFolder  = "run" + (sharedPreferences.getInt("currRun", -1) - 1);
+        } else {
+            speechRunFolder = selectedRun;
+        }
+
+        apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
 
         Log.d("apiResultPath", apiResultPath);
         AUDIO_FILE_PATH = intent.getStringExtra("audioFilePath");
@@ -66,7 +75,7 @@ public class SpeechPerformance extends BaseActivity {
         videoPlaybackState = sharedPreferences.getBoolean("videoPlayback", false);
         int percentAccuracy;
 
-        String jsonFilePath = speechFolderPath + File.separator + newRunFolder + File.separator + "metadata";
+        String jsonFilePath = speechFolderPath + File.separator + speechRunFolder + File.separator + "metadata";
         File jsonFile = new File(jsonFilePath);
 
         if(!jsonFile.exists()) {
@@ -79,7 +88,7 @@ public class SpeechPerformance extends BaseActivity {
                 jsonObj.put("currScriptNum", sharedPreferences.getInt("currScriptNum", -1));
                 jsonObj.put("timeElapsed", timeElapsed);
                 FileService.writeToFile("metadata", jsonObj.toString(),
-                        speechFolderPath + File.separator + newRunFolder);
+                        speechFolderPath + File.separator + speechRunFolder);
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (Exception e) {
@@ -87,10 +96,12 @@ public class SpeechPerformance extends BaseActivity {
             }
         } else {
             try {
-                JSONObject jsonObj = new JSONObject(jsonFilePath);
+                JSONObject jsonObj = new JSONObject(FileService.readFromFile(jsonFilePath));
                 percentAccuracy = jsonObj.getInt("percentAccuracy");
                 setAccuracy(percentAccuracy);
             } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 
@@ -122,7 +133,7 @@ public class SpeechPerformance extends BaseActivity {
     protected void onStart() {
         super.onStart();
 
-        if(videoPlaybackState) {
+        if(!prevActivity.equals("playbackList") && videoPlaybackState) {
             // Prepare Cloud Speech API
             bindService(new Intent(this, SpeechService.class), mServiceConnection, BIND_AUTO_CREATE);
         }
@@ -130,7 +141,7 @@ public class SpeechPerformance extends BaseActivity {
 
     @Override
     protected void onStop() {
-        if(videoPlaybackState) {
+        if(!prevActivity.equals("playbackList") && videoPlaybackState) {
             // Stop Cloud Speech API
             mSpeechService.removeListener(mSpeechServiceListener);
             unbindService(mServiceConnection);
@@ -139,8 +150,14 @@ public class SpeechPerformance extends BaseActivity {
         super.onStop();
     }
 
-    public void goToPlayBack(View view) {
+    public void goToPastRuns(View view) {
         Intent intent = new Intent(this, PlayBack_List.class);
+        intent.putExtra("speechName", speechName);
+        startActivity(intent);
+    }
+
+    public void goToPlayback(View view) {
+        Intent intent = new Intent(this, PlayBack.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
@@ -157,6 +174,7 @@ public class SpeechPerformance extends BaseActivity {
         }
         Intent intent = new Intent(this, DiffView.class);
         intent.putExtra("speechName", speechName);
+        intent.putExtra("apiResultPath", apiResultPath);
         startActivity(intent);
     }
 
@@ -199,7 +217,7 @@ public class SpeechPerformance extends BaseActivity {
 
 
     public void pressedButton(View view) throws FileNotFoundException {
-        if (videoPlaybackState) {
+        if (!prevActivity.equals("playbackList") && videoPlaybackState) {
             dialog.setMessage("Preparing your speech!");
             dialog.show();
             Path path = get(AUDIO_FILE_PATH);

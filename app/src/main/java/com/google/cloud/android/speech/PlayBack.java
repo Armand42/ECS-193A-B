@@ -19,7 +19,7 @@ import java.io.IOException;
 
 public class PlayBack extends AppCompatActivity {
     String speechName;
-    String videoName;
+    String selectedRunMediaPath;
     String scriptText;
 
     @Override
@@ -29,24 +29,25 @@ public class PlayBack extends AppCompatActivity {
 
         Intent intent = getIntent();
         speechName = intent.getStringExtra("speechName");
-        videoName = intent.getStringExtra("videoName");
+        selectedRunMediaPath = intent.getStringExtra("selectedRunMediaPath");
 
 
-        VideoView videoView =(VideoView)findViewById(R.id.vdVw);
+        VideoView videoView = (VideoView) findViewById(R.id.vdVw);
         //Set MediaController  to enable play, pause, forward, etc options.
-        MediaController mediaController= new MediaController(this);
+        MediaController mediaController = new MediaController(this);
         mediaController.setAnchorView(videoView);
         //Location of Media File
-        Uri videoUri = Uri.parse(videoName);
+        Uri videoUri = Uri.parse(selectedRunMediaPath);
         //Starting VideView By Setting MediaController and URI
         videoView.setMediaController(mediaController);
         videoView.setVideoURI(videoUri);
         videoView.requestFocus();
         videoView.start();
-        SharedPreferences sharedPreferences = getSharedPreferences(speechName,MODE_PRIVATE);
-    // Make script viewable
+        SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
+
+        // Make script viewable
         try {
-            scriptText = FileService.readFromFile(sharedPreferences.getString("filepath",null));
+            scriptText = FileService.readFromFile(sharedPreferences.getString("filepath", null));
             setScriptText();
         } catch (IOException e) {
             e.printStackTrace();
@@ -57,12 +58,13 @@ public class PlayBack extends AppCompatActivity {
     }
 
 
-    private String getVideoFilePath(Context context) {
-        final File dir = getDir(speechName, MODE_PRIVATE);
+//    private String getVideoFilePath(Context context) {
+//        final File dir = getDir(speechName, MODE_PRIVATE);
+//
+//        return (dir == null ? "" : (dir.getAbsolutePath() + "/"))
+//                + selectedRun;
+//    }
 
-        return (dir == null ? "" : (dir.getAbsolutePath() + "/"))
-                +  videoName;
-    }
     // Display speech in playback
     private void setScriptText() {
         // Get text body

@@ -27,11 +27,24 @@
         android:background="@drawable/border_button_dark"
         android:onClick="goToSpeechView"
         android:text="@string/to_speech_menu_button"
-        app:layout_constraintBottom_toTopOf="@+id/diffView"
+        app:layout_constraintBottom_toTopOf="@+id/playback"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/speechTime" />
 
+
+    <Button
+        android:id="@+id/playback"
+        android:layout_width="254dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/border_button_dark"
+        android:onClick="goToPlayback"
+        android:text="@string/playback_button"
+        app:layout_constraintBottom_toTopOf="@+id/diffView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button10" />
 
     <Button
         android:id="@+id/button11"
@@ -39,8 +52,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="105dp"
         android:background="@drawable/border_button_dark"
-        android:onClick="goToPlayBack"
-        android:text="@string/view_past_recordings_button"
+        android:onClick="goToPastRuns"
+        android:text="@string/view_past_runs_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -68,7 +81,7 @@
         app:layout_constraintBottom_toTopOf="@+id/button11"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button10" />
+        app:layout_constraintTop_toBottomOf="@+id/playback" />
 
     <TextView
         android:id="@+id/accuracyPercentage"
