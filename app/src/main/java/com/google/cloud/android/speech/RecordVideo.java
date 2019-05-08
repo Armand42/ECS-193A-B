@@ -22,9 +22,19 @@ public class RecordVideo extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.record_video_with_script);
         Intent intent = getIntent();
         speechName = intent.getStringExtra("speechName");
+
+        SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
+
+        if(sharedPreferences.getBoolean("displaySpeech", false)){
+            Log.d("record video", "CONTENT VIEW Set");
+            setContentView(R.layout.record_video_with_script);
+        } else
+        {
+            setContentView(R.layout.record_video_without_script);
+        }
+
         this.setTitle("Record a Speech");
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
@@ -32,20 +42,10 @@ public class RecordVideo extends BaseActivity {
                     .commit();
         }
 
-        SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
-
-        if(sharedPreferences.getBoolean("displaySpeech", false)){
-            setContentView(R.layout.record_video_with_script);
-        } else
-        {
-            setContentView(R.layout.record_video_without_script);
-        }
-        String speechFolderPath = getApplicationContext().getFilesDir() + File.separator + speechName;
+        String speechFolderPath = getApplicationContext().getFilesDir() + File.separator + speechName.replace(" ", "");
         String speechRunFolder  = "run" + sharedPreferences.getInt("currRun", -1);
 
-
         apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
-
     }
 
     @Override
@@ -124,7 +124,7 @@ public class RecordVideo extends BaseActivity {
     public void goToSpeechPerformance() {
         Intent intent = new Intent(this, SpeechPerformance.class);
         intent.putExtra("speechName", speechName);
-        intent.putExtra("prevActivity", "recordVideo");
+        intent.putExtra("prevActivity", "recording");
         startActivity(intent);
     }
 }

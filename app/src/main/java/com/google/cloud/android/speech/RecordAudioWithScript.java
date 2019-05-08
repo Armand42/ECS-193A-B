@@ -371,6 +371,7 @@ public class RecordAudioWithScript extends AppCompatActivity
             File audioFile = new File(speechFolderPath + File.separator + speechRunFolder + File.separator + "audio.wav");
             FileOutputStream fileoutputstream = new FileOutputStream(audioFile);
             fileoutputstream.write(bytearray);
+            fileoutputstream.flush();
             fileoutputstream.close();
         } catch (IOException ex) {
             ex.printStackTrace();

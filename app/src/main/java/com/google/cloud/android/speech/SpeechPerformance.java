@@ -63,7 +63,8 @@ public class SpeechPerformance extends BaseActivity {
         String speechRunFolder;
 
         if(!prevActivity.equals("playbackList")){
-            speechRunFolder  = "run" + (sharedPreferences.getInt("currRun", -1) - 1);
+            int speechRunNum = (sharedPreferences.getInt("currRun", -1) - 1);
+            speechRunFolder  = "run" + speechRunNum;
         } else {
             speechRunFolder = selectedRun;
         }
@@ -111,20 +112,6 @@ public class SpeechPerformance extends BaseActivity {
 
     }
 
-//    private ServiceConnection mServiceConnection = new ServiceConnection() {
-//
-//        @Override
-//        public void onServiceConnected(ComponentName componentName, IBinder binder) {
-//            mSpeechService = SpeechService.from(binder);
-//            mSpeechService.addListener(mSpeechServiceListener);
-//        }
-//
-//        @Override
-//        public void onServiceDisconnected(ComponentName componentName) {
-//            mSpeechService = null;
-//        }
-//
-//    };
 
     @Override
     protected void onResume() {
@@ -134,21 +121,10 @@ public class SpeechPerformance extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-//        if(!prevActivity.equals("playbackList") && videoPlaybackState) {
-//            // Prepare Cloud Speech API
-//            bindService(new Intent(this, SpeechService.class), mServiceConnection, BIND_AUTO_CREATE);
-//        }
     }
 
     @Override
     protected void onStop() {
-//        if(!prevActivity.equals("playbackList") && videoPlaybackState) {
-//            // Stop Cloud Speech API
-//            mSpeechService.removeListener(mSpeechServiceListener);
-//            unbindService(mServiceConnection);
-//            mSpeechService = null;
-//        }
         super.onStop();
     }
 

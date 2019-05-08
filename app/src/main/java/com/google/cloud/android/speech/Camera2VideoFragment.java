@@ -314,11 +314,12 @@ public class Camera2VideoFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         sharedPref = getActivity().getSharedPreferences(speechName, MODE_PRIVATE);
-        if (sharedPref.getBoolean("displaySpeech", false)) {
+//        if (sharedPref.getBoolean("displaySpeech", false)) {
+            Log.d("DISPLAYING SPEECH", "help");
             return inflater.inflate(R.layout.fragment_camera2_video, container, false);
-        } else{
-            return inflater.inflate(R.layout.fragment_camera3_video, container, false);
-        }
+//        } else{
+//            return inflater.inflate(R.layout.fragment_camera3_video, container, false);
+//        }
     }
 
     @Override
@@ -337,7 +338,6 @@ public class Camera2VideoFragment extends Fragment
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         if (sharedPref.getBoolean("displaySpeech", false)) {
             setScriptText();
         }
@@ -866,6 +866,7 @@ public class Camera2VideoFragment extends Fragment
     // Display speech in playback
     private void setScriptText() {
         // Get text body
+        Log.d("camera fragment", getActivity().toString());
         TextView scriptBody = (TextView) getActivity().findViewById(R.id.scriptBody);
 
         // Make script scrollable
