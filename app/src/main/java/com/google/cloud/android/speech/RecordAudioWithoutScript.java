@@ -172,7 +172,7 @@ public class RecordAudioWithoutScript extends AppCompatActivity
         addToSharedPreferences();
         Intent intent = new Intent(this, SpeechPerformance.class);
         intent.putExtra("speechName", speechName);
-        intent.putExtra("prevActivity", "recordAudio");
+        intent.putExtra("prevActivity", "recording");
         startActivity(intent);
     }
 
