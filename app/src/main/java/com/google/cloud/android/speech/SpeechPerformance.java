@@ -3,6 +3,7 @@ package com.google.cloud.android.speech;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -31,6 +32,7 @@ import static java.nio.file.Paths.get;
 public class SpeechPerformance extends BaseActivity {
     private String speechName;
     private static String apiResultPath;
+    private static String selectedRunMediaPath;
     private static String AUDIO_FILE_PATH;
     private static final String TAG = "MyActivity";
     private SpeechService mSpeechService;
@@ -57,7 +59,7 @@ public class SpeechPerformance extends BaseActivity {
         int seconds = (int) timeElapsed % 60000 / 1000;
         speechTime.setText(String.format("Speech time: %02d:%02d", minutes, seconds));
 
-        String speechFolderPath = getApplicationContext().getFilesDir() + File.separator + speechName;
+        String speechFolderPath = getApplicationContext().getFilesDir() + File.separator + speechName.replace(" ", "");
         String speechRunFolder;
 
         if(!prevActivity.equals("playbackList")){
@@ -67,7 +69,7 @@ public class SpeechPerformance extends BaseActivity {
         }
 
         apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
-
+        selectedRunMediaPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "audio.wav";
         Log.d("apiResultPath", apiResultPath);
         AUDIO_FILE_PATH = intent.getStringExtra("audioFilePath");
         dialog = new ProgressDialog(this);
@@ -78,7 +80,7 @@ public class SpeechPerformance extends BaseActivity {
         String jsonFilePath = speechFolderPath + File.separator + speechRunFolder + File.separator + "metadata";
         File jsonFile = new File(jsonFilePath);
 
-        if(!jsonFile.exists()) {
+        if(prevActivity.equals("recording")) {
             percentAccuracy = calculateAccuracy();
             setAccuracy(percentAccuracy);
 
@@ -109,20 +111,20 @@ public class SpeechPerformance extends BaseActivity {
 
     }
 
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder binder) {
-            mSpeechService = SpeechService.from(binder);
-            mSpeechService.addListener(mSpeechServiceListener);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            mSpeechService = null;
-        }
-
-    };
+//    private ServiceConnection mServiceConnection = new ServiceConnection() {
+//
+//        @Override
+//        public void onServiceConnected(ComponentName componentName, IBinder binder) {
+//            mSpeechService = SpeechService.from(binder);
+//            mSpeechService.addListener(mSpeechServiceListener);
+//        }
+//
+//        @Override
+//        public void onServiceDisconnected(ComponentName componentName) {
+//            mSpeechService = null;
+//        }
+//
+//    };
 
     @Override
     protected void onResume() {
@@ -133,20 +135,20 @@ public class SpeechPerformance extends BaseActivity {
     protected void onStart() {
         super.onStart();
 
-        if(!prevActivity.equals("playbackList") && videoPlaybackState) {
-            // Prepare Cloud Speech API
-            bindService(new Intent(this, SpeechService.class), mServiceConnection, BIND_AUTO_CREATE);
-        }
+//        if(!prevActivity.equals("playbackList") && videoPlaybackState) {
+//            // Prepare Cloud Speech API
+//            bindService(new Intent(this, SpeechService.class), mServiceConnection, BIND_AUTO_CREATE);
+//        }
     }
 
     @Override
     protected void onStop() {
-        if(!prevActivity.equals("playbackList") && videoPlaybackState) {
-            // Stop Cloud Speech API
-            mSpeechService.removeListener(mSpeechServiceListener);
-            unbindService(mServiceConnection);
-            mSpeechService = null;
-        }
+//        if(!prevActivity.equals("playbackList") && videoPlaybackState) {
+//            // Stop Cloud Speech API
+//            mSpeechService.removeListener(mSpeechServiceListener);
+//            unbindService(mServiceConnection);
+//            mSpeechService = null;
+//        }
         super.onStop();
     }
 
@@ -159,6 +161,7 @@ public class SpeechPerformance extends BaseActivity {
     public void goToPlayback(View view) {
         Intent intent = new Intent(this, PlayBack.class);
         intent.putExtra("speechName", speechName);
+        intent.putExtra("selectedRunMediaPath", selectedRunMediaPath);
         startActivity(intent);
     }
 
@@ -168,10 +171,7 @@ public class SpeechPerformance extends BaseActivity {
         startActivity(intent);
     }
 
-    public void goToDiffView() throws FileNotFoundException {
-        if (dialog.isShowing()) {
-            dialog.hide();
-        }
+    public void goToDiffView(View view) throws FileNotFoundException {
         Intent intent = new Intent(this, DiffView.class);
         intent.putExtra("speechName", speechName);
         intent.putExtra("apiResultPath", apiResultPath);
@@ -186,78 +186,15 @@ public class SpeechPerformance extends BaseActivity {
     }
 
 
-    private void appendToFile(String speechScriptPath, String apiResultText) throws IOException {
-        addToSharedPreferences(apiResultText);
-        File file = new File(speechScriptPath);
-        Log.d(TAG, "APPENDING TO FILE");
-        //This point and below is responsible for the write operation
-        FileOutputStream outputStream = null;
-        try {
-            //second argument of FileOutputStream constructor indicates whether
-            //to append or create new file if one exists -- for now we're creating a new file
-            outputStream = new FileOutputStream(file, true);
-
-            outputStream.write(apiResultText.getBytes());
-            outputStream.flush();
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
 
     public void addToSharedPreferences(String apiResultText) {
         //CREATE the shared preference file and add necessary values
         SharedPreferences sharedPref = getSharedPreferences(speechName, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("apiResult", apiResultPath);
-
         editor.commit();
     }
 
-
-    public void pressedButton(View view) throws FileNotFoundException {
-        if (!prevActivity.equals("playbackList") && videoPlaybackState) {
-            dialog.setMessage("Preparing your speech!");
-            dialog.show();
-            Path path = get(AUDIO_FILE_PATH);
-            InputStream fin = null;
-            try {
-                fin = newInputStream(path);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            mSpeechService.recognizeInputStream(fin);
-        } else {
-            goToDiffView();
-        }
-    }
-
-
-    private final SpeechService.Listener mSpeechServiceListener =
-            new SpeechService.Listener() {
-                @Override
-                public void onSpeechRecognized(final String text, final boolean isFinal) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                appendToFile(apiResultPath, text);
-
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            if (isFinal) {
-                                try {
-                                    goToDiffView();
-                                } catch (FileNotFoundException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    });
-                }
-            };
 
     private int calculateAccuracy()
     {

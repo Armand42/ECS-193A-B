@@ -67,12 +67,8 @@ public class SpeechView extends AppCompatActivity {
     public void goToSpeechRecord(View view) {
         Intent intent;
         // If Video and Script
-        if (videoPlaybackState && viewScriptState) {
-            intent = new Intent(this, RecordVideoWithScript.class);
-        }
-        // If just video
-        else if (videoPlaybackState) {
-            intent = new Intent(this, RecordVideoWithoutScript.class);
+        if (videoPlaybackState) {
+            intent = new Intent(this, RecordVideo.class);
         }
         // If just want the Audio
         else if (viewScriptState) {
@@ -116,7 +112,7 @@ public class SpeechView extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         // Continue with delete operation
                         try {
-                            SPEECH_FOLDER_PATH = getFilesDir() + File.separator + speechName;
+                            SPEECH_FOLDER_PATH = getFilesDir() + File.separator + speechName.replace(" ", "");
                             File speechFolder = new File(SPEECH_FOLDER_PATH);
                             recursiveDelete(speechFolder);
 

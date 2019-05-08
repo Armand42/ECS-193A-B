@@ -78,7 +78,7 @@
             android:screenOrientation = "portrait"/>
         <activity android:name=".SpeechPerformance"
             android:screenOrientation = "portrait"/>
-        <activity android:name=".RecordVideoWithScript"
+        <activity android:name=".RecordVideo"
             android:screenOrientation = "portrait"/>
         <activity
             android:name=".NewSpeech"
@@ -128,17 +128,15 @@
             android:exported="true"
             android:parentActivityName=".SpeechView">
 
-        <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
 
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value=".SpeechView"
-            android:screenOrientation="portrait"/>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".SpeechView"
+                android:screenOrientation="portrait"/>
         </activity>
 
 
-        <activity android:name=".RecordVideoWithoutScript"
-            android:screenOrientation = "portrait"/>
         <activity
             android:name=".NewSpeech"
             android:screenOrientation = "portrait"

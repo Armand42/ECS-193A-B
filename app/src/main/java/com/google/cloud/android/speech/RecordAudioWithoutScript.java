@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -41,6 +42,8 @@ public class RecordAudioWithoutScript extends AppCompatActivity
 
     private String filePath;
     String speechName;
+    String speechFolderPath;
+    String speechRunFolder;
 
     boolean recording = false;
 
@@ -50,6 +53,7 @@ public class RecordAudioWithoutScript extends AppCompatActivity
 
     private SharedPreferences sharedPreferences;
     private VoiceRecorder mVoiceRecorder;
+    private MediaRecorder mRecorder = null;
     private final VoiceRecorder.Callback mVoiceCallback = new VoiceRecorder.Callback() {
 
         @Override
@@ -113,6 +117,13 @@ public class RecordAudioWithoutScript extends AppCompatActivity
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        speechFolderPath = getApplicationContext().getFilesDir() + File.separator + speechName.replace(" ", "");
+        speechRunFolder = "run" + sharedPreferences.getInt("currRun",-1);
+        File f = new File(speechFolderPath, speechRunFolder);
+        f.mkdirs();
+
+        apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
+
         // Set timer on layout
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
@@ -155,20 +166,13 @@ public class RecordAudioWithoutScript extends AppCompatActivity
                 }
             }
         });
-
-        String speechFolderPath = getApplicationContext().getFilesDir() + File.separator + speechName;
-        String newRunFolder = "run" + sharedPreferences.getInt("currRun",-1);
-        File f = new File(speechFolderPath, newRunFolder);
-        f.mkdirs();
-
-        apiResultPath = speechFolderPath + File.separator + newRunFolder + File.separator + "apiResult";
-
     }
 
     public void goToSpeechPerformance(View view) {
         addToSharedPreferences();
         Intent intent = new Intent(this, SpeechPerformance.class);
         intent.putExtra("speechName", speechName);
+        intent.putExtra("prevActivity", "recordAudio");
         startActivity(intent);
     }
 
@@ -230,12 +234,14 @@ public class RecordAudioWithoutScript extends AppCompatActivity
         }
         mVoiceRecorder = new VoiceRecorder(mVoiceCallback);
         mVoiceRecorder.start();
+        startRecording();
     }
 
     private void stopVoiceRecorder() {
         if (mVoiceRecorder != null) {
             mVoiceRecorder.stop();
             mVoiceRecorder = null;
+            stopRecording();
         }
     }
 
@@ -315,5 +321,27 @@ public class RecordAudioWithoutScript extends AppCompatActivity
         editor.putString("apiResult", apiResultPath);
         editor.putInt("currRun",1 + sharedPreferences.getInt("currRun",-1));
         editor.commit();
+    }
+    private void startRecording() {
+        mRecorder = new MediaRecorder();
+        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        File audioFile = new File(speechFolderPath + File.separator + speechRunFolder + File.separator + "audio.mp4");
+        mRecorder.setOutputFile(audioFile);
+        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+
+        try {
+            mRecorder.prepare();
+            mRecorder.start();
+        } catch (IOException e) {
+            Log.e("RECORDAUDIO", "prepare() failed");
+        }
+
+    }
+
+    private void stopRecording(){
+        mRecorder.stop();
+        mRecorder.reset();
+        mRecorder.release();
     }
 }

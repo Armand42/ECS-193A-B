@@ -75,12 +75,16 @@ public class NewSpeech extends AppCompatActivity {
 
         String filePath;
 
-        SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + speechName;
+        SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + speechName.replace(" ", "");
         sharedPref = getSharedPreferences(speechName, MODE_PRIVATE);
 
         // Check if speech script directory exists
         File f = new File(SPEECH_SCRIPT_PATH);
-        if (f.exists()) {
+        if(speechName.isEmpty()){
+            emptySpeechName();
+        } else if (speechText.isEmpty()){
+            emptySpeechContent();
+        }else if (f.exists()) {
             saveSpeech(speechName, speechText);
         } else if (!f.exists()) {
             f = new File(SPEECH_SCRIPT_PATH, "speech-script");
@@ -91,10 +95,11 @@ public class NewSpeech extends AppCompatActivity {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putInt("currRun", 1);
                 editor.putInt("currScriptNum", 1);
+                editor.putString("speechNameToDisplay", speechName);
                 editor.commit();
 
                 /* Write speech text to file */
-                filePath = FileService.writeToFile(speechName + "1", speechText,
+                filePath = FileService.writeToFile(speechName.replace(" ", "") + "1", speechText,
                         SPEECH_SCRIPT_PATH + File.separator + "speech-script");
                 Log.d("NEWSPEECH", filePath);
 
@@ -134,6 +139,22 @@ public class NewSpeech extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.base_menu, menu);
         return true;
+    }
+
+    public void emptySpeechName(){
+        new AlertDialog.Builder(this)
+                .setTitle("Empty Speech Name")
+                .setMessage("Please enter a name for your speech.")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    public void emptySpeechContent(){
+        new AlertDialog.Builder(this)
+                .setTitle("Empty Speech")
+                .setMessage("Please enter text for your speech.")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
     /* Delete all associated files */

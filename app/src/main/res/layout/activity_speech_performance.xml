@@ -76,7 +76,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:background="@drawable/border_button_dark"
-        android:onClick="pressedButton"
+        android:onClick="goToDiffView"
         android:text="Diff View"
         app:layout_constraintBottom_toTopOf="@+id/button11"
         app:layout_constraintEnd_toEndOf="parent"

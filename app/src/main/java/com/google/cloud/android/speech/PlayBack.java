@@ -37,10 +37,12 @@ public class PlayBack extends AppCompatActivity {
         MediaController mediaController = new MediaController(this);
         mediaController.setAnchorView(videoView);
         //Location of Media File
-        Uri videoUri = Uri.parse(selectedRunMediaPath);
+//        File audioFile = new File(selectedRunMediaPath);
+//        Uri videoUri = Uri.parse(audioFile.);
         //Starting VideView By Setting MediaController and URI
         videoView.setMediaController(mediaController);
-        videoView.setVideoURI(videoUri);
+//        videoView.setVideoURI(videoUri);
+        videoView.setVideoPath(selectedRunMediaPath);
         videoView.requestFocus();
         videoView.start();
         SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);

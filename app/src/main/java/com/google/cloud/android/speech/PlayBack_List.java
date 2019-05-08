@@ -40,7 +40,7 @@ public class PlayBack_List extends AppCompatActivity {
 
         this.setTitle("Past Runs: " + speechName);
 
-        String SPEECH_FOLDER_PATH = getFilesDir() + File.separator + speechName;
+        String SPEECH_FOLDER_PATH = getFilesDir() + File.separator + speechName.replace(" ", "");
 
         File dir = new File(SPEECH_FOLDER_PATH);
 
@@ -75,7 +75,7 @@ public class PlayBack_List extends AppCompatActivity {
             });
         }
 
-        if (fileNames.length == 0) {
+        if (filesToDisplay.size() == 0) {
             noVid.setVisibility(View.VISIBLE);
         } else {
             noVid.setVisibility(View.GONE);

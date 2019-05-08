@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -39,6 +40,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -57,6 +59,8 @@ public class RecordAudioWithScript extends AppCompatActivity
     private String filePath;
     String speechName;
     String scriptText;
+    String speechFolderPath;
+    String speechRunFolder;
     Button startButton;
     boolean recording = false;
 
@@ -66,6 +70,7 @@ public class RecordAudioWithScript extends AppCompatActivity
 
     private SharedPreferences sharedPreferences;
     private VoiceRecorder mVoiceRecorder;
+
     private final VoiceRecorder.Callback mVoiceCallback = new VoiceRecorder.Callback() {
 
         @Override
@@ -79,6 +84,7 @@ public class RecordAudioWithScript extends AppCompatActivity
         public void onVoice(byte[] data, int size) {
             if (mSpeechService != null) {
                 mSpeechService.recognize(data, size);
+                convertBytesToFile(data);
             }
         }
 
@@ -136,6 +142,15 @@ public class RecordAudioWithScript extends AppCompatActivity
                     .commit();
         }
 
+        speechFolderPath = getApplicationContext().getFilesDir() + File.separator
+                + speechName;
+        speechRunFolder = "run" + sharedPreferences.getInt("currRun",-1);
+        File f = new File(speechFolderPath, speechRunFolder);
+        f.mkdirs();
+
+        apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
+
+
         // Handle start button click
         startButton = (Button) findViewById(R.id.startButton);
         //startButton.getBackground().setAlpha(200);
@@ -159,7 +174,6 @@ public class RecordAudioWithScript extends AppCompatActivity
                     timerFragment.startTimer();
 
                     // Change UI elements
-                    startButton.setText("STOP");
                     startButton.setBackgroundTintList(getResources().getColorStateList(R.color.cardview_dark_background));
 
                     // Start listening
@@ -170,13 +184,6 @@ public class RecordAudioWithScript extends AppCompatActivity
             }
         });
 
-        String speechFolderPath = getApplicationContext().getFilesDir() + File.separator
-                + speechName;
-        String newRunFolder = "run" + sharedPreferences.getInt("currRun",-1);
-        File f = new File(speechFolderPath, newRunFolder);
-        f.mkdirs();
-
-        apiResultPath = speechFolderPath + File.separator + newRunFolder + File.separator + "apiResult";
 
         try {
             scriptText = FileService.readFromFile(filePath);
@@ -205,6 +212,7 @@ public class RecordAudioWithScript extends AppCompatActivity
         addToSharedPreferences();
         Intent intent = new Intent(this, SpeechPerformance.class);
         intent.putExtra("speechName", speechName);
+        intent.putExtra("prevActivity", "recording");
         startActivity(intent);
     }
 
@@ -353,6 +361,19 @@ public class RecordAudioWithScript extends AppCompatActivity
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("apiResult", apiResultPath);
         editor.putInt("currRun",1 + sharedPreferences.getInt("currRun",-1));
+        Log.d("ADD TO SHARED PREF", "incrementing curr Run");
         editor.commit();
     }
+
+    private void convertBytesToFile(byte[] bytearray) {
+        try {
+            File audioFile = new File(speechFolderPath + File.separator + speechRunFolder + File.separator + "audio.wav");
+            FileOutputStream fileoutputstream = new FileOutputStream(audioFile);
+            fileoutputstream.write(bytearray);
+            fileoutputstream.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
 }

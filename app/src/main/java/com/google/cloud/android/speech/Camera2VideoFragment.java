@@ -22,11 +22,9 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
-import android.content.ComponentName;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Matrix;
@@ -44,7 +42,6 @@ import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.ActivityCompat;
@@ -63,9 +60,6 @@ import android.widget.Toast;
 
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -75,6 +69,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+
 import android.content.SharedPreferences;
 
 
@@ -94,10 +89,12 @@ public class Camera2VideoFragment extends Fragment
     String scriptText;
     String speechName;
     String[] command;
+    String apiResultPath;
     FFmpeg ffmpeg;
     SharedPreferences sharedPref;
     private static String VIDEO_FILE_PATH;
     private static String AUDIO_FILE_PATH;
+    RecordVideo recordVideoWithScript;
 
     private static final int SENSOR_ORIENTATION_DEFAULT_DEGREES = 90;
     private static final int SENSOR_ORIENTATION_INVERSE_DEGREES = 270;
@@ -108,7 +105,8 @@ public class Camera2VideoFragment extends Fragment
     private static final int REQUEST_VIDEO_PERMISSIONS = 1;
     private static final String FRAGMENT_DIALOG = "dialog";
 
-    private SpeechService mSpeechService;
+    private ProgressDialog dialog;
+
 
     private static final String[] VIDEO_PERMISSIONS = {
             Manifest.permission.CAMERA,
@@ -140,8 +138,6 @@ public class Camera2VideoFragment extends Fragment
     private Button mButtonVideo;
     private Button mPlayBackVideo;
 
-
-    private Button seeHowYouDidButton;
     /**
      * A reference to the opened {@link android.hardware.camera2.CameraDevice}.
      */
@@ -317,7 +313,12 @@ public class Camera2VideoFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_camera2_video, container, false);
+        sharedPref = getActivity().getSharedPreferences(speechName, MODE_PRIVATE);
+        if (sharedPref.getBoolean("displaySpeech", false)) {
+            return inflater.inflate(R.layout.fragment_camera2_video, container, false);
+        } else{
+            return inflater.inflate(R.layout.fragment_camera3_video, container, false);
+        }
     }
 
     @Override
@@ -327,19 +328,22 @@ public class Camera2VideoFragment extends Fragment
         mPlayBackVideo = (Button) view.findViewById(R.id.playback);
         mButtonVideo.setOnClickListener(this);
         mPlayBackVideo.setOnClickListener(this);
-        mIsFirstRecording=true;
+        mIsFirstRecording = true;
+        dialog = new ProgressDialog(getContext());
         speechName = getActivity().getIntent().getStringExtra("speechName");
         sharedPref = getActivity().getSharedPreferences(speechName, MODE_PRIVATE);
         try {
-            scriptText = FileService.readFromFile(sharedPref.getString("filepath",null));
+            scriptText = FileService.readFromFile(sharedPref.getString("filepath", null));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        if(sharedPref.getBoolean("displaySpeech", false)) {
+        if (sharedPref.getBoolean("displaySpeech", false)) {
             setScriptText();
         }
+
     }
+
 
     @Override
     public void onResume() {
@@ -365,35 +369,35 @@ public class Camera2VideoFragment extends Fragment
             case R.id.video: {
                 if (mIsFirstRecording) {
                     startRecordingVideo();
-                }
-                else if(mIsRecordingVideo)
-                {
+                } else if (mIsRecordingVideo) {
                     pauseVideo();
-                }
-                else{
+                } else {
                     resumeVideo();
                 }
                 break;
             }
             //use this to stop
             case R.id.playback: {
+                Log.d("MYACTIVITY", getActivity().toString());
+
+                dialog.setMessage("Preparing your speech!");
+                dialog.show();
 
                 stopRecordingVideo();
-                Activity activity = getActivity();
 
                 VIDEO_FILE_PATH = getVideoFilePath(getContext());
 
+                String speechFolderPath = getContext().getFilesDir() + File.separator + speechName.replace(" ", "");
+                String speechRunFolder  = "run" + sharedPref.getInt("currRun", -1);
+
+                apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
+
+
                 extractAudioFromVideo();
-
-                //update the currVideoNum
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putString("videoFilePath", VIDEO_FILE_PATH);
-                editor.putInt("currRun",1 + sharedPref.getInt("currRun",-1));
-                editor.commit();
-
+                updateSharedPreferences();
                 break;
             }
-            case R.id.restart:{
+            case R.id.restart: {
                 mIsFirstRecording = true;
                 mButtonVideo.setText("Start");
                 break;
@@ -679,8 +683,8 @@ public class Camera2VideoFragment extends Fragment
     }
 
     private String getVideoFilePath(Context context) {
-        String speechFolderPath = context.getFilesDir() + File.separator + speechName;
-        String newRunFolder = "run" + sharedPref.getInt("currRun",-1);
+        String speechFolderPath = context.getFilesDir() + File.separator + speechName.replace(" ", "");
+        String newRunFolder = "run" + sharedPref.getInt("currRun", -1);
         File f = new File(speechFolderPath, newRunFolder);
         f.mkdirs();
 
@@ -755,13 +759,13 @@ public class Camera2VideoFragment extends Fragment
         }
     }
 
-    private void pauseVideo(){
+    private void pauseVideo() {
         mIsRecordingVideo = false;
         mButtonVideo.setText("Resume");
         mMediaRecorder.pause();
     }
 
-    private void resumeVideo(){
+    private void resumeVideo() {
         mIsRecordingVideo = true;
         mButtonVideo.setText("Pause");
         mMediaRecorder.resume();
@@ -778,7 +782,6 @@ public class Camera2VideoFragment extends Fragment
         // Stop recording
         mMediaRecorder.stop();
         mMediaRecorder.reset();
-
 
 
 //        Activity activity = getActivity();
@@ -874,39 +877,38 @@ public class Camera2VideoFragment extends Fragment
     }
 
 
-    private void extractAudioFromVideo(){
-        String speechFolderPath = getContext().getFilesDir() + File.separator + speechName;
-        String newRunFolder = "run" + sharedPref.getInt("currRun",-1);
+    private void extractAudioFromVideo() {
+        String speechFolderPath = getContext().getFilesDir() + File.separator + speechName.replace(" ", "");
+        String newRunFolder = "run" + sharedPref.getInt("currRun", -1);
 
         AUDIO_FILE_PATH = speechFolderPath + File.separator + newRunFolder + File.separator
                 + "audio.wav";
 
 
-
-            if(VIDEO_FILE_PATH == null){
-                Log.d("VIDEO FILE PATH", "VIDEO PATH NULL");
-            }
-
-            try {
-                loadFfmpegLibrary();
-            } catch (FFmpegNotSupportedException e) {
-                e.printStackTrace();
-            }
-
-            Log.i("VIDEO_FILE_PATH", VIDEO_FILE_PATH);
-            Log.i("AUDIO_FILE_PATH", AUDIO_FILE_PATH);
-
-//        command = new String[]{"-i", VIDEO_FILE_PATH, "-vn", "-f", "s16le", "-acodec", "pcm_s16le" , AUDIO_FILE_PATH};
-            command = new String[]{"-i", VIDEO_FILE_PATH, AUDIO_FILE_PATH};
-            try {
-                executeFfmpegCommand(command);
-            } catch (FFmpegCommandAlreadyRunningException e) {
-                e.printStackTrace();
-            }
+        if (VIDEO_FILE_PATH == null) {
+            Log.d("VIDEO FILE PATH", "VIDEO PATH NULL");
         }
 
-    public void loadFfmpegLibrary() throws FFmpegNotSupportedException{
-        if(ffmpeg == null) {
+        try {
+            loadFfmpegLibrary();
+        } catch (FFmpegNotSupportedException e) {
+            e.printStackTrace();
+        }
+
+        Log.i("VIDEO_FILE_PATH", VIDEO_FILE_PATH);
+        Log.i("AUDIO_FILE_PATH", AUDIO_FILE_PATH);
+
+//        command = new String[]{"-i", VIDEO_FILE_PATH, "-vn", "-f", "s16le", "-acodec", "pcm_s16le" , AUDIO_FILE_PATH};
+        command = new String[]{"-i", VIDEO_FILE_PATH, AUDIO_FILE_PATH};
+        try {
+            executeFfmpegCommand(command);
+        } catch (FFmpegCommandAlreadyRunningException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadFfmpegLibrary() throws FFmpegNotSupportedException {
+        if (ffmpeg == null) {
             ffmpeg = FFmpeg.getInstance(getContext());
             try {
                 ffmpeg.loadBinary(new FFmpegLoadBinaryResponseHandler() {
@@ -935,7 +937,7 @@ public class Camera2VideoFragment extends Fragment
         }
     }
 
-    public void executeFfmpegCommand(final String[] cmd) throws FFmpegCommandAlreadyRunningException{
+    public void executeFfmpegCommand(final String[] cmd) throws FFmpegCommandAlreadyRunningException {
         ffmpeg.execute(cmd, new ExecuteBinaryResponseHandler() {
             @Override
             public void onSuccess(String s) {
@@ -965,15 +967,26 @@ public class Camera2VideoFragment extends Fragment
             public void onFinish() {
                 Log.e("FFMPEG", "execute finished");
 
-                Intent intent = new Intent(getActivity(), SpeechPerformance.class);
-                intent.putExtra("speechName", speechName);
-                intent.putExtra("audioFilePath", AUDIO_FILE_PATH);
-                startActivity(intent);
-
+                Path path = get(AUDIO_FILE_PATH);
+                InputStream fin = null;
+                try {
+                    fin = newInputStream(path);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                recordVideoWithScript = (RecordVideo) getActivity();
+                recordVideoWithScript.mSpeechService.recognizeInputStream(fin);
                 super.onFinish();
             }
         });
     }
 
+    public void updateSharedPreferences(){
+        //update the currVideoNum
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("videoFilePath", VIDEO_FILE_PATH);
+        editor.putInt("currRun", 1 + sharedPref.getInt("currRun", -1));
+        editor.commit();
+    }
 }
 
