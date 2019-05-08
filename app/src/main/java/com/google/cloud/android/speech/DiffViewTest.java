@@ -55,20 +55,24 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
         // Make script viewable
         // Create the shared preference file and get necessary values
         SharedPreferences sharedPreferences= getSharedPreferences(intent.getStringExtra("speechName"), MODE_PRIVATE);
-        try {
-            scriptText = FileService.readFromFile(sharedPreferences.getString("filepath",null));
+//        try {
+//            scriptText = FileService.readFromFile(sharedPreferences.getString("filepath",null));
             // Duplicate for now -- eventually replace with reading most recent speech to text result
 
             // TODO: UNCOMMENT AFTER DONE TESTING DIFF VIEW
 //            speechToText = FileService.readFromFile(sharedPreferences.getString("apiResult",null));
 
-            setScriptText();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast readToast = Toast.makeText(getApplicationContext(),
-                    e.toString(), Toast.LENGTH_SHORT);
-            readToast.show();
-        }
+//            setScriptText();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Toast readToast = Toast.makeText(getApplicationContext(),
+//                    e.toString(), Toast.LENGTH_SHORT);
+//            readToast.show();
+//        }
+
+
+        // TESTING
+        setScriptText();
 
         // Deal with synced ScrollViews
         scriptScroll = (ObservableScrollView) this.findViewById(R.id.scriptScroll);
@@ -130,21 +134,15 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
         diff_match_patch.Operation prevOperation = EQUAL;
         LinkedList<diff_match_patch.Diff> me;
 
-            me = dmp.diff_lineMode(scriptText.concat("END").replaceAll("[^a-zA-z']", " ").toLowerCase(), speechToText.concat("END").replaceAll("[^a-zA-z']", " ").toLowerCase());
-
-        // PRINT OUT ALL CONTENT FROM STRING
-
+        me = dmp.diff_lineMode(scriptText.concat("END").replaceAll("[^a-zA-z']", " ").toLowerCase(), speechToText.concat("END").replaceAll("[^a-zA-z']", " ").toLowerCase());
 
         for(diff_match_patch.Diff temp: me)
         {
             switch(temp.operation)
             {
                 case EQUAL:
-//                    Log.e("DIFF", "EQUAL - " + temp.text);
                     if ((prevOperation == DELETE || prevOperation == INSERT) && (scriptStart!=-1 && scriptEnd !=-1) )
                     {
-//                        Log.e("ERRORS", "scriptStart - " + scriptStart + " scriptEnd - " + scriptEnd + " \tspeechStart - " + speechStart + " speechEnd - " + speechEnd );
-
                         if (scriptStart == -1 || scriptEnd == -1)
                         {
                             scriptStart = scriptEnd = currPos1;
@@ -153,7 +151,6 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
                         {
                             speechStart = speechEnd = currPos2;
                         }
-//                        Log.e("ERRORS", "script: " + scriptText.substring(scriptStart,scriptEnd) +" \tspeech: "+ speechToText.substring(speechStart,speechEnd));
 
                         Errors singleError = new Errors( scriptStart,  scriptEnd,  speechStart,  speechEnd);
                         errors.add(singleError);
@@ -168,7 +165,6 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
                     break;
                 case INSERT://for 2
                     if (!(temp.text.equals("\\s*")||temp.text.equals("\n"))) {
-//                        Log.e("DIFF", "INSERT - " + temp.text);
                         templength = temp.text.length();
                         speechStart = currPos2;
                         speech.setSpan(new ForegroundColorSpan(Color.RED), currPos2, (speechToText.length() < (currPos2 + templength)) ? (speechToText.length()) : (currPos2 += templength), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
@@ -178,7 +174,6 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
                     break;
                 case DELETE: //for 1
                     if (!(temp.text.equals("\\s*")||temp.text.equals("\\s*\n\\s*"))) {
-//                        Log.e("DIFF", "DELETE - " + temp.text);
                         templength = temp.text.length();
                         scriptStart = currPos1;
                         script.setSpan(new ForegroundColorSpan(Color.RED), currPos1, (scriptText.length() < (currPos1 + templength)) ? (scriptText.length()) : (currPos1 += templength), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
