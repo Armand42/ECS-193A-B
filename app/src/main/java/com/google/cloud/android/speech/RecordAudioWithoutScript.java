@@ -234,14 +234,12 @@ public class RecordAudioWithoutScript extends AppCompatActivity
         }
         mVoiceRecorder = new VoiceRecorder(mVoiceCallback);
         mVoiceRecorder.start();
-        startRecording();
     }
 
     private void stopVoiceRecorder() {
         if (mVoiceRecorder != null) {
             mVoiceRecorder.stop();
             mVoiceRecorder = null;
-            stopRecording();
         }
     }
 
@@ -321,27 +319,5 @@ public class RecordAudioWithoutScript extends AppCompatActivity
         editor.putString("apiResult", apiResultPath);
         editor.putInt("currRun",1 + sharedPreferences.getInt("currRun",-1));
         editor.commit();
-    }
-    private void startRecording() {
-        mRecorder = new MediaRecorder();
-        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        File audioFile = new File(speechFolderPath + File.separator + speechRunFolder + File.separator + "audio.mp4");
-        mRecorder.setOutputFile(audioFile);
-        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-
-        try {
-            mRecorder.prepare();
-            mRecorder.start();
-        } catch (IOException e) {
-            Log.e("RECORDAUDIO", "prepare() failed");
-        }
-
-    }
-
-    private void stopRecording(){
-        mRecorder.stop();
-        mRecorder.reset();
-        mRecorder.release();
     }
 }

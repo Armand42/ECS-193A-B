@@ -172,6 +172,7 @@ public class RecordAudioWithScript extends AppCompatActivity
                 else {
                     // Start timer
                     timerFragment.startTimer();
+                    startButton.setText("STOP");
 
                     // Change UI elements
                     startButton.setBackgroundTintList(getResources().getColorStateList(R.color.cardview_dark_background));
