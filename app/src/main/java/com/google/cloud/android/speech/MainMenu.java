@@ -81,7 +81,7 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
         startActivity(intent);
     }
 
-    public void goToSpeechMenu(View view, String speechName){
+    public void goToSpeechMenu(View view, String speechName) {
         Intent intent = new Intent(this, SpeechView.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);

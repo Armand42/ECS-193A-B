@@ -15,69 +15,85 @@ import android.widget.TextView;
 import org.w3c.dom.Text;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlayBack_List extends AppCompatActivity {
     ListView listView;
-    String[] fileNames;
-    File[] filePathNames;
+    File fileNames[];
 
     String speechName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_back__list);
 
         // Set toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setTitle(speechName);
+        Toolbar toolbar = findViewById(R.id.my_toolbar);
+        Intent intent = getIntent();
+        speechName = intent.getStringExtra("speechName");
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        this.setTitle("Speeches");
+        this.setTitle("Past Runs: " + speechName);
 
-        Intent intent = getIntent();
-        speechName = intent.getStringExtra("speechName");
+        String SPEECH_FOLDER_PATH = getFilesDir() + File.separator + speechName;
 
-        File dir = getDir(speechName, MODE_PRIVATE);
-
+        File dir = new File(SPEECH_FOLDER_PATH);
 
         //get file names
-        fileNames = dir.list();
-        filePathNames= dir.listFiles();
+        fileNames = dir.listFiles();
 
+        final List<String> filesToDisplay = new ArrayList<>();
 
-        TextView noVid = (TextView) findViewById(R.id.text_view_id);
+        TextView noVid = findViewById(R.id.text_view_id);
 
         if (fileNames != null) {
-            ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, fileNames);
-//            Log.i("filenames",fileNames[0]);
+
+            for (int i = 0; i < fileNames.length; i++) {
+                if (fileNames[i].getName().startsWith("run")) {
+                    filesToDisplay.add(fileNames[i].getName());
+                }
+            }
+
+            ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, filesToDisplay);
+
             // Connect this adapter to a listview to be populated
-            listView = (ListView) findViewById(R.id.speechNames);
+            listView = findViewById(R.id.speechNames);
             listView.setAdapter(itemsAdapter);
 
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    String videoName = filePathNames[position].toString();
-                    goToPlayBack(view, videoName);
+                    String selectedRun = filesToDisplay.get(position);
+                    Log.d("PLAYBACKLIST", "selectedRun is " + selectedRun);
+                    goToSpeechPerformance(view, selectedRun);
                 }
             });
         }
-        if(fileNames.length == 0)
-        {
+
+        if (fileNames.length == 0) {
             noVid.setVisibility(View.VISIBLE);
-        }
-        else
-        {
+        } else {
             noVid.setVisibility(View.GONE);
         }
     }
-    public void goToPlayBack(View view, String videoName){
-        Intent intent = new Intent(this, PlayBack.class);
+
+//    public void goToPlayBack(View view, String selectedRunMediaPath) {
+//        Intent intent = new Intent(this, PlayBack.class);
+//        intent.putExtra("speechName", speechName);
+//        intent.putExtra("selectedRunMediaPath", selectedRunMediaPath);
+//        startActivity(intent);
+//    }
+
+    public void goToSpeechPerformance(View view, String selectedRun) {
+        Intent intent = new Intent(this, SpeechPerformance.class);
         intent.putExtra("speechName", speechName);
-        intent.putExtra("videoName", videoName);
-        Log.i("VIDEONAME in playback:", videoName);
+        intent.putExtra("selectedRun", selectedRun);
+        intent.putExtra("prevActivity", "playbackList");
         startActivity(intent);
     }
 
@@ -87,6 +103,5 @@ public class PlayBack_List extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.base_menu, menu);
         return true;
     }
-
 
 }

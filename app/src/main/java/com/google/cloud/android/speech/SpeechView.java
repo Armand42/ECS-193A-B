@@ -1,4 +1,5 @@
 package com.google.cloud.android.speech;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,7 +30,7 @@ public class SpeechView extends AppCompatActivity {
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         speechName = intent.getStringExtra("speechName");
-        SharedPreferences sharedPreferences = getSharedPreferences(speechName,MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
         final File dir = getDir(speechName, MODE_PRIVATE);
         filePath = sharedPreferences.getString("filepath", "error");
 //        if(sharedPreferences.contains("filePath"))
@@ -44,24 +45,29 @@ public class SpeechView extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    /** Called when the user taps the Send button */
+    /**
+     * Called when the user taps the Send button
+     */
     public void goToSpeechToText(View view) {
         Intent intent = new Intent(this, RecordAudioWithScript.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
 
-    /** Called when the user taps the Send button */
+    /**
+     * Called when the user taps the Send button
+     */
     public void goToSpeechSettings(View view) {
         Intent intent = new Intent(this, SpeechSettings.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
+
     // SORT OF WORKS BOI NEED MORE VIEWS
     public void goToSpeechRecord(View view) {
         Intent intent;
         // If Video and Script
-        if(videoPlaybackState && viewScriptState) {
+        if (videoPlaybackState && viewScriptState) {
             intent = new Intent(this, RecordVideoWithScript.class);
         }
         // If just video
@@ -69,18 +75,18 @@ public class SpeechView extends AppCompatActivity {
             intent = new Intent(this, RecordVideoWithoutScript.class);
         }
         // If just want the Audio
-        else if(viewScriptState) {
+        else if (viewScriptState) {
             intent = new Intent(this, RecordAudioWithScript.class);
         }
         // If want Audio and Script
-        else{
+        else {
             intent = new Intent(this, RecordAudioWithoutScript.class);
         }
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
 
-    public void goToPlayBack(View view){
+    public void goToPlayBack(View view) {
         Intent intent = new Intent(this, PlayBack_List.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
@@ -92,7 +98,7 @@ public class SpeechView extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void goToDiffView(View view){
+    public void goToDiffView(View view) {
         Intent intent = new Intent(this, DiffViewTest.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
@@ -119,8 +125,7 @@ public class SpeechView extends AppCompatActivity {
                             }
                             Toast toast = Toast.makeText(getApplicationContext(), "Speech deleted", Toast.LENGTH_SHORT);
                             toast.show();
-                        }
-                        catch (Exception e){
+                        } catch (Exception e) {
                             Toast toast = Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT);
                             toast.show();
                         }
@@ -169,7 +174,6 @@ public class SpeechView extends AppCompatActivity {
 
         fileOrDirectory.delete();
     }
-
 
 
 }
