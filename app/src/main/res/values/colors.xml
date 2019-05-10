@@ -36,4 +36,5 @@
     <color name="light_green">#BFFFC7</color>
     <color name="light_pink">#FFADAD</color>
     <color name="black">#000</color>
+    <color name="highlight">#FF0000</color>
 </resources>
