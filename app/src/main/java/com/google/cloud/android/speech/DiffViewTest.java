@@ -21,6 +21,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -313,39 +315,47 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
 
     private void scroll()
     {
-        // Get starting position from errors
-        final Errors error = errors.get(errorsIndex);
-
-        final ObservableScrollView sv = (ObservableScrollView) findViewById(R.id.speechToTextScroll);
-
         LinearLayout linearLayout = (LinearLayout) this.findViewById(R.id.linearLayout);
 
+        // TextViews
         final TextView speechText = findViewById(R.id.speechToTextBody);
-        final Layout layout = speechText.getLayout();
+        final TextView scriptText = findViewById(R.id.scriptBody);
 
-        // For first scroll (right after layout init), we need to get viewTreeObserver
-
-        //Observe for a layout change
+        //Observe for a layout change -- needed for scrolling to first error, maybe fix/simplify later
         ViewTreeObserver viewTreeObserver = linearLayout.getViewTreeObserver();
-        if (speechText.getLayout() == null)
+        if (speechText.getLayout() == null || scriptText.getLayout() == null)
         {
             if (viewTreeObserver.isAlive()) {
                 viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
-                        Layout layout = speechText.getLayout();
-                        sv.smoothScrollTo(0, layout.getLineTop(layout.getLineForOffset(error.speechStart)));
+                        scrollToPos(scriptText, speechText);
                     }
                 });
             }
         }
         else {
-            sv.smoothScrollTo(0, layout.getLineTop(layout.getLineForOffset(error.speechStart)));
+            scrollToPos(scriptText, speechText);
         }
     }
 
-    private void scrollToPos()
+    /* Scrolls to position obtained from line of our errors indicated by the current error
+       at errorIndex
+     */
+    private void scrollToPos(TextView scriptText, TextView speechText)
     {
+        final ObservableScrollView sv = (ObservableScrollView) findViewById(R.id.speechToTextScroll);
+        final ObservableScrollView sv2 = (ObservableScrollView) findViewById(R.id.scriptScroll);
 
+        // Get starting position from errors
+        final Errors error = errors.get(errorsIndex);
+
+        // Define layouts corresponding to our textviews
+        Layout layout = speechText.getLayout();
+        Layout layout2 = scriptText.getLayout();
+
+        // Scroll
+        sv.smoothScrollTo(0, layout.getLineTop(layout.getLineForOffset(error.speechStart)));
+        sv2.smoothScrollTo(0, layout2.getLineTop(layout2.getLineForOffset(error.scriptStart)));
     }
 }
