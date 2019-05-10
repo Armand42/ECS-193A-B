@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.BackgroundColorSpan;
@@ -15,6 +16,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,7 +66,7 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
 //            speechToText = FileService.readFromFile(sharedPreferences.getString("apiResult",null));
 
 //            setScriptText();
-//        } catch (IOException e) {
+//        } catch (IOException e) {w
 //            e.printStackTrace();
 //            Toast readToast = Toast.makeText(getApplicationContext(),
 //                    e.toString(), Toast.LENGTH_SHORT);
@@ -74,12 +77,17 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
         // TESTING
         setScriptText();
 
+        setErrorIndexText();
+
         // Deal with synced ScrollViews
         scriptScroll = (ObservableScrollView) this.findViewById(R.id.scriptScroll);
         speechToTextScroll = (ObservableScrollView) this.findViewById(R.id.speechToTextScroll);
 
         scriptScroll.setScrollViewListener(this);
         speechToTextScroll.setScrollViewListener(this);
+
+        // Scroll to first error
+        scroll();
     }
 
     @Override
@@ -264,6 +272,8 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
             // Go to next error
             errorsIndex++;
             setErrorFocus();
+            setErrorIndexText();
+            scroll();
         }
     }
 
@@ -278,6 +288,8 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
             // Go to prev error
             errorsIndex--;
             setErrorFocus();
+            setErrorIndexText();
+            scroll();
         }
     }
 
@@ -290,5 +302,50 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
         // Speech to text
         TextView speechToTextBody = (TextView) findViewById(R.id.speechToTextBody);
         speechToTextBody.setText(speechFull);
+    }
+
+    private void setErrorIndexText()
+    {
+        TextView errorIndex = (TextView) findViewById(R.id.errorIndex);
+        String errorIndexText = String.format("%d / %d", errorsIndex+1, errors.size());
+        errorIndex.setText(errorIndexText);
+    }
+
+    private void scroll()
+    {
+        // Get starting position from errors
+        final Errors error = errors.get(errorsIndex);
+
+        final ObservableScrollView sv = (ObservableScrollView) findViewById(R.id.speechToTextScroll);
+
+        LinearLayout linearLayout = (LinearLayout) this.findViewById(R.id.linearLayout);
+
+        final TextView speechText = findViewById(R.id.speechToTextBody);
+        final Layout layout = speechText.getLayout();
+
+        // For first scroll (right after layout init), we need to get viewTreeObserver
+
+        //Observe for a layout change
+        ViewTreeObserver viewTreeObserver = linearLayout.getViewTreeObserver();
+        if (speechText.getLayout() == null)
+        {
+            if (viewTreeObserver.isAlive()) {
+                viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        Layout layout = speechText.getLayout();
+                        sv.smoothScrollTo(0, layout.getLineTop(layout.getLineForOffset(error.speechStart)));
+                    }
+                });
+            }
+        }
+        else {
+            sv.smoothScrollTo(0, layout.getLineTop(layout.getLineForOffset(error.speechStart)));
+        }
+    }
+
+    private void scrollToPos()
+    {
+
     }
 }
