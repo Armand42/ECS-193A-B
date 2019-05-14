@@ -1,6 +1,7 @@
 package com.google.cloud.android.speech;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -39,6 +40,7 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
 
         //get file names
         fileNames = dir.list();
+//        String[] fileNamesToDisplay;
 
         if (fileNames != null) {
             ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, fileNames);

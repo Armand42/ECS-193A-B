@@ -176,7 +176,7 @@ public class NewSpeech extends AppCompatActivity {
                             editor.putInt("currScriptNum", currScriptNum);
                             editor.commit();
 
-                            String filePath = FileService.writeToFile(speechName + currScriptNum, speechContent,
+                            String filePath = FileService.writeToFile(speechName.replace(" ", "") + currScriptNum, speechContent,
                                     SPEECH_SCRIPT_PATH + File.separator + "speech-script");
 
                             editor.putString("filepath", filePath);

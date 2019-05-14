@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +23,7 @@ public class SpeechView extends AppCompatActivity {
     Boolean videoPlaybackState;
     Boolean viewScriptState;
     String SPEECH_FOLDER_PATH;
+    SharedPreferences sharedPreferences;
 
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
@@ -30,7 +32,7 @@ public class SpeechView extends AppCompatActivity {
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         speechName = intent.getStringExtra("speechName");
-        SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
         final File dir = getDir(speechName, MODE_PRIVATE);
         filePath = sharedPreferences.getString("filepath", "error");
 //        if(sharedPreferences.contains("filePath"))
@@ -79,6 +81,7 @@ public class SpeechView extends AppCompatActivity {
             intent = new Intent(this, RecordAudioWithoutScript.class);
         }
         intent.putExtra("speechName", speechName);
+        Log.d("SPEECHVIEW", "current Run is" + sharedPreferences.getInt("currRun", -1));
         startActivity(intent);
     }
 

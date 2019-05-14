@@ -25,6 +25,7 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Matrix;
@@ -58,6 +59,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
+import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
+import com.github.hiteshsondhi88.libffmpeg.FFmpegLoadBinaryResponseHandler;
+import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
+import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
 
 import java.io.File;
 import java.io.IOException;
@@ -70,20 +76,11 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-import android.content.SharedPreferences;
-
-
-import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
-import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
-import com.github.hiteshsondhi88.libffmpeg.FFmpegLoadBinaryResponseHandler;
-import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
-import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
-
 import static android.content.Context.MODE_PRIVATE;
 import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Paths.get;
 
-public class Camera2VideoFragment extends Fragment
+public class Camera2VideoWithoutScript extends Fragment
         implements View.OnClickListener, FragmentCompat.OnRequestPermissionsResultCallback {
 
     String scriptText;
@@ -101,7 +98,7 @@ public class Camera2VideoFragment extends Fragment
     private static final SparseIntArray DEFAULT_ORIENTATIONS = new SparseIntArray();
     private static final SparseIntArray INVERSE_ORIENTATIONS = new SparseIntArray();
 
-    private static final String TAG = "Camera2VideoFragment";
+    private static final String TAG = "Camera2VideoWithScript";
     private static final int REQUEST_VIDEO_PERMISSIONS = 1;
     private static final String FRAGMENT_DIALOG = "dialog";
 
@@ -139,12 +136,12 @@ public class Camera2VideoFragment extends Fragment
     private Button mPlayBackVideo;
 
     /**
-     * A reference to the opened {@link android.hardware.camera2.CameraDevice}.
+     * A reference to the opened {@link CameraDevice}.
      */
     private CameraDevice mCameraDevice;
 
     /**
-     * A reference to the current {@link android.hardware.camera2.CameraCaptureSession} for
+     * A reference to the current {@link CameraCaptureSession} for
      * preview.
      */
     private CameraCaptureSession mPreviewSession;
@@ -180,12 +177,12 @@ public class Camera2VideoFragment extends Fragment
     };
 
     /**
-     * The {@link android.util.Size} of camera preview.
+     * The {@link Size} of camera preview.
      */
     private Size mPreviewSize;
 
     /**
-     * The {@link android.util.Size} of video recording.
+     * The {@link Size} of video recording.
      */
     private Size mVideoSize;
 
@@ -257,8 +254,8 @@ public class Camera2VideoFragment extends Fragment
     private String mCurrentVideoPath;
     private CaptureRequest.Builder mPreviewBuilder;
 
-    public static Camera2VideoFragment newInstance() {
-        return new Camera2VideoFragment();
+    public static Camera2VideoWithoutScript newInstance() {
+        return new Camera2VideoWithoutScript();
     }
 
     /**
@@ -313,35 +310,20 @@ public class Camera2VideoFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        sharedPref = getActivity().getSharedPreferences(speechName, MODE_PRIVATE);
-//        if (sharedPref.getBoolean("displaySpeech", false)) {
-            Log.d("DISPLAYING SPEECH", "help");
-            return inflater.inflate(R.layout.fragment_camera2_video, container, false);
-//        } else{
-//            return inflater.inflate(R.layout.fragment_camera3_video, container, false);
-//        }
+        return inflater.inflate(R.layout.fragment_camera3_video, container, false);
     }
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
-        mButtonVideo = (Button) view.findViewById(R.id.video);
-        mPlayBackVideo = (Button) view.findViewById(R.id.playback);
+        mTextureView = view.findViewById(R.id.texture);
+        mButtonVideo = view.findViewById(R.id.video);
+        mPlayBackVideo = view.findViewById(R.id.playback);
         mButtonVideo.setOnClickListener(this);
         mPlayBackVideo.setOnClickListener(this);
         mIsFirstRecording = true;
         dialog = new ProgressDialog(getContext());
         speechName = getActivity().getIntent().getStringExtra("speechName");
         sharedPref = getActivity().getSharedPreferences(speechName, MODE_PRIVATE);
-        try {
-            scriptText = FileService.readFromFile(sharedPref.getString("filepath", null));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (sharedPref.getBoolean("displaySpeech", false)) {
-            setScriptText();
-        }
-
     }
 
 
@@ -388,7 +370,7 @@ public class Camera2VideoFragment extends Fragment
                 VIDEO_FILE_PATH = getVideoFilePath(getContext());
 
                 String speechFolderPath = getContext().getFilesDir() + File.separator + speechName.replace(" ", "");
-                String speechRunFolder  = "run" + sharedPref.getInt("currRun", -1);
+                String speechRunFolder = "run" + sharedPref.getInt("currRun", -1);
 
                 apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
 
@@ -622,7 +604,7 @@ public class Camera2VideoFragment extends Fragment
     }
 
     /**
-     * Configures the necessary {@link android.graphics.Matrix} transformation to `mTextureView`.
+     * Configures the necessary {@link Matrix} transformation to `mTextureView`.
      * This method should not to be called until the camera preview size is determined in
      * openCamera, or until the size of `mTextureView` is fixed.
      *
@@ -863,21 +845,6 @@ public class Camera2VideoFragment extends Fragment
     }
 
 
-    // Display speech in playback
-    private void setScriptText() {
-        // Get text body
-        Log.d("camera fragment", getActivity().toString());
-        TextView scriptBody = (TextView) getActivity().findViewById(R.id.scriptBody);
-
-        // Make script scrollable
-        scriptBody.setMovementMethod(new ScrollingMovementMethod());
-
-        // Set text of scriptBody to be what we read from the file
-        scriptBody.setText(scriptText);
-
-    }
-
-
     private void extractAudioFromVideo() {
         String speechFolderPath = getContext().getFilesDir() + File.separator + speechName.replace(" ", "");
         String newRunFolder = "run" + sharedPref.getInt("currRun", -1);
@@ -890,11 +857,7 @@ public class Camera2VideoFragment extends Fragment
             Log.d("VIDEO FILE PATH", "VIDEO PATH NULL");
         }
 
-        try {
-            loadFfmpegLibrary();
-        } catch (FFmpegNotSupportedException e) {
-            e.printStackTrace();
-        }
+        loadFfmpegLibrary();
 
         Log.i("VIDEO_FILE_PATH", VIDEO_FILE_PATH);
         Log.i("AUDIO_FILE_PATH", AUDIO_FILE_PATH);
@@ -908,7 +871,7 @@ public class Camera2VideoFragment extends Fragment
         }
     }
 
-    public void loadFfmpegLibrary() throws FFmpegNotSupportedException {
+    public void loadFfmpegLibrary() {
         if (ffmpeg == null) {
             ffmpeg = FFmpeg.getInstance(getContext());
             try {
@@ -982,8 +945,9 @@ public class Camera2VideoFragment extends Fragment
         });
     }
 
-    public void updateSharedPreferences(){
+    public void updateSharedPreferences() {
         //update the currVideoNum
+        Log.d("CAMERA2VIDEO", "Shared Pref updated");
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("videoFilePath", VIDEO_FILE_PATH);
         editor.putInt("currRun", 1 + sharedPref.getInt("currRun", -1));

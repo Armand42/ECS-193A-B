@@ -8,10 +8,8 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
-import android.view.View;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -26,21 +24,23 @@ public class RecordVideo extends BaseActivity {
         speechName = intent.getStringExtra("speechName");
 
         SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
+        setContentView(R.layout.record_video);
 
         if(sharedPreferences.getBoolean("displaySpeech", false)){
-            Log.d("record video", "CONTENT VIEW Set");
-            setContentView(R.layout.record_video_with_script);
-        } else
-        {
-            setContentView(R.layout.record_video_without_script);
+            if (savedInstanceState == null) {
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.container, Camera2VideoWithScript.newInstance())
+                        .commit();
+            }
+        }else {
+            if (savedInstanceState == null) {
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.container, com.google.cloud.android.speech.Camera2VideoWithoutScript.newInstance())
+                        .commit();
+            }
         }
-
         this.setTitle("Record a Speech");
-        if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.container, com.google.cloud.android.speech.Camera2VideoFragment.newInstance())
-                    .commit();
-        }
+
 
         String speechFolderPath = getApplicationContext().getFilesDir() + File.separator + speechName.replace(" ", "");
         String speechRunFolder  = "run" + sharedPreferences.getInt("currRun", -1);
