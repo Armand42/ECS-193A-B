@@ -115,7 +115,7 @@ public class RecordAudioWithoutScript extends AppCompatActivity
         setTitle("Practice: " + speechName);
         setSupportActionBar(toolbar);
 
-        speechFolderPath = getApplicationContext().getFilesDir() + File.separator + speechName.replace(" ", "");
+        speechFolderPath = getApplicationContext().getFilesDir() + File.separator + speechName;
         speechRunFolder = "run" + sharedPreferences.getInt("currRun",-1);
         File f = new File(speechFolderPath, speechRunFolder);
         f.mkdirs();

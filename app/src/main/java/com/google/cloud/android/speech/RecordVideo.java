@@ -42,7 +42,7 @@ public class RecordVideo extends BaseActivity {
         this.setTitle("Record a Speech");
 
 
-        String speechFolderPath = getApplicationContext().getFilesDir() + File.separator + speechName.replace(" ", "");
+        String speechFolderPath = getApplicationContext().getFilesDir() + File.separator + speechName;
         String speechRunFolder  = "run" + sharedPreferences.getInt("currRun", -1);
 
         apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";

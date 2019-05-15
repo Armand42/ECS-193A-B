@@ -117,7 +117,7 @@ public class RecordAudioWithoutScriptTimer extends AppCompatActivity
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        speechFolderPath = getApplicationContext().getFilesDir() + File.separator + speechName.replace(" ", "");
+        speechFolderPath = getApplicationContext().getFilesDir() + File.separator + speechName;
         speechRunFolder = "run" + sharedPreferences.getInt("currRun",-1);
         File f = new File(speechFolderPath, speechRunFolder);
         f.mkdirs();

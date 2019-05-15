@@ -383,7 +383,7 @@ public class Camera2VideoWithScript extends Fragment
 
                 VIDEO_FILE_PATH = getVideoFilePath(getContext());
 
-                String speechFolderPath = getContext().getFilesDir() + File.separator + speechName.replace(" ", "");
+                String speechFolderPath = getContext().getFilesDir() + File.separator + speechName;
                 String speechRunFolder  = "run" + sharedPref.getInt("currRun", -1);
 
                 apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
@@ -679,7 +679,7 @@ public class Camera2VideoWithScript extends Fragment
     }
 
     private String getVideoFilePath(Context context) {
-        String speechFolderPath = context.getFilesDir() + File.separator + speechName.replace(" ", "");
+        String speechFolderPath = context.getFilesDir() + File.separator + speechName;
         String newRunFolder = "run" + sharedPref.getInt("currRun", -1);
         File f = new File(speechFolderPath, newRunFolder);
         f.mkdirs();
@@ -875,7 +875,7 @@ public class Camera2VideoWithScript extends Fragment
 
 
     private void extractAudioFromVideo() {
-        String speechFolderPath = getContext().getFilesDir() + File.separator + speechName.replace(" ", "");
+        String speechFolderPath = getContext().getFilesDir() + File.separator + speechName;
         String newRunFolder = "run" + sharedPref.getInt("currRun", -1);
 
         AUDIO_FILE_PATH = speechFolderPath + File.separator + newRunFolder + File.separator
