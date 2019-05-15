@@ -31,8 +31,6 @@ public class NewSpeech extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         setTitle("New speech");
         setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Get extras for editing a script (if they exist)
         Intent intent = getIntent();
