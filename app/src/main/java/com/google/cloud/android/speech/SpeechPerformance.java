@@ -48,6 +48,7 @@ public class SpeechPerformance extends BaseActivity {
         setContentView(R.layout.activity_speech_performance);
         Intent intent = getIntent();
         speechName = intent.getStringExtra("speechName");
+        Log.e("speechName", speechName);
         prevActivity = intent.getStringExtra("prevActivity");
         String selectedRun = intent.getStringExtra("selectedRun");
         sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
@@ -242,5 +243,11 @@ public class SpeechPerformance extends BaseActivity {
         accuracyPercentage.setText(""+ percent +"%");
     }
 
-
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(SpeechPerformance.this, PlayBack_List.class);
+        intent.putExtra("speechName", speechName);
+        startActivity(intent);
+        finish();
+    }
 }

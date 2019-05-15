@@ -171,5 +171,4 @@ public class SpeechView extends AppCompatActivity {
         fileOrDirectory.delete();
     }
 
-
 }

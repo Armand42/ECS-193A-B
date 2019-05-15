@@ -1,5 +1,6 @@
 package com.google.cloud.android.speech;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -16,5 +17,12 @@ public class HowItWorks extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(HowItWorks.this, MainMenu.class);
+        startActivity(intent);
+        finish();
     }
 }
