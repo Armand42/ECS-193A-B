@@ -127,5 +127,13 @@ public class RecordVideo extends BaseActivity {
         intent.putExtra("prevActivity", "recording");
         startActivity(intent);
     }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(RecordVideo.this, SpeechView.class);
+        intent.putExtra("speechName", speechName);
+        startActivity(intent);
+        finish();
+    }
 }
 

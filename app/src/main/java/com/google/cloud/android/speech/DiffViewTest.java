@@ -33,7 +33,7 @@ import static com.google.cloud.android.speech.diff_match_patch.Operation.INSERT;
 
 public class DiffViewTest extends AppCompatActivity implements IScrollListener {
 
-    String scriptText, speechToText;
+    String scriptText, speechToText, speechName;
 
     SpannableString scriptFull, speechFull;
 
@@ -49,13 +49,13 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
         setContentView(R.layout.activity_diff_view_test);
 
         Intent intent = getIntent();
+        speechName = intent.getStringExtra("speechName");
+
 
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         this.setTitle("Diff View");
         setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Make script viewable
         // Create the shared preference file and get necessary values
@@ -358,5 +358,15 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
         // Scroll
         sv.smoothScrollTo(0, layout.getLineTop(layout.getLineForOffset(error.speechStart)));
         sv2.smoothScrollTo(0, layout2.getLineTop(layout2.getLineForOffset(error.scriptStart)));
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(DiffViewTest.this, SpeechPerformance.class);
+        intent.putExtra("speechName", speechName);
+        startActivity(intent);
+        finish();
     }
 }

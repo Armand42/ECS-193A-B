@@ -86,6 +86,14 @@ public class PlayBack extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.base_menu, menu);
         return true;
     }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(PlayBack.this, PlayBack_List.class);
+        intent.putExtra("speechName", speechName);
+        startActivity(intent);
+        finish();
+    }
 
     // Call scriptview function here somehow?
 
