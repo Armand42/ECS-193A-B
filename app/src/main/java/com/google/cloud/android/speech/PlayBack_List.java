@@ -35,8 +35,6 @@ public class PlayBack_List extends AppCompatActivity {
         speechName = intent.getStringExtra("speechName");
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         this.setTitle("Past Runs: " + speechName);
 
