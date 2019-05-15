@@ -103,5 +103,13 @@ public class PlayBack_List extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.base_menu, menu);
         return true;
     }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(PlayBack_List.this, SpeechView.class);
+        intent.putExtra("speechName", speechName);
+        startActivity(intent);
+        finish();
+    }
 
 }

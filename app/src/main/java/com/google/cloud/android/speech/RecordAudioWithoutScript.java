@@ -114,8 +114,6 @@ public class RecordAudioWithoutScript extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setTitle("Practice: " + speechName);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         speechFolderPath = getApplicationContext().getFilesDir() + File.separator + speechName.replace(" ", "");
         speechRunFolder = "run" + sharedPreferences.getInt("currRun",-1);
@@ -319,5 +317,13 @@ public class RecordAudioWithoutScript extends AppCompatActivity
         editor.putString("apiResult", apiResultPath);
         editor.putInt("currRun",1 + sharedPreferences.getInt("currRun",-1));
         editor.commit();
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(RecordAudioWithoutScript.this, SpeechView.class);
+        intent.putExtra("speechName", speechName);
+        startActivity(intent);
+        finish();
     }
 }

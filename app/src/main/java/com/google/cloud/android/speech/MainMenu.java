@@ -95,4 +95,10 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
         goToSpeechMenu(view, speechName);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
 }

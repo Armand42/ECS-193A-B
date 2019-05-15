@@ -30,8 +30,6 @@ public class SpeechSettings extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setTitle(speechName);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
 
@@ -74,13 +72,7 @@ public class SpeechSettings extends AppCompatActivity {
         editor.commit();
     }
 
-    @Override
-    public void onBackPressed(){
-        Intent intent = new Intent(this, SpeechView.class);
-        intent.putExtra("speechName", speechName);
-        addToSharedPreferences();
-        startActivity(intent);
-    }
+
 
     public void goToSpeechMenu (View view){
         Intent intent = new Intent(this, SpeechView.class);
@@ -94,5 +86,13 @@ public class SpeechSettings extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.base_menu, menu);
         return true;
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(SpeechSettings.this, SpeechView.class);
+        intent.putExtra("speechName", speechName);
+        startActivity(intent);
+        finish();
     }
 }
