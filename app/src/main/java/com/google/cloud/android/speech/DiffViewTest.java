@@ -226,12 +226,13 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
 
     @Override
     public void onScrollChanged(ObservableScrollView scrollView, int x, int y, int oldx, int oldy) {
-
         if (scrollView == scriptScroll) {
             speechToTextScroll.scrollTo(x, y);
         } else if (scrollView == speechToTextScroll) {
             scriptScroll.scrollTo(x, y);
         }
+//        scriptScroll.setScrollViewListener(this);
+//        speechToTextScroll.setScrollViewListener(this);
     }
 
     private void setErrorFocus()
@@ -345,6 +346,9 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
      */
     private void scrollToPos(TextView scriptText, TextView speechText)
     {
+//        scriptScroll.setScrollViewListener(null);
+//        speechToTextScroll.setScrollViewListener(null);
+
         final ObservableScrollView sv = (ObservableScrollView) findViewById(R.id.speechToTextScroll);
         final ObservableScrollView sv2 = (ObservableScrollView) findViewById(R.id.scriptScroll);
 
