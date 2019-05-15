@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -13,7 +14,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class RecordVideo extends BaseActivity {
+public class RecordVideo extends BaseActivity implements IMainActivity, TimerFragment.OnFragmentInteractionListener {
     String apiResultPath;
     String speechName;
     Boolean displaySpeech;
@@ -26,13 +27,44 @@ public class RecordVideo extends BaseActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
         setContentView(R.layout.record_video);
 
-        if(sharedPreferences.getBoolean("displaySpeech", false)){
+        //if video and timerDisplay
+        //  then camerafragmentwithtimer
+        Log.d("recordvideo", "timerdisplay is " + sharedPreferences.getBoolean("timerDisplay", false));
+        Log.d("recordvideo", "displaySpeech is " + sharedPreferences.getBoolean("displaySpeech", false));
+
+        if(sharedPreferences.getBoolean("timerDisplay", false) && !(sharedPreferences.getBoolean("displaySpeech", false))){
+            Log.d("recordvideo", "Camera2VideoWithoutScriptTimer");
+            if (savedInstanceState == null) {
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.container, Camera2VideoWithoutScriptTimer.newInstance())
+                        .commit();
+            }
+        }
+        else
+            // if want video and script and timer
+            if(sharedPreferences.getBoolean("timerDisplay", false) && (sharedPreferences.getBoolean("displaySpeech", false))){
+                if (savedInstanceState == null) {
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.container, Camera2VideoWithScriptTimer.newInstance())
+                            .commit();
+                }
+            }
+
+        else
+        // if want video and script
+        if(sharedPreferences.getBoolean("displaySpeech", false) ){
             if (savedInstanceState == null) {
                 getFragmentManager().beginTransaction()
                         .replace(R.id.container, Camera2VideoWithScript.newInstance())
                         .commit();
             }
-        }else {
+        }
+
+        // need if video and timer
+        // need if video and script and timer
+
+       //  if just want video
+        else {
             if (savedInstanceState == null) {
                 getFragmentManager().beginTransaction()
                         .replace(R.id.container, com.google.cloud.android.speech.Camera2VideoWithoutScript.newInstance())
@@ -134,6 +166,19 @@ public class RecordVideo extends BaseActivity {
         intent.putExtra("speechName", speechName);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void stopButtonPressed(Long speechTimeMs) {
+        // Set time elapsed in shared prefs
+        SharedPreferences.Editor editor = getSharedPreferences(speechName,MODE_PRIVATE).edit();
+        editor.putLong("timeElapsed", speechTimeMs);
+        editor.commit();
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
 

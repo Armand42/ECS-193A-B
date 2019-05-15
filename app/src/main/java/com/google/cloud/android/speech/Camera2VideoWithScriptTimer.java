@@ -1,4 +1,7 @@
+
 package com.google.cloud.android.speech;
+
+// ADD TIMER LOGIC
 
 /*
  * Copyright 2014 The Android Open Source Project
@@ -83,7 +86,7 @@ import static android.content.Context.MODE_PRIVATE;
 import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Paths.get;
 
-public class Camera2VideoWithScript extends Fragment
+public class Camera2VideoWithScriptTimer extends Fragment
         implements View.OnClickListener, FragmentCompat.OnRequestPermissionsResultCallback {
 
     String scriptText;
@@ -101,7 +104,7 @@ public class Camera2VideoWithScript extends Fragment
     private static final SparseIntArray DEFAULT_ORIENTATIONS = new SparseIntArray();
     private static final SparseIntArray INVERSE_ORIENTATIONS = new SparseIntArray();
 
-    private static final String TAG = "Camera2VideoWithScriptTESTING";
+    private static final String TAG = "Camera2VideoWithScriptTimer";
     private static final int REQUEST_VIDEO_PERMISSIONS = 1;
     private static final String FRAGMENT_DIALOG = "dialog";
 
@@ -257,8 +260,8 @@ public class Camera2VideoWithScript extends Fragment
     private String mCurrentVideoPath;
     private CaptureRequest.Builder mPreviewBuilder;
 
-    public static Camera2VideoWithScript newInstance() {
-        return new Camera2VideoWithScript();
+    public static Camera2VideoWithScriptTimer newInstance() {
+        return new Camera2VideoWithScriptTimer();
     }
 
     /**
@@ -313,7 +316,7 @@ public class Camera2VideoWithScript extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_camera2_video, container, false);
+        return inflater.inflate(R.layout.fragment_camera2_video_timer, container, false);
     }
 
     @Override
@@ -329,12 +332,12 @@ public class Camera2VideoWithScript extends Fragment
         sharedPref = getActivity().getSharedPreferences(speechName, MODE_PRIVATE);
 
         if (sharedPref.getBoolean("displaySpeech", false)) {
-        try {
-            Log.d("FRAGMENT", "filepath is " + sharedPref.getString("filepath", null));
-            scriptText = FileService.readFromFile(sharedPref.getString("filepath", null));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            try {
+                Log.d("FRAGMENT", "filepath is " + sharedPref.getString("filepath", null));
+                scriptText = FileService.readFromFile(sharedPref.getString("filepath", null));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             setScriptText();
         }
 
@@ -987,4 +990,3 @@ public class Camera2VideoWithScript extends Fragment
         editor.commit();
     }
 }
-
