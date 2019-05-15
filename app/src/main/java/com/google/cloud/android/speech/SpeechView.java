@@ -41,6 +41,7 @@ public class SpeechView extends AppCompatActivity {
         videoPlaybackState = sharedPreferences.getBoolean("videoPlayback", false);
         viewScriptState = sharedPreferences.getBoolean("displaySpeech", false);
         timerdisplayState = sharedPreferences.getBoolean("timerDisplay", false);
+
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setTitle(speechName);
@@ -115,6 +116,12 @@ public class SpeechView extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void goToMainMenu(View view) {
+        Intent intent = new Intent(this, MainMenu.class);
+        intent.putExtra("speechName", speechName);
+        startActivity(intent);
+    }
+
     /* Delete all associated files */
     public void deleteSpeech(View view) {
         new AlertDialog.Builder(this)
@@ -169,6 +176,11 @@ public class SpeechView extends AppCompatActivity {
         if (id == R.id.action_delete) {
             View view = findViewById(R.id.action_delete);
             deleteSpeech(view);
+            return true;
+        }
+        else if (id == R.id.action_home) {
+            View view = findViewById(R.id.action_delete);
+            goToMainMenu(view);
             return true;
         }
 

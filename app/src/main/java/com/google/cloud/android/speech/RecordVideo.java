@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -48,11 +50,30 @@ public class RecordVideo extends BaseActivity {
         apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
     }
 
+    public void goToMainMenu(View view) {
+        Intent intent = new Intent(this, MainMenu.class);
+        intent.putExtra("speechName", speechName);
+        startActivity(intent);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.base_menu, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_home) {
+            View view = findViewById(R.id.action_delete);
+            goToMainMenu(view);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
