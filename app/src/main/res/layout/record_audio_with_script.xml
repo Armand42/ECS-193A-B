@@ -14,9 +14,13 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
+
+
+
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/gradient"
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -48,39 +52,30 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.966" />
+        app:layout_constraintVertical_bias="0.986" />
 
 
     <ScrollView
         android:id="@+id/scriptBodyWrapper"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="470dp"
         android:fillViewport="true"
         android:scrollbars="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_toolbar">
-
-        <TextView
-            android:id="@+id/scriptBody"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:padding="15dp" />
-    </ScrollView>
-
-    <FrameLayout
-        android:id="@+id/timer_container"
-        android:layout_width="408dp"
-        android:layout_height="49dp"
-        android:layout_marginBottom="608dp"
-        android:background="@color/cardview_shadow_end_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
-        app:layout_constraintVertical_bias="1.0"
-        tools:context="com.google.cloud.android.speech.Timer" />
+        app:layout_constraintVertical_bias="0.123">
+
+        <TextView
+            android:id="@+id/scriptBody"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:baselineAligned="false"
+            android:padding="15dp" />
+    </ScrollView>
+
 
 </android.support.constraint.ConstraintLayout>
+

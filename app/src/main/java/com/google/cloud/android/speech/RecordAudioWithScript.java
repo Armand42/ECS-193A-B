@@ -47,8 +47,8 @@ import java.io.IOException;
 
 public class RecordAudioWithScript extends AppCompatActivity
         implements  MessageDialogFragment.Listener,
-                    TimerFragment.OnFragmentInteractionListener,
-                    IMainActivity{
+        TimerFragment.OnFragmentInteractionListener,
+        IMainActivity{
 
     TimerFragment timerFragment;
 
@@ -126,7 +126,7 @@ public class RecordAudioWithScript extends AppCompatActivity
         recording = false;
         System.out.println("recording: " + recording);
 
-        Long timeLeftInMilliseconds = sharedPreferences.getLong("timerMilliseconds", 600000);
+        //Long timeLeftInMilliseconds = sharedPreferences.getLong("timerMilliseconds", 600000);
 
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -136,11 +136,11 @@ public class RecordAudioWithScript extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Set timer on layout
-        if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.timer_container, com.google.cloud.android.speech.TimerFragment.newInstance(timeLeftInMilliseconds, speechName))
-                    .commit();
-        }
+        //if (savedInstanceState == null) {
+        //   getFragmentManager().beginTransaction()
+        //          .replace(R.id.timer_container, com.google.cloud.android.speech.TimerFragment.newInstance(timeLeftInMilliseconds, speechName))
+        //          .commit();
+        // }
 
         speechFolderPath = getApplicationContext().getFilesDir() + File.separator
                 + speechName;
@@ -157,13 +157,13 @@ public class RecordAudioWithScript extends AppCompatActivity
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Code here executes on main thread after user presses button
-                timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
+                //  timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
                 startButton.getBackground().setAlpha(200);
 
                 // Stop button behavior
                 if (startButton.getText() == "STOP") {
                     // Stop timer
-                    timerFragment.stopTimer();
+                    //      timerFragment.stopTimer();
 
                     // Stop listening
                     stopVoiceRecorder();
@@ -171,7 +171,7 @@ public class RecordAudioWithScript extends AppCompatActivity
                 }
                 else {
                     // Start timer
-                    timerFragment.startTimer();
+                    //   timerFragment.startTimer();
                     startButton.setText("STOP");
 
                     // Change UI elements
@@ -352,7 +352,7 @@ public class RecordAudioWithScript extends AppCompatActivity
         // Set time elapsed in shared prefs
         SharedPreferences sharedPreferences = this.getSharedPreferences(speechName, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putLong("timeElapsed", speechTimeMs);
+        // editor.putLong("timeElapsed", speechTimeMs);
         editor.commit();
         goToSpeechPerformance(getCurrentFocus());
     }
@@ -371,7 +371,6 @@ public class RecordAudioWithScript extends AppCompatActivity
             File audioFile = new File(speechFolderPath + File.separator + speechRunFolder + File.separator + "audio.wav");
             FileOutputStream fileoutputstream = new FileOutputStream(audioFile);
             fileoutputstream.write(bytearray);
-            fileoutputstream.flush();
             fileoutputstream.close();
         } catch (IOException ex) {
             ex.printStackTrace();
