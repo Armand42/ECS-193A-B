@@ -125,11 +125,11 @@ public class RecordAudioWithoutScript extends AppCompatActivity
         apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
 
         // Set timer on layout
-        if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.timer_container, com.google.cloud.android.speech.TimerFragment.newInstance(timeLeftInMilliseconds, speechName))
-                    .commit();
-        }
+       // if (savedInstanceState == null) {
+          //  getFragmentManager().beginTransaction()
+           //         .replace(R.id.timer_container, com.google.cloud.android.speech.TimerFragment.newInstance(timeLeftInMilliseconds, speechName))
+            //        .commit();
+       // }
 
         // Handle start button click
         final PulseView pulseView;
@@ -140,13 +140,13 @@ public class RecordAudioWithoutScript extends AppCompatActivity
             public void onClick(View v) {
                 pulseView.startPulse();
                 // Code here executes on main thread after user presses button
-                timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
+                //timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
 
                 // Stop button behavior
                 if (startButton.getText() == "STOP") {
                     pulseView.finishPulse();
                     // Stop timer
-                    timerFragment.stopTimer();
+                   // timerFragment.stopTimer();
 
                     // Stop listening
                     stopVoiceRecorder();
@@ -154,7 +154,7 @@ public class RecordAudioWithoutScript extends AppCompatActivity
                 }
                 else {
                     // Start timer
-                    timerFragment.startTimer();
+                   // timerFragment.startTimer();
 
                     // Change UI elements
                     startButton.setText("STOP");

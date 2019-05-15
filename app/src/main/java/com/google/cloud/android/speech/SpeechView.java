@@ -84,7 +84,8 @@ public class SpeechView extends AppCompatActivity {
             intent = new Intent(this, RecordAudioWithoutScriptTimer.class);
         }
 
-
+        // else if videoPlaybackState && timerdisplayState && viewScriptState
+        // else if videoPlaybackState && timerdisplayState
 
 
         // Audio and Script
