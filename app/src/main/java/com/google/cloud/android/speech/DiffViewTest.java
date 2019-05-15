@@ -366,6 +366,8 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
         super.onBackPressed();
         Intent intent = new Intent(DiffViewTest.this, SpeechPerformance.class);
         intent.putExtra("speechName", speechName);
+        intent.putExtra("prevActivity", "DiffView");
+
         startActivity(intent);
         finish();
     }
