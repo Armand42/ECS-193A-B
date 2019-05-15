@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -78,6 +79,25 @@ public class PlayBack_List extends AppCompatActivity {
         } else {
             noVid.setVisibility(View.GONE);
         }
+    }
+
+    public void goToMainMenu(View view) {
+        Intent intent = new Intent(this, MainMenu.class);
+        intent.putExtra("speechName", speechName);
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_home) {
+            View view = findViewById(R.id.action_delete);
+            goToMainMenu(view);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 //    public void goToPlayBack(View view, String selectedRunMediaPath) {

@@ -4,18 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".RecordAudioWithScript">
 
+    <item android:id="@+id/action_home"
+        android:orderInCategory="300"
+        android:title="User"
+        android:icon="@drawable/ic_baseline_home_24px"
+        app:showAsAction="ifRoom" >
+    </item>
     <item
         android:id="@+id/action_focus_next"
         android:title="FocusNext"
         android:orderInCategory="300"
-        android:icon="@android:drawable/arrow_down_float"
+        android:icon="@drawable/ic_baseline_keyboard_arrow_down_24px"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_focus_prev"
         android:title="FocusPrev"
         android:orderInCategory="300"
-        android:icon="@android:drawable/arrow_up_float"
+        android:icon="@drawable/ic_baseline_keyboard_arrow_up_24px"
         app:showAsAction="ifRoom" />
 
 </menu>

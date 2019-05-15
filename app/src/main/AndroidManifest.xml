@@ -48,6 +48,14 @@
                 android:value=".SpeechPerformance" />
         </activity>
         <activity
+            android:name=".DiffViewTest"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:screenOrientation="portrait"
+                android:value=".TitleScreen" />
+        </activity>
+        <activity
             android:name=".PlayBack_List"
             android:screenOrientation="portrait">
             <meta-data

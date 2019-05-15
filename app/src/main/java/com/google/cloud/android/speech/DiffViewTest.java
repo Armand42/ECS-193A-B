@@ -15,6 +15,7 @@ import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
@@ -85,8 +86,9 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
         scriptScroll = (ObservableScrollView) this.findViewById(R.id.scriptScroll);
         speechToTextScroll = (ObservableScrollView) this.findViewById(R.id.speechToTextScroll);
 
-        scriptScroll.setScrollViewListener(this);
-        speechToTextScroll.setScrollViewListener(this);
+        // Finish scrolling listener
+        setFinishScrollingListeners(scriptScroll);
+        setFinishScrollingListeners(speechToTextScroll);
 
         // Scroll to first error
         scroll();
@@ -226,7 +228,6 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
 
     @Override
     public void onScrollChanged(ObservableScrollView scrollView, int x, int y, int oldx, int oldy) {
-
         if (scrollView == scriptScroll) {
             speechToTextScroll.scrollTo(x, y);
         } else if (scrollView == speechToTextScroll) {
@@ -331,6 +332,7 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
                     @Override
                     public void onGlobalLayout() {
                         scrollToPos(scriptText, speechText);
+                        setScrollListener();
                     }
                 });
             }
@@ -345,6 +347,8 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
      */
     private void scrollToPos(TextView scriptText, TextView speechText)
     {
+        removeScrollListener();
+
         final ObservableScrollView sv = (ObservableScrollView) findViewById(R.id.speechToTextScroll);
         final ObservableScrollView sv2 = (ObservableScrollView) findViewById(R.id.scriptScroll);
 
@@ -356,8 +360,10 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
         Layout layout2 = scriptText.getLayout();
 
         // Scroll
-        sv.smoothScrollTo(0, layout.getLineTop(layout.getLineForOffset(error.speechStart)));
-        sv2.smoothScrollTo(0, layout2.getLineTop(layout2.getLineForOffset(error.scriptStart)));
+        sv.scrollTo(0, layout.getLineTop(layout.getLineForOffset(error.speechStart)));
+        sv2.scrollTo(0, layout2.getLineTop(layout2.getLineForOffset(error.scriptStart)));
+
+        setScrollListener();
     }
 
 
@@ -370,5 +376,41 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
 
         startActivity(intent);
         finish();
+    }
+
+    private void setScrollListener()
+    {
+        scriptScroll.setScrollViewListener(this);
+        speechToTextScroll.setScrollViewListener(this);
+    }
+
+    private void setFinishScrollingListeners(final ObservableScrollView scroll)
+    {
+        scroll.setOnTouchListener(new View.OnTouchListener() {
+
+            public boolean onTouch(View v, MotionEvent event) {
+
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+
+                    scroll.startScrollerTask();
+                }
+
+                return false;
+            }
+        });
+        scroll.setOnScrollStoppedListener(new ObservableScrollView.OnScrollStoppedListener() {
+
+            public void onScrollStopped() {
+
+//                Log.i(TAG, "stopped");
+                setScrollListener();
+            }
+        });
+    }
+
+    private void removeScrollListener()
+    {
+        scriptScroll.setScrollViewListener(null);
+        speechToTextScroll.setScrollViewListener(null);
     }
 }

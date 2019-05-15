@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +59,25 @@ public class PlayBack extends AppCompatActivity {
                     e.toString(), Toast.LENGTH_SHORT);
             readToast.show();
         }
+    }
+
+    public void goToMainMenu(View view) {
+        Intent intent = new Intent(this, MainMenu.class);
+        intent.putExtra("speechName", speechName);
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_home) {
+            View view = findViewById(R.id.action_delete);
+            goToMainMenu(view);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 
