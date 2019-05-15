@@ -168,6 +168,7 @@ public class RecordAudioWithScript extends AppCompatActivity
                     // Stop listening
                     stopVoiceRecorder();
                     recording = false;
+                    goToSpeechPerformance(getCurrentFocus());
                 }
                 else {
                     // Start timer

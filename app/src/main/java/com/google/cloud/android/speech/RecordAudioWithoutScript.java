@@ -1,3 +1,18 @@
+/*
+ * Copyright 2016 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.google.cloud.android.speech;
 
@@ -16,18 +31,20 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.gigamole.library.PulseView;
-
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import com.gigamole.library.PulseView;
 
 public class RecordAudioWithoutScript extends AppCompatActivity
         implements  MessageDialogFragment.Listener,
@@ -42,9 +59,10 @@ public class RecordAudioWithoutScript extends AppCompatActivity
 
     private String filePath;
     String speechName;
+    String scriptText;
     String speechFolderPath;
     String speechRunFolder;
-
+    Button startButton;
     boolean recording = false;
 
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 1;
@@ -53,7 +71,7 @@ public class RecordAudioWithoutScript extends AppCompatActivity
 
     private SharedPreferences sharedPreferences;
     private VoiceRecorder mVoiceRecorder;
-    private MediaRecorder mRecorder = null;
+
     private final VoiceRecorder.Callback mVoiceCallback = new VoiceRecorder.Callback() {
 
         @Override
@@ -67,6 +85,7 @@ public class RecordAudioWithoutScript extends AppCompatActivity
         public void onVoice(byte[] data, int size) {
             if (mSpeechService != null) {
                 mSpeechService.recognize(data, size);
+                convertBytesToFile(data);
             }
         }
 
@@ -108,59 +127,63 @@ public class RecordAudioWithoutScript extends AppCompatActivity
         recording = false;
         System.out.println("recording: " + recording);
 
-        Long timeLeftInMilliseconds = sharedPreferences.getLong("timerMilliseconds", 600000);
+        //Long timeLeftInMilliseconds = sharedPreferences.getLong("timerMilliseconds", 600000);
 
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setTitle("Practice: " + speechName);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        speechFolderPath = getApplicationContext().getFilesDir() + File.separator + speechName;
+        // Set timer on layout
+        //if (savedInstanceState == null) {
+        //   getFragmentManager().beginTransaction()
+        //          .replace(R.id.timer_container, com.google.cloud.android.speech.TimerFragment.newInstance(timeLeftInMilliseconds, speechName))
+        //          .commit();
+        // }
+
+        speechFolderPath = getApplicationContext().getFilesDir() + File.separator
+                + speechName;
         speechRunFolder = "run" + sharedPreferences.getInt("currRun",-1);
         File f = new File(speechFolderPath, speechRunFolder);
         f.mkdirs();
 
         apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
 
-        // Set timer on layout
-       // if (savedInstanceState == null) {
-          //  getFragmentManager().beginTransaction()
-           //         .replace(R.id.timer_container, com.google.cloud.android.speech.TimerFragment.newInstance(timeLeftInMilliseconds, speechName))
-            //        .commit();
-       // }
-
-        // Handle start button click
         final PulseView pulseView;
         pulseView = (PulseView) findViewById(R.id.pv);
-        final Button startButton = (Button) findViewById(R.id.startButton);
-
+        // Handle start button click
+        startButton = (Button) findViewById(R.id.startButton);
+        //startButton.getBackground().setAlpha(200);
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                pulseView.startPulse();
                 // Code here executes on main thread after user presses button
-                //timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
-
+                //  timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
+                startButton.getBackground().setAlpha(200);
+                pulseView.startPulse();
                 // Stop button behavior
                 if (startButton.getText() == "STOP") {
                     pulseView.finishPulse();
                     // Stop timer
-                   // timerFragment.stopTimer();
+                    //      timerFragment.stopTimer();
 
                     // Stop listening
                     stopVoiceRecorder();
                     recording = false;
+                    goToSpeechPerformance(getCurrentFocus());
                 }
                 else {
                     // Start timer
-                   // timerFragment.startTimer();
-
+                    //   timerFragment.startTimer();
+                    startButton.setText("RECORDING");
                     // Change UI elements
-                    startButton.setText("STOP");
                     startButton.setBackgroundTintList(getResources().getColorStateList(R.color.cardview_dark_background));
 
                     // Start listening
                     startVoiceRecorder();
                     recording = true;
+                    startButton.setEnabled(false);
                 }
             }
         });
@@ -265,6 +288,9 @@ public class RecordAudioWithoutScript extends AppCompatActivity
                             @Override
                             public void run() {
                                 if (isFinal) {
+                                    startButton.setEnabled(true);
+                                    startButton.setText("STOP");
+                                    startButton.setBackgroundColor(getResources().getColor(R.color.primary_dark));
                                     try {
                                         appendToFile(apiResultPath, text);
                                         appendToFile(apiResultPath, " ");
@@ -306,24 +332,39 @@ public class RecordAudioWithoutScript extends AppCompatActivity
     @Override
     public void stopButtonPressed(Long speechTimeMs) {
         // Set time elapsed in shared prefs
+        SharedPreferences sharedPreferences = this.getSharedPreferences(speechName, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putLong("timeElapsed", speechTimeMs);
+        // editor.putLong("timeElapsed", speechTimeMs);
         editor.commit();
         goToSpeechPerformance(getCurrentFocus());
     }
     public void addToSharedPreferences() {
+
         //CREATE the shared preference file and add necessary values
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("apiResult", apiResultPath);
         editor.putInt("currRun",1 + sharedPreferences.getInt("currRun",-1));
+        Log.d("ADD TO SHARED PREF", "incrementing curr Run");
         editor.commit();
+    }
+
+    private void convertBytesToFile(byte[] bytearray) {
+        try {
+            File audioFile = new File(speechFolderPath + File.separator + speechRunFolder + File.separator + "audio.wav");
+            FileOutputStream fileoutputstream = new FileOutputStream(audioFile);
+            fileoutputstream.write(bytearray);
+            fileoutputstream.flush();
+            fileoutputstream.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         Intent intent = new Intent(RecordAudioWithoutScript.this, SpeechView.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
         finish();
     }
+
 }
