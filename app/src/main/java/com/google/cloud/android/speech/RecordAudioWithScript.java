@@ -377,5 +377,12 @@ public class RecordAudioWithScript extends AppCompatActivity
             ex.printStackTrace();
         }
     }
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(RecordAudioWithScript.this, SpeechView.class);
+        intent.putExtra("speechName", speechName);
+        startActivity(intent);
+        finish();
+    }
 
 }

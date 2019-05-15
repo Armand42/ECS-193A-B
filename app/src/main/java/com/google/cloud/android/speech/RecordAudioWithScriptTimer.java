@@ -344,4 +344,11 @@ public class RecordAudioWithScriptTimer extends AppCompatActivity
         editor.putInt("currRun",1 + sharedPreferences.getInt("currRun",-1));
         editor.commit();
     }
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(RecordAudioWithScriptTimer.this, SpeechView.class);
+        intent.putExtra("speechName", speechName);
+        startActivity(intent);
+        finish();
+    }
 }
