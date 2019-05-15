@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,8 +21,10 @@ public class SpeechView extends AppCompatActivity {
     String scriptText;
     Boolean videoPlaybackState;
     Boolean viewScriptState;
+    Boolean timerdisplayState;
+
+
     String SPEECH_FOLDER_PATH;
-    SharedPreferences sharedPreferences;
 
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
@@ -32,13 +33,14 @@ public class SpeechView extends AppCompatActivity {
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         speechName = intent.getStringExtra("speechName");
-        sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
         final File dir = getDir(speechName, MODE_PRIVATE);
         filePath = sharedPreferences.getString("filepath", "error");
 //        if(sharedPreferences.contains("filePath"))
         speechName = intent.getStringExtra("speechName");
         videoPlaybackState = sharedPreferences.getBoolean("videoPlayback", false);
         viewScriptState = sharedPreferences.getBoolean("displaySpeech", false);
+        timerdisplayState = sharedPreferences.getBoolean("timerDisplay", false);
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setTitle(speechName);
@@ -65,23 +67,35 @@ public class SpeechView extends AppCompatActivity {
         startActivity(intent);
     }
 
-    // SORT OF WORKS BOI NEED MORE VIEWS
+
     public void goToSpeechRecord(View view) {
         Intent intent;
-        // If Video and Script
+        // Only video
         if (videoPlaybackState) {
             intent = new Intent(this, RecordVideo.class);
         }
-        // If just want the Audio
+        // Audio + Script + Timer
+        else if (viewScriptState && timerdisplayState) {
+            intent = new Intent(this, RecordAudioWithScriptTimer.class);
+        }
+
+        // Only timer (just have timer and screen with no script)
+        else if (timerdisplayState) {
+            intent = new Intent(this, RecordAudioWithoutScriptTimer.class);
+        }
+
+
+
+
+        // Audio and Script
         else if (viewScriptState) {
             intent = new Intent(this, RecordAudioWithScript.class);
         }
-        // If want Audio and Script
+        // Audio and No script (all switches off)
         else {
             intent = new Intent(this, RecordAudioWithoutScript.class);
         }
         intent.putExtra("speechName", speechName);
-        Log.d("SPEECHVIEW", "current Run is" + sharedPreferences.getInt("currRun", -1));
         startActivity(intent);
     }
 

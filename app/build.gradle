@@ -117,7 +117,7 @@ dependencies {
     // Tests
     testCompile 'junit:junit:4.12'
 
-    compile 'com.github.devlight.pulseview:library:1.0.2'
+    implementation 'com.github.devlight.pulseview:library:1.0.2'
 
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
