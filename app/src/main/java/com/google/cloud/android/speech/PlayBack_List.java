@@ -40,7 +40,7 @@ public class PlayBack_List extends AppCompatActivity {
 
         this.setTitle("Past Runs: " + speechName);
 
-        String SPEECH_FOLDER_PATH = getFilesDir() + File.separator + speechName.replace(" ", "");
+        String SPEECH_FOLDER_PATH = getFilesDir() + File.separator + speechName;
 
         File dir = new File(SPEECH_FOLDER_PATH);
 

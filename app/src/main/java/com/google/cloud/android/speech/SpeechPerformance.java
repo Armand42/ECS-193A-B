@@ -61,7 +61,7 @@ public class SpeechPerformance extends BaseActivity {
         speechTime.setText(String.format("Speech time: %02d:%02d", minutes, seconds));
 
         String speechFolderPath = getApplicationContext().getFilesDir() + File.separator
-                + speechName.replace(" ", "");
+                + speechName;
         String speechRunFolder;
 
         if(!prevActivity.equals("playbackList")){

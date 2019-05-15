@@ -75,7 +75,7 @@ public class NewSpeech extends AppCompatActivity {
 
         String filePath;
 
-        SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + speechName.replace(" ", "");
+        SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + speechName;
         sharedPref = getSharedPreferences(speechName, MODE_PRIVATE);
 
         // Check if speech script directory exists
@@ -99,7 +99,7 @@ public class NewSpeech extends AppCompatActivity {
                 editor.commit();
 
                 /* Write speech text to file */
-                filePath = FileService.writeToFile(speechName.replace(" ", "") + "1", speechText,
+                filePath = FileService.writeToFile(speechName+ "1", speechText,
                         SPEECH_SCRIPT_PATH + File.separator + "speech-script");
                 Log.d("NEWSPEECH", filePath);
 
@@ -176,7 +176,7 @@ public class NewSpeech extends AppCompatActivity {
                             editor.putInt("currScriptNum", currScriptNum);
                             editor.commit();
 
-                            String filePath = FileService.writeToFile(speechName.replace(" ", "") + currScriptNum, speechContent,
+                            String filePath = FileService.writeToFile(speechName + currScriptNum, speechContent,
                                     SPEECH_SCRIPT_PATH + File.separator + "speech-script");
 
                             editor.putString("filepath", filePath);

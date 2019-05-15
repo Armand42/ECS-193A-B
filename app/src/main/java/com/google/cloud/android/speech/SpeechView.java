@@ -128,7 +128,7 @@ public class SpeechView extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         // Continue with delete operation
                         try {
-                            SPEECH_FOLDER_PATH = getFilesDir() + File.separator + speechName.replace(" ", "");
+                            SPEECH_FOLDER_PATH = getFilesDir() + File.separator + speechName;
                             File speechFolder = new File(SPEECH_FOLDER_PATH);
                             recursiveDelete(speechFolder);
 
