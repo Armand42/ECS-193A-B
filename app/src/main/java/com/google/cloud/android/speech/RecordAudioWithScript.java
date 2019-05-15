@@ -132,6 +132,8 @@ public class RecordAudioWithScript extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setTitle("Practice: " + speechName);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Set timer on layout
         //if (savedInstanceState == null) {
@@ -369,16 +371,11 @@ public class RecordAudioWithScript extends AppCompatActivity
             File audioFile = new File(speechFolderPath + File.separator + speechRunFolder + File.separator + "audio.wav");
             FileOutputStream fileoutputstream = new FileOutputStream(audioFile);
             fileoutputstream.write(bytearray);
+            fileoutputstream.flush();
             fileoutputstream.close();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(RecordAudioWithScript.this, SpeechView.class);
-        intent.putExtra("speechName", speechName);
-        startActivity(intent);
-        finish();
-    }
+
 }
