@@ -132,8 +132,6 @@ public class RecordAudioWithScript extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setTitle("Practice: " + speechName);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Set timer on layout
         if (savedInstanceState == null) {

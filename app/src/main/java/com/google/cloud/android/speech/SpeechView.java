@@ -41,8 +41,6 @@ public class SpeechView extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setTitle(speechName);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     /**
@@ -169,6 +167,15 @@ public class SpeechView extends AppCompatActivity {
         }
 
         fileOrDirectory.delete();
+
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(SpeechView.this, MainMenu.class);
+        intent.putExtra("speechName", speechName);
+        startActivity(intent);
+        finish();
     }
 
 }

@@ -33,8 +33,6 @@ public class ScriptView extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setTitle(speechName);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
         speechName = intent.getStringExtra("speechName");
@@ -42,7 +40,7 @@ public class ScriptView extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
 
         try {
-            Log.d("FILEPATH:", sharedPreferences.getString("filepath", null));
+//            Log.d("FILEPATH:", sharedPreferences.getString("filepath", null));
             scriptText = FileService.readFromFile(sharedPreferences.getString("filepath", null));
             setScriptText();
         } catch (IOException e) {
@@ -93,5 +91,13 @@ public class ScriptView extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(ScriptView.this, SpeechView.class);
+        intent.putExtra("speechName", speechName);
+        startActivity(intent);
+        finish();
     }
 }
