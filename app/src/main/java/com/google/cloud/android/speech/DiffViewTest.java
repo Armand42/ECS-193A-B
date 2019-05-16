@@ -26,6 +26,7 @@ import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import static com.google.cloud.android.speech.diff_match_patch.Operation.DELETE;
@@ -148,6 +149,7 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
         LinkedList<diff_match_patch.Diff> me;
 
         me = dmp.diff_lineMode(scriptText.concat("END").replaceAll("[^a-zA-z']", " ").toLowerCase(), speechToText.concat("END").replaceAll("[^a-zA-z']", " ").toLowerCase());
+        Log.e("FIND ME", ""+scriptText.charAt(2035));
 
         for(diff_match_patch.Diff temp: me)
         {
@@ -177,27 +179,34 @@ public class DiffViewTest extends AppCompatActivity implements IScrollListener {
                     prevOperation = EQUAL;
                     break;
                 case INSERT://for 2
-                    if (!(temp.text.equals("\\s*")||temp.text.equals("\n"))) {
                         templength = temp.text.length();
                         speechStart = currPos2;
                         speech.setSpan(new ForegroundColorSpan(Color.RED), currPos2, (speechToText.length() < (currPos2 + templength)) ? (speechToText.length()) : (currPos2 += templength), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                         speechEnd = currPos2;
                         prevOperation = INSERT;
-                    }
+                        if(!temp.text.matches("(.*)[^a-zA-z'](.*)")){
+                            speechStart = speechEnd = -1;
+                        }
                     break;
                 case DELETE: //for 1
-                    if (!(temp.text.equals("\\s*")||temp.text.equals("\\s*\n\\s*"))) {
+
                         templength = temp.text.length();
                         scriptStart = currPos1;
                         script.setSpan(new ForegroundColorSpan(Color.RED), currPos1, (scriptText.length() < (currPos1 + templength)) ? (scriptText.length()) : (currPos1 += templength), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                         scriptEnd = currPos1;
                         prevOperation = DELETE;
+                        if(!temp.text.matches("(.*)[^a-zA-z'](.*)")){
+                            Log.e("text", temp.text);
+                            scriptStart = scriptEnd = -1;
+                        }
 
-                    }
                     break;
             }
         }
-
+        Iterator<Errors> e = errors.iterator();
+        while (e.hasNext()){
+            Log.e("Errors", e.next().toString());
+        }
         ignore(scriptText,script,',');
         ignore(scriptText,script,'.');
         ignore(scriptText,script,'!');
