@@ -52,7 +52,7 @@ import com.gigamole.library.PulseView;
 public class RecordAudioWithoutScript extends AppCompatActivity
         implements  MessageDialogFragment.Listener,
         TimerFragment.OnFragmentInteractionListener,
-        IMainActivity{
+        IMainActivity {
 
     TimerFragment timerFragment;
 
@@ -147,7 +147,7 @@ public class RecordAudioWithoutScript extends AppCompatActivity
 
         // Handle metadata
         speechName = intent.getStringExtra("speechName");
-        sharedPreferences = getSharedPreferences(speechName,MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
         filePath = sharedPreferences.getString("filepath", "error");
         recording = false;
         System.out.println("recording: " + recording);
@@ -161,16 +161,8 @@ public class RecordAudioWithoutScript extends AppCompatActivity
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // Set timer on layout
-        //if (savedInstanceState == null) {
-        //   getFragmentManager().beginTransaction()
-        //          .replace(R.id.timer_container, com.google.cloud.android.speech.TimerFragment.newInstance(timeLeftInMilliseconds, speechName))
-        //          .commit();
-        // }
-
-        speechFolderPath = getApplicationContext().getFilesDir() + File.separator
-                + speechName;
-        speechRunFolder = "run" + sharedPreferences.getInt("currRun",-1);
+        speechFolderPath = getApplicationContext().getFilesDir() + File.separator + "speechFiles" + File.separator + speechName;
+        speechRunFolder = "run" + sharedPreferences.getInt("currRun", -1);
         File f = new File(speechFolderPath, speechRunFolder);
         f.mkdirs();
 
@@ -332,7 +324,7 @@ public class RecordAudioWithoutScript extends AppCompatActivity
             };
 
 
-    private void appendToFile(String speechScriptPath, String apiResultText)throws IOException {
+    private void appendToFile(String speechScriptPath, String apiResultText) throws IOException {
         Log.d("AUDIO ONLY", "APPENDING TO FILE");
         File file = new File(speechScriptPath);
 
@@ -351,6 +343,7 @@ public class RecordAudioWithoutScript extends AppCompatActivity
         }
 
     }
+
     @Override
     public void onFragmentInteraction(Uri uri) {
         //you can leave it empty
@@ -365,6 +358,7 @@ public class RecordAudioWithoutScript extends AppCompatActivity
         editor.commit();
         goToSpeechPerformance(getCurrentFocus());
     }
+
     public void addToSharedPreferences() {
 
         //CREATE the shared preference file and add necessary values
@@ -377,11 +371,11 @@ public class RecordAudioWithoutScript extends AppCompatActivity
 
     private void convertBytesToFile(byte[] bytearray) {
         try {
+
             File audioFile = new File(speechFolderPath + File.separator + speechRunFolder + File.separator + "audio.wav");
-            FileOutputStream fileoutputstream = new FileOutputStream(audioFile);
-            fileoutputstream.write(bytearray);
-            fileoutputstream.flush();
-            fileoutputstream.close();
+            FileOutputStream fileOutputStream = new FileOutputStream(audioFile, true);
+            fileOutputStream.write(bytearray);
+            fileOutputStream.close();
         } catch (IOException ex) {
             ex.printStackTrace();
         }

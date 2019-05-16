@@ -383,7 +383,7 @@ public class Camera2VideoWithScript extends Fragment
 
                 VIDEO_FILE_PATH = getVideoFilePath(getContext());
 
-                String speechFolderPath = getContext().getFilesDir() + File.separator + speechName;
+                String speechFolderPath = getContext().getFilesDir() + File.separator + "speechFiles" + File.separator + speechName;
                 String speechRunFolder  = "run" + sharedPref.getInt("currRun", -1);
 
                 apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
@@ -679,11 +679,11 @@ public class Camera2VideoWithScript extends Fragment
     }
 
     private String getVideoFilePath(Context context) {
-        String speechFolderPath = context.getFilesDir() + File.separator + speechName;
+        String speechFolderPath = context.getFilesDir() + File.separator + "speechFiles" + File.separator + speechName;
         String newRunFolder = "run" + sharedPref.getInt("currRun", -1);
         File f = new File(speechFolderPath, newRunFolder);
         f.mkdirs();
-
+        Log.d("CAMERA2VIDEO", "RUN CREATED");
 //        final File dir = context.getDir(speechName, MODE_PRIVATE);
         //CREATE the shared preference file and get necessary values
         return speechFolderPath + File.separator + newRunFolder + File.separator + "video.mp4";
@@ -875,7 +875,7 @@ public class Camera2VideoWithScript extends Fragment
 
 
     private void extractAudioFromVideo() {
-        String speechFolderPath = getContext().getFilesDir() + File.separator + speechName;
+        String speechFolderPath = getContext().getFilesDir() + File.separator + "speechFiles" + File.separator + speechName;
         String newRunFolder = "run" + sharedPref.getInt("currRun", -1);
 
         AUDIO_FILE_PATH = speechFolderPath + File.separator + newRunFolder + File.separator
@@ -987,4 +987,3 @@ public class Camera2VideoWithScript extends Fragment
         editor.commit();
     }
 }
-

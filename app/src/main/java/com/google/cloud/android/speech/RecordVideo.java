@@ -76,7 +76,7 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
         this.setTitle("Record a Speech");
 
 
-        String speechFolderPath = getApplicationContext().getFilesDir() + File.separator + speechName;
+        String speechFolderPath = getApplicationContext().getFilesDir() + File.separator + "speechFiles" + File.separator + speechName;
         String speechRunFolder  = "run" + sharedPreferences.getInt("currRun", -1);
 
         apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
@@ -202,4 +202,3 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
 
     }
 }
-
