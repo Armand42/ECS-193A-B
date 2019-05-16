@@ -12,8 +12,9 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="7dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="150dp"
         android:textSize="30sp"
+        android:textColor="#FFFFFF"
         tools:text="10:00" />
 
 </RelativeLayout>
