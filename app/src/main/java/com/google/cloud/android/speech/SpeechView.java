@@ -52,7 +52,7 @@ public class SpeechView extends AppCompatActivity {
      * Called when the user taps the Send button
      */
     public void goToSpeechToText(View view) {
-        Intent intent = new Intent(this, RecordAudioWithScript.class);
+        Intent intent = new Intent(this, RecordAudio.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
@@ -70,31 +70,11 @@ public class SpeechView extends AppCompatActivity {
     public void goToSpeechRecord(View view) {
         Intent intent;
         // Only video
-        if (videoPlaybackState) {
+        if (videoPlaybackState)
             intent = new Intent(this, RecordVideo.class);
-        }
-        // Audio + Script + Timer
-        else if (viewScriptState && timerdisplayState) {
-            intent = new Intent(this, RecordAudioWithScriptTimer.class);
-        }
+        else
+            intent = new Intent(this, RecordAudio.class);
 
-        // Only timer (just have timer and screen with no script)
-        else if (timerdisplayState) {
-            intent = new Intent(this, RecordAudioWithoutScriptTimer.class);
-        }
-
-        // else if videoPlaybackState && timerdisplayState && viewScriptState
-        // else if videoPlaybackState && timerdisplayState
-
-
-        // Audio and Script
-        else if (viewScriptState) {
-            intent = new Intent(this, RecordAudioWithScript.class);
-        }
-        // Audio and No script (all switches off)
-        else {
-            intent = new Intent(this, RecordAudioWithoutScript.class);
-        }
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
