@@ -61,7 +61,8 @@
         </activity>
         <activity
             android:name=".PlayBack_List"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:screenOrientation="portrait"
@@ -115,7 +116,8 @@
         </activity>
         <activity
             android:name=".MainMenu"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -126,9 +128,10 @@
         <activity
             android:name=".SpeechView"
             android:exported="true"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:parentActivityName=".MainMenu"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            >
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
