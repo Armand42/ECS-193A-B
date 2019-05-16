@@ -32,6 +32,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -39,10 +40,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 
 public class RecordAudioWithScript extends AppCompatActivity
@@ -61,6 +64,7 @@ public class RecordAudioWithScript extends AppCompatActivity
     String scriptText;
     String speechFolderPath;
     String speechRunFolder;
+    StringBuilder savedBytesStringBuilder;
     Button startButton;
     boolean recording = false;
 
@@ -119,6 +123,8 @@ public class RecordAudioWithScript extends AppCompatActivity
         setContentView(R.layout.record_audio_with_script);
         Intent intent = getIntent();
 
+        savedBytesStringBuilder = new StringBuilder();
+
         // Handle metadata
         speechName = intent.getStringExtra("speechName");
         sharedPreferences = getSharedPreferences(speechName,MODE_PRIVATE);
@@ -142,7 +148,7 @@ public class RecordAudioWithScript extends AppCompatActivity
                     .commit();
         }
 
-        speechFolderPath = getApplicationContext().getFilesDir() + File.separator
+        speechFolderPath = getApplicationContext().getFilesDir() + File.separator + "speechFiles" + File.separator
                 + speechName;
         speechRunFolder = "run" + sharedPreferences.getInt("currRun",-1);
         File f = new File(speechFolderPath, speechRunFolder);
@@ -356,6 +362,7 @@ public class RecordAudioWithScript extends AppCompatActivity
         editor.commit();
         goToSpeechPerformance(getCurrentFocus());
     }
+
     public void addToSharedPreferences() {
 
         //CREATE the shared preference file and add necessary values
@@ -368,11 +375,11 @@ public class RecordAudioWithScript extends AppCompatActivity
 
     private void convertBytesToFile(byte[] bytearray) {
         try {
+
             File audioFile = new File(speechFolderPath + File.separator + speechRunFolder + File.separator + "audio.wav");
-            FileOutputStream fileoutputstream = new FileOutputStream(audioFile);
-            fileoutputstream.write(bytearray);
-            fileoutputstream.flush();
-            fileoutputstream.close();
+            FileOutputStream fileOutputStream = new FileOutputStream(audioFile, true);
+            fileOutputStream.write(bytearray);
+            fileOutputStream.close();
         } catch (IOException ex) {
             ex.printStackTrace();
         }

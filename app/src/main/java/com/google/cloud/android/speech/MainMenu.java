@@ -36,11 +36,10 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
         mTopToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(mTopToolbar);
 
-        File dir = getFilesDir();
+        File dir = new File(getFilesDir() + File.separator + "speechFiles");
 
         //get file names
         fileNames = dir.list();
-//        String[] fileNamesToDisplay;
 
         if (fileNames != null) {
             ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, fileNames);

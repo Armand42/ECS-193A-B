@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/light_gray"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="0dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        style="@style/HeaderBar"
+        android:layout_width="match_parent"
+        android:layout_height="61dp"
+        android:layout_marginBottom="140dp"
+        android:elevation="4dp"
+        android:popupTheme="@style/ActionBarPopupThemeOverlay"
+        android:theme="@style/ActionBarThemeOverlay" />
+
+
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/playButton"
+        android:background="@drawable/play_arrow_24px"
+        android:layout_marginTop="600dp"
+        android:layout_centerHorizontal="true"
+        android:textSize="20dp"/>
+
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/fastForwardButton"
+        android:background="@drawable/fast_forward_24px"
+        android:layout_marginTop="600dp"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@+id/playButton"
+        android:textSize="20dp"/>
+
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/backButton"
+        android:background="@drawable/rewind_24px"
+        android:layout_marginTop="600dp"
+        android:layout_marginRight="20dp"
+        android:layout_toLeftOf="@+id/playButton"
+        android:textSize="20dp"/>
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/audioSeekbar"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="570dp"/>
+
+
+    <ScrollView
+        android:id="@+id/scriptBodyWrapper"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:layout_marginTop="61dp"
+        android:fillViewport="true"
+        android:scrollbars="vertical">
+
+        <TextView
+            android:id="@+id/scriptBody"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/rectangle" />
+    </ScrollView>
+
+</RelativeLayout>
