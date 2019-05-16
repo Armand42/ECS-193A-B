@@ -17,6 +17,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.MediaController;
@@ -150,7 +151,14 @@ public class PlayBack extends AppCompatActivity implements View.OnClickListener 
                     e.toString(), Toast.LENGTH_SHORT);
             readToast.show();
         }
+
+        // Instantiate toolbar
+        mTopToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(mTopToolbar);
+        this.setTitle(speechName + " : Run " + speechRunFolder.charAt(speechRunFolder.length() - 1));
     }
+
+
 
     public void goToMainMenu(View view) {
         Intent intent = new Intent(this, MainMenu.class);
@@ -172,11 +180,6 @@ public class PlayBack extends AppCompatActivity implements View.OnClickListener 
     }
 
 
-        // Instantiate toolbar
-        mTopToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(mTopToolbar);
-        this.setTitle(speechName + " : Run " + speechRunFolder.charAt(speechRunFolder.length() - 1));
-    }
 
     // Display speech in playback
     private void setScriptText() {

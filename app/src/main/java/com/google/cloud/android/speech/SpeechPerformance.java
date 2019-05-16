@@ -79,7 +79,15 @@ public class SpeechPerformance extends BaseActivity {
         }
 
         apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
-        selectedRunMediaPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "audio.wav";
+
+        String videoFilePath = speechFolderPath + File.separator + speechRunFolder + File.separator + "video.mp4";
+        File videoFile = new File(videoFilePath);
+
+        if(videoFile.exists()) {
+            selectedRunMediaPath = videoFilePath;
+        } else{
+            selectedRunMediaPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "audio.wav";
+        }
         Log.d("apiResultPath", apiResultPath);
         AUDIO_FILE_PATH = intent.getStringExtra("audioFilePath");
         dialog = new ProgressDialog(this);
@@ -90,7 +98,8 @@ public class SpeechPerformance extends BaseActivity {
         String jsonFilePath = speechFolderPath + File.separator + speechRunFolder + File.separator + "metadata";
         File jsonFile = new File(jsonFilePath);
 
-        if(prevActivity.equals("recording")) {
+        if(!jsonFile.exists()) {
+            Log.d("SPEECHPERFORMANCE", "CREATING NEW JSON FILE");
             percentAccuracy = calculateAccuracy();
             setAccuracy(percentAccuracy);
 

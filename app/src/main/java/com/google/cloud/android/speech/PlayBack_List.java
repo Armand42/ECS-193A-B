@@ -57,7 +57,7 @@ public class PlayBack_List extends AppCompatActivity {
 
         TextView noVid = findViewById(R.id.text_view_id);
 
-        if (fileNames != null) {
+        if (fileNames != null && fileNames.length > 1) {
 
 //            for (int i = 0; i < fileNames.length; i++) {
 //                if (fileNames[i].getName().startsWith("run")) {
@@ -86,7 +86,7 @@ public class PlayBack_List extends AppCompatActivity {
             }
         }
 
-        if (playbackListItems != null && playbackListItems.size() == 0) {
+        if (fileNames.length <= 1) {
             noVid.setVisibility(View.VISIBLE);
         } else {
             noVid.setVisibility(View.GONE);
@@ -145,7 +145,7 @@ public class PlayBack_List extends AppCompatActivity {
     private void getPlaybackListData() throws JSONException {
         playbackListItems = new ArrayList<>();
 
-        for (int i=1; i< dir.listFiles().length; i++){
+        for (int i=1; i<= dir.listFiles().length -1; i++){
             String jsonFilePath =  SPEECH_FOLDER_PATH + File.separator + "run" + i + File.separator + "metadata";
             Log.d("playbacklist", "jsonFilePath" + jsonFilePath);
             JSONObject jsonObj = null;
