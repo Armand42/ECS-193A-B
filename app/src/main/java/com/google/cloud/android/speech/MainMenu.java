@@ -51,11 +51,12 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
 
             listView.setOnItemClickListener(this);
         }
-        else
-        {
-            Intent intent = new Intent(MainMenu.this, NewSpeech.class);
-            startActivity(intent);
-        }
+//        Uncomment below for startup redirection
+//        else
+//        {
+//            Intent intent = new Intent(MainMenu.this, NewSpeech.class);
+//            startActivity(intent);
+//        }
 
     }
 
