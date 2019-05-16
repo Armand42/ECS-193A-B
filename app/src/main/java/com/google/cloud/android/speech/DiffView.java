@@ -108,6 +108,10 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
             case R.id.action_focus_prev:
                 setPrevErrorFocus();
                 return true;
+            case R.id.action_home:
+                View view = findViewById(R.id.action_delete);
+                goToMainMenu(view);
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -192,6 +196,11 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
         setErrorFocus();
 
         setDiffTexts();
+    }
+
+    public void goToMainMenu(View view) {
+        Intent intent = new Intent(this, MainMenu.class);
+        startActivity(intent);
     }
 
     void ignore(String text1, SpannableString string1, char c)
