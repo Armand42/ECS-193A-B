@@ -27,4 +27,9 @@ public class TitleScreen extends AppCompatActivity {
         Intent intent = new Intent(this, HowItWorks.class);
         startActivity(intent);
     }
+
+    public void goToDiffViewTest(View view) {
+        Intent intent = new Intent(this, DiffViewTest.class);
+        startActivity(intent);
+    }
 }

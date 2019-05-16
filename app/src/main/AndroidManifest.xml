@@ -19,10 +19,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Speech"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Camera2VideoWithScriptTimer"></activity>
-        <activity android:name=".Camera2VideoWithoutScriptTimer" />
-        <activity android:name=".RecordAudioWithScriptTimer" />
-        <activity android:name=".RecordAudioWithoutScriptTimer" />
+        <activity android:name=".Camera2VideoWithoutScriptTimer"
+            android:screenOrientation="portrait" ></activity>
+        <activity android:name=".Camera2VideoWithScriptTimer"
+            android:screenOrientation="portrait" ></activity>
+        <activity android:name=".RecordAudioWithScriptTimer"
+            android:screenOrientation="portrait" ></activity>
+        <activity android:name=".RecordAudioWithoutScriptTimer"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".HowItWorks"
             android:screenOrientation="portrait">
@@ -34,11 +38,7 @@
         <activity
             android:name=".TitleScreen"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".BaseActivity"
@@ -50,6 +50,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:screenOrientation="portrait"
                 android:value=".SpeechPerformance" />
+        </activity>
+        <activity
+            android:name=".DiffViewTest"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:screenOrientation="portrait"
+                android:value=".TitleScreen" />
         </activity>
         <activity
             android:name=".PlayBack_List"
@@ -108,7 +116,11 @@
         <activity
             android:name=".MainMenu"
             android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
             <!-- android:theme="@style/AppTheme.Launcher"> -->
         </activity>
         <activity

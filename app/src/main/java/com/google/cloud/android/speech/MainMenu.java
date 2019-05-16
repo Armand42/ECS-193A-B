@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,8 +42,9 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
         //get file names
         fileNames = dir.list();
 //        String[] fileNamesToDisplay;
+//        Log.e("filenames", fileNames[0]);
 
-        if (fileNames != null) {
+        if (fileNames.length != 0) {
             ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, fileNames);
 
             // Connect this adapter to a listview to be populated
@@ -50,6 +52,11 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
             listView.setAdapter(itemsAdapter);
 
             listView.setOnItemClickListener(this);
+        }
+        else
+        {
+            Intent intent = new Intent(MainMenu.this, NewSpeech.class);
+            startActivity(intent);
         }
 
     }

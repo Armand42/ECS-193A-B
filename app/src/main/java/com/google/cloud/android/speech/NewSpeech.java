@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -31,8 +32,6 @@ public class NewSpeech extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         setTitle("New speech");
         setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Get extras for editing a script (if they exist)
         Intent intent = getIntent();
@@ -51,6 +50,19 @@ public class NewSpeech extends AppCompatActivity {
             speechText.setText(scriptText);
         }
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_home) {
+            View view = findViewById(R.id.action_delete);
+            goToMainMenu(view);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 
