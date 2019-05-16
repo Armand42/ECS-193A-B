@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
@@ -58,6 +59,7 @@ public class RecordAudioWithScriptTimer extends AppCompatActivity
     private SharedPreferences sharedPreferences;
     private VoiceRecorder mVoiceRecorder;
     private MediaRecorder mRecorder = null;
+    Button startButton;
     private final VoiceRecorder.Callback mVoiceCallback = new VoiceRecorder.Callback() {
 
         @Override
@@ -157,7 +159,8 @@ public class RecordAudioWithScriptTimer extends AppCompatActivity
         // Handle start button click
         final PulseView pulseView;
         // pulseView = (PulseView) findViewById(R.id.pv);
-        final Button startButton = (Button) findViewById(R.id.startButton);
+
+         startButton = (Button) findViewById(R.id.startButton);
 
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -186,6 +189,10 @@ public class RecordAudioWithScriptTimer extends AppCompatActivity
                     // Start listening
                     startVoiceRecorder();
                     recording = true;
+                    startButton.setEnabled(false);
+                    startButton.setText("RECORDING");
+                    startButton.setBackgroundColor(Color.RED);
+
                 }
             }
         });
@@ -311,6 +318,9 @@ public class RecordAudioWithScriptTimer extends AppCompatActivity
                             @Override
                             public void run() {
                                 if (isFinal) {
+                                    startButton.setEnabled(true);
+                                    startButton.setText("STOP");
+                                    startButton.setBackgroundColor(getResources().getColor(R.color.primary_dark));
                                     try {
                                         appendToFile(apiResultPath, text);
                                         appendToFile(apiResultPath, " ");

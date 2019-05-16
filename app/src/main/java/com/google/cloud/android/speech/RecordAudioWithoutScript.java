@@ -17,11 +17,13 @@
 package com.google.cloud.android.speech;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
@@ -72,6 +74,9 @@ public class RecordAudioWithoutScript extends AppCompatActivity
 
     private SharedPreferences sharedPreferences;
     private VoiceRecorder mVoiceRecorder;
+
+    private ProgressDialog dialog;
+
 
     private final VoiceRecorder.Callback mVoiceCallback = new VoiceRecorder.Callback() {
 
@@ -204,6 +209,8 @@ public class RecordAudioWithoutScript extends AppCompatActivity
                     startVoiceRecorder();
                     recording = true;
                     startButton.setEnabled(false);
+                    startButton.setText("RECORDING");
+                    startButton.setBackgroundColor(Color.RED);
                 }
             }
         });

@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
@@ -183,6 +184,8 @@ public class RecordAudioWithScript extends AppCompatActivity
                     startVoiceRecorder();
                     recording = true;
                     startButton.setEnabled(false);
+                    startButton.setText("RECORDING");
+                    startButton.setBackgroundColor(Color.RED);
                 }
             }
         });
@@ -330,6 +333,8 @@ public class RecordAudioWithScript extends AppCompatActivity
                             public void run() {
                                 if (isFinal) {
                                     startButton.setEnabled(true);
+                                    startButton.setText("STOP");
+                                    startButton.setBackgroundColor(getResources().getColor(R.color.primary_dark));
                                     try {
                                         appendToFile(apiResultPath, text);
                                         appendToFile(apiResultPath, " ");
