@@ -330,6 +330,16 @@ public class Camera2VideoWithScriptTimer extends Fragment
         dialog = new ProgressDialog(getContext());
         speechName = getActivity().getIntent().getStringExtra("speechName");
 
+        if (sharedPref.getBoolean("displaySpeech", false)) {
+            try {
+                Log.d("FRAGMENT", "filepath is " + sharedPref.getString("filepath", null));
+                scriptText = FileService.readFromFile(sharedPref.getString("filepath", null));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            setScriptText();
+        }
+
 
 
         // Set timer on layout
@@ -857,6 +867,19 @@ public class Camera2VideoWithScriptTimer extends Fragment
                             })
                     .create();
         }
+
+    }
+    // Display speech in playback
+    private void setScriptText() {
+        // Get text body
+        Log.d("camera fragment", getActivity().toString());
+        TextView scriptBody = (TextView) getActivity().findViewById(R.id.scriptBody);
+
+        // Make script scrollable
+        scriptBody.setMovementMethod(new ScrollingMovementMethod());
+
+        // Set text of scriptBody to be what we read from the file
+        scriptBody.setText(scriptText);
 
     }
 

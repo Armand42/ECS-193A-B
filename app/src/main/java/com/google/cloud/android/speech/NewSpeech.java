@@ -118,10 +118,7 @@ public class NewSpeech extends AppCompatActivity {
                 editor.putString("filepath", filePath);
                 editor.commit();
 
-                // Show notification on successful save
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        "File saved!", Toast.LENGTH_SHORT);
-                toast.show();
+
 
                 // Send back to this speech's menu
                 Intent intent = new Intent(this, SpeechView.class);

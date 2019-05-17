@@ -27,47 +27,40 @@
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/speechTime"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread_inside" />
 
     <Button
         android:id="@+id/button10"
         android:layout_width="254dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/border_button_dark"
         android:onClick="goToSpeechView"
         android:text="@string/to_speech_menu_button"
-        app:layout_constraintBottom_toTopOf="@+id/playback"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.515"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/speechTime" />
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+        app:layout_constraintVertical_bias="0.466" />
 
 
     <Button
         android:id="@+id/playback"
         android:layout_width="254dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/border_button_dark"
         android:onClick="goToPlayback"
         android:text="@string/playback_button"
-        app:layout_constraintBottom_toTopOf="@+id/diffView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button10" />
-
-    <Button
-        android:id="@+id/button11"
-        android:layout_width="254dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="105dp"
-        android:background="@drawable/border_button_dark"
-        android:onClick="goToPastRuns"
-        android:text="@string/view_past_runs_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.515"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/diffView" />
+        app:layout_constraintTop_toBottomOf="@+id/button10"
+        app:layout_constraintVertical_bias="0.054" />
 
     <TextView
         android:id="@+id/speechTime"
@@ -84,14 +77,17 @@
         android:id="@+id/diffView"
         android:layout_width="254dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/border_button_dark"
         android:onClick="goToDiffView"
         android:text="Diff View"
-        app:layout_constraintBottom_toTopOf="@+id/button11"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.515"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/playback" />
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+        app:layout_constraintVertical_bias="0.696" />
 
     <TextView
         android:id="@+id/accuracyPercentage"
