@@ -234,7 +234,7 @@ public class RecordAudio extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.action_home) {
-            View view = findViewById(R.id.action_delete);
+            View view = findViewById(R.id.action_home);
             goToMainMenu(view);
             return true;
         }

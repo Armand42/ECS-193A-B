@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,16 +29,18 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
     ListView listView;
     String[] fileNames, fileNamesToDisplay;
     private Toolbar mTopToolbar;
+    private final String subTitleText = "Select a speech";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_menu);
         getIntent();
-        this.setTitle("Speeches");
 
         // Instantiate toolbar
-        mTopToolbar = findViewById(R.id.my_toolbar);
+        mTopToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        mTopToolbar.setTitle("Home");
+        mTopToolbar.setSubtitle(Html.fromHtml("<font color='#ffffff'>" + subTitleText + "</font>"));
         setSupportActionBar(mTopToolbar);
 
         getFileNames();
@@ -48,6 +51,19 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
 //            startActivity(intent);
 //        }
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Instantiate toolbar
+        mTopToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        mTopToolbar.setTitle("Home");
+        mTopToolbar.setSubtitle(Html.fromHtml("<font color='#ffffff'>" + subTitleText + "</font>"));
+        setSupportActionBar(mTopToolbar);
+
+        getFileNames();
     }
 
     @Override
@@ -94,11 +110,13 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
 
     @Override
     protected void onNewIntent(Intent intent){
-        this.setTitle("Speeches");
+        setContentView(R.layout.main_menu);
+        getIntent();
+        this.setTitle("Home");
 
         // Instantiate toolbar
         mTopToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(mTopToolbar);
+        mTopToolbar.setSubtitle(Html.fromHtml("<font color='#ffffff'>" + subTitleText + "</font>"));
 
         getFileNames();
     }
@@ -127,7 +145,7 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
             for (int i = 0; i < fileNames.length; i++) {
                 Log.d("MAINMENU", "inside for loop");
 
-                fileNamesToDisplay[i] = defaultPreferences.getString(fileNames[i], null);
+                fileNamesToDisplay[i] = defaultPreferences.getString(fileNames[i], "");
             }
 
             ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, fileNamesToDisplay);

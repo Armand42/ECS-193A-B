@@ -29,7 +29,8 @@ public class SpeechSettings extends AppCompatActivity {
 
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setTitle(speechName);
+        setTitle("Speech Settings");
+        toolbar.setSubtitle(speechName);
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
@@ -54,8 +55,6 @@ public class SpeechSettings extends AppCompatActivity {
         videoPlayback.setChecked(sharedPreferences.getBoolean("videoPlayback", false));
         displaySpeech.setChecked(sharedPreferences.getBoolean("displaySpeech", false));
         timerDisplay.setChecked(sharedPreferences.getBoolean("timerDisplay", false));
-
-        this.setTitle("Speech Settings");
     }
 
     public void goToMainMenu(View view) {

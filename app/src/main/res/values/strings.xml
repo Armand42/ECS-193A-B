@@ -36,7 +36,7 @@
     <string name="save_button">Save</string>
     <string name="stop_recording_button">Stop</string>
     <string name="to_speech_menu_button">Back to Speech Menu</string>
-    <string name="speech_performance_display">How did I do?</string>
+    <string name="speech_performance_display">Here\'s how you did:</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="description_info">Info</string>
