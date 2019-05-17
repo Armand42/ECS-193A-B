@@ -19,10 +19,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Speech"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Camera2VideoWithoutScriptTimer"
-            android:screenOrientation="portrait" ></activity>
-        <activity android:name=".Camera2VideoWithScriptTimer"
-            android:screenOrientation="portrait" ></activity>
         <activity
             android:name=".HowItWorks"
             android:screenOrientation="portrait">

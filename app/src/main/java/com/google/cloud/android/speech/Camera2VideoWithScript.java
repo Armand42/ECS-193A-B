@@ -86,6 +86,7 @@ import static java.nio.file.Paths.get;
 public class Camera2VideoWithScript extends Fragment
         implements View.OnClickListener, FragmentCompat.OnRequestPermissionsResultCallback {
 
+    TimerFragment timerFragment;
     String scriptText;
     String speechName;
     String[] command;
@@ -95,6 +96,7 @@ public class Camera2VideoWithScript extends Fragment
     private static String VIDEO_FILE_PATH;
     private static String AUDIO_FILE_PATH;
     RecordVideo recordVideoWithScript;
+    Boolean displayTimer;
 
     private static final int SENSOR_ORIENTATION_DEFAULT_DEGREES = 90;
     private static final int SENSOR_ORIENTATION_INVERSE_DEGREES = 270;
@@ -313,7 +315,22 @@ public class Camera2VideoWithScript extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_camera2_video, container, false);
+        sharedPref = getActivity().getSharedPreferences(getActivity().getIntent().getStringExtra("speechName"), MODE_PRIVATE);
+        displayTimer = sharedPref.getBoolean("timerDisplay", false);
+        if(displayTimer)
+        {
+            if (sharedPref.getBoolean("displaySpeech", false))
+                return inflater.inflate(R.layout.fragment_camera2_video_timer, container, false);
+            else
+                return inflater.inflate(R.layout.fragment_camera3_video_timer, container, false);
+        }
+        else {
+            if (sharedPref.getBoolean("displaySpeech", false))
+                return inflater.inflate(R.layout.fragment_camera2_video, container, false);
+            else
+                return inflater.inflate(R.layout.fragment_camera3_video, container, false);
+        }
+
     }
 
     @Override
@@ -326,8 +343,15 @@ public class Camera2VideoWithScript extends Fragment
         mIsFirstRecording = true;
         dialog = new ProgressDialog(getContext());
         speechName = getActivity().getIntent().getStringExtra("speechName");
-        sharedPref = getActivity().getSharedPreferences(speechName, MODE_PRIVATE);
-
+        Long timeLeftInMilliseconds = sharedPref.getLong("timerMilliseconds", 600000);
+        // Set timer on layout
+        if(displayTimer) {
+            if (savedInstanceState == null) {
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.timer_container, com.google.cloud.android.speech.TimerFragment.newInstance(timeLeftInMilliseconds, speechName))
+                        .commit();
+            }
+        }
         if (sharedPref.getBoolean("displaySpeech", false)) {
         try {
             Log.d("FRAGMENT", "filepath is " + sharedPref.getString("filepath", null));
@@ -361,10 +385,14 @@ public class Camera2VideoWithScript extends Fragment
 
     @Override
     public void onClick(View view) {
+        timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
         switch (view.getId()) {
             case R.id.video: {
                 if (mIsFirstRecording) {
                     startRecordingVideo();
+                    if(displayTimer){
+                        timerFragment.startTimer();
+                    }
                 } else if (mIsRecordingVideo) {
                     pauseVideo();
                 } else {
@@ -380,6 +408,9 @@ public class Camera2VideoWithScript extends Fragment
                 dialog.show();
 
                 stopRecordingVideo();
+                if(displayTimer){
+                    timerFragment.startTimer();
+                }
 
                 VIDEO_FILE_PATH = getVideoFilePath(getContext());
 
