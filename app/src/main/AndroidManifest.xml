@@ -23,8 +23,6 @@
             android:screenOrientation="portrait" ></activity>
         <activity android:name=".Camera2VideoWithScriptTimer"
             android:screenOrientation="portrait" ></activity>
-        <activity android:name=".RecordAudioWithScriptTimer"
-
         <activity
             android:name=".HowItWorks"
             android:screenOrientation="portrait">
