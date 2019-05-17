@@ -35,7 +35,7 @@
     <TextView
         android:id="@+id/textView"
         android:layout_width="160dp"
-        android:layout_height="27dp"
+        android:layout_height="54dp"
         android:layout_marginStart="30dp"
         android:layout_marginTop="212dp"
         android:text="@string/speech_settings_max_time"
