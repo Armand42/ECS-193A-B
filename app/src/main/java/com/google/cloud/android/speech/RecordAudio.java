@@ -156,6 +156,8 @@ public class RecordAudio extends AppCompatActivity
         } else {
             // Handle start button click
             pulseView = findViewById(R.id.pv);
+
+
         }
 
         if(displayTimer){
@@ -183,9 +185,10 @@ public class RecordAudio extends AppCompatActivity
                 // Code here executes on main thread after user presses button
                 //  timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
                 startButton.getBackground().setAlpha(200);
-
+                pulseView.startPulse();
                 // Stop button behavior
                 if (startButton.getText() == "STOP") {
+                    pulseView.finishPulse();
                     if(displayTimer && timerFragment != null)
                         timerFragment.stopTimer();
 
