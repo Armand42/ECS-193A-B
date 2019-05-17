@@ -6,16 +6,6 @@
 android:layout_width="fill_parent"
 android:layout_height="fill_parent">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/my_toolbar"
-        style="@style/HeaderBar"
-        android:layout_width="match_parent"
-        android:layout_height="61dp"
-        android:layout_marginBottom="8dp"
-        android:elevation="4dp"
-        app:popupTheme="@style/ActionBarPopupThemeOverlay"
-        app:theme="@style/ActionBarThemeOverlay" />
-
     <ScrollView
         android:id="@+id/scriptBodyWrapper"
         android:layout_width="fill_parent"

@@ -9,17 +9,24 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.SharedPreferences;
 
 
+import org.json.JSONException;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SpeechView extends AppCompatActivity {
     String filePath;
@@ -28,6 +35,8 @@ public class SpeechView extends AppCompatActivity {
     Boolean videoPlaybackState;
     Boolean viewScriptState;
     Boolean timerdisplayState;
+
+    File fileNames[], dir;
 
     private SectionsPageAdapter mSectionsPageAdapter;
     private ViewPager mViewPager;
@@ -56,15 +65,16 @@ public class SpeechView extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         // Set script view
-//        try {
-//            scriptText = FileService.readFromFile(sharedPreferences.getString("filepath", null));
-//            setScriptText();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            Toast readToast = Toast.makeText(getApplicationContext(),
-//                    e.toString(), Toast.LENGTH_SHORT);
-//            readToast.show();
-//        }
+        try {
+            scriptText = FileService.readFromFile(sharedPreferences.getString("filepath", null));
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast readToast = Toast.makeText(getApplicationContext(),
+                    e.toString(), Toast.LENGTH_SHORT);
+            readToast.show();
+        }
+
+        getFileNames();
 
         mSectionsPageAdapter = new SectionsPageAdapter(getSupportFragmentManager());
 
@@ -79,8 +89,8 @@ public class SpeechView extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
-        adapter.addFragment(new ScriptViewFragment(), "Your script");
-        adapter.addFragment(new PastRunsFragment(), "Your past runs");
+        adapter.addFragment(new ScriptViewFragment(scriptText), "Your script");
+        adapter.addFragment(new PastRunsFragment(speechName, fileNames, SPEECH_FOLDER_PATH, dir), "Your past runs");
         viewPager.setAdapter(adapter);
     }
 
@@ -118,10 +128,6 @@ public class SpeechView extends AppCompatActivity {
         else if (timerdisplayState) {
             intent = new Intent(this, RecordAudioWithoutScriptTimer.class);
         }
-
-        // else if videoPlaybackState && timerdisplayState && viewScriptState
-        // else if videoPlaybackState && timerdisplayState
-
 
         // Audio and Script
         else if (viewScriptState) {
@@ -238,7 +244,15 @@ public class SpeechView extends AppCompatActivity {
         }
 
         fileOrDirectory.delete();
+    }
 
+    private void getFileNames() {
+        SPEECH_FOLDER_PATH = getFilesDir() + File.separator + "speechFiles" + File.separator + speechName;
+
+        dir = new File(SPEECH_FOLDER_PATH);
+
+        //get file names
+        fileNames = dir.listFiles();
     }
 
     @Override

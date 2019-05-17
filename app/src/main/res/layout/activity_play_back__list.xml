@@ -7,16 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".PlayBack_List">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/my_toolbar"
-        style="@style/HeaderBar"
-        android:layout_width="match_parent"
-        android:layout_height="61dp"
-        android:layout_marginBottom="8dp"
-        android:elevation="4dp"
-        app:popupTheme="@style/ActionBarPopupThemeOverlay"
-        app:theme="@style/ActionBarThemeOverlay" />
-
     <TextView
         android:id="@+id/text_view_id"
         android:layout_width="268dp"
@@ -39,16 +29,17 @@
     <ListView
         android:id="@+id/speechNames"
         android:layout_width="395dp"
-        android:layout_height="581dp"
+        android:layout_height="672dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="124dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </android.support.constraint.ConstraintLayout>
