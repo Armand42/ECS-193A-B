@@ -57,7 +57,7 @@
             android:background="@drawable/border_button_dark"
             android:fontFamily="@font/raleway"
             android:onClick="goToScriptView"
-            android:text="My Script"
+            android:text="View Script"
             android:textStyle="bold" />
     </LinearLayout>
 

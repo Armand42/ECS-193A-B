@@ -22,7 +22,7 @@
     android:layout_width="match_parent"
 
     android:layout_height="match_parent"
-    android:background="#fff"
+    android:background="@drawable/gradient"
     tools:context="com.google.cloud.android.speech.RecordAudioWithScriptTimer">
 
     <android.support.v7.widget.Toolbar

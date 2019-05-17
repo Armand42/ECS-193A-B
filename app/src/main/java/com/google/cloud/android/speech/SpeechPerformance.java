@@ -159,11 +159,11 @@ public class SpeechPerformance extends BaseActivity {
         super.onStop();
     }
 
-    /*public void goToPastRuns(View view) {
+    public void goToPastRuns(View view) {
         Intent intent = new Intent(this, PlayBack_List.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
-    }*/
+    }
 
     public void goToPlayback(View view) {
         Intent intent = new Intent(this, PlayBack.class);
