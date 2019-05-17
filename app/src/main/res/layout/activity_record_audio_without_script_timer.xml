@@ -42,7 +42,7 @@
         android:background="@drawable/border_circle_red"
         android:gravity="center_vertical|center_horizontal"
         android:text="START"
-        android:textColor="#6D8885"
+        android:textColor="#fff"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
