@@ -2,6 +2,7 @@ package com.google.cloud.android.speech;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -40,12 +41,15 @@ public class PlayBack_List extends AppCompatActivity {
 
         // Set toolbar
         Toolbar toolbar = findViewById(R.id.my_toolbar);
+
         Intent intent = getIntent();
         speechName = intent.getStringExtra("speechName");
+
+        SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        setTitle("Past Runs: " + defaultPreferences.getString(speechName, null));
+
         sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
         setSupportActionBar(toolbar);
-
-        this.setTitle("Past Runs: " + speechName);
 
         SPEECH_FOLDER_PATH = getFilesDir() + File.separator + "speechFiles" + File.separator + speechName;
 
