@@ -3,17 +3,23 @@ package com.google.cloud.android.speech;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.SectionIndexer;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.content.SharedPreferences;
 
 
 import java.io.File;
+import java.io.IOException;
 
 public class SpeechView extends AppCompatActivity {
     String filePath;
@@ -23,6 +29,8 @@ public class SpeechView extends AppCompatActivity {
     Boolean viewScriptState;
     Boolean timerdisplayState;
 
+    private SectionsPageAdapter mSectionsPageAdapter;
+    private ViewPager mViewPager;
 
     String SPEECH_FOLDER_PATH;
 
@@ -46,6 +54,34 @@ public class SpeechView extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setTitle(speechName);
         setSupportActionBar(toolbar);
+
+        // Set script view
+//        try {
+//            scriptText = FileService.readFromFile(sharedPreferences.getString("filepath", null));
+//            setScriptText();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Toast readToast = Toast.makeText(getApplicationContext(),
+//                    e.toString(), Toast.LENGTH_SHORT);
+//            readToast.show();
+//        }
+
+        mSectionsPageAdapter = new SectionsPageAdapter(getSupportFragmentManager());
+
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        setupViewPager(mViewPager);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(mViewPager);
+
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
+        adapter.addFragment(new ScriptViewFragment(), "Your script");
+        adapter.addFragment(new PastRunsFragment(), "Your past runs");
+        viewPager.setAdapter(adapter);
     }
 
     /**
@@ -184,6 +220,11 @@ public class SpeechView extends AppCompatActivity {
             goToMainMenu(view);
             return true;
         }
+        else if (id == R.id.action_settings) {
+            View view = findViewById(R.id.action_settings);
+            goToSpeechSettings(view);
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -199,6 +240,7 @@ public class SpeechView extends AppCompatActivity {
         fileOrDirectory.delete();
 
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -208,4 +250,13 @@ public class SpeechView extends AppCompatActivity {
         finish();
     }
 
+    private void setScriptText() {
+        // Get text body
+        TextView scriptBody = (TextView) findViewById(R.id.scriptBody);
+        // Make script scrollable
+        scriptBody.setMovementMethod(new ScrollingMovementMethod());
+
+        // Set text of scriptBody to be what we read from the file
+        scriptBody.setText(scriptText);
+    }
 }

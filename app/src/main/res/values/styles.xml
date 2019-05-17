@@ -19,6 +19,7 @@
     <!-- Toolbar theme -->
     <style name="HeaderBar">
         <item name="android:background">#3679C5</item>
+        <item name="android:subtitleTextColor">#fff</item>
     </style>
 
     <!-- Base application theme. -->
@@ -57,10 +58,11 @@
     </style>
 
     <style name="ActionBarThemeOverlay" parent="">
+        <item name="android:subtitleTextColor">#fff</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:textColorPrimary">#fff</item>
-        <item name="colorControlNormal">@color/cardview_dark_background</item>
-        <item name="colorControlHighlight">@color/cardview_dark_background</item>
+        <!--<item name="colorControlNormal">@color/cardview_dark_background</item>-->
+        <!--<item name="colorControlHighlight">@color/cardview_dark_background</item>-->
         <item name="android:textColor">#fff</item>
         <item name="android:fontFamily">@font/raleway</item>
         <item name="fontFamily">@font/raleway</item>

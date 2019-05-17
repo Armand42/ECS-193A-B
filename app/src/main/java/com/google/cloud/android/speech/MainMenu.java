@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,16 +26,19 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
     ListView listView;
     String[] fileNames;
     private Toolbar mTopToolbar;
+    private final String subTitleText = "Select a speech";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_menu);
         getIntent();
-        this.setTitle("Speeches");
+        this.setTitle("Home");
 
         // Instantiate toolbar
         mTopToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        mTopToolbar.setSubtitle(Html.fromHtml("<font color='#ffffff'>" + subTitleText + "</font>"));
+
         setSupportActionBar(mTopToolbar);
 
         File dir = new File(getFilesDir() + File.separator + "speechFiles");

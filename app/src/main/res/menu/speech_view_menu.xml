@@ -6,14 +6,20 @@
 
     <item android:id="@+id/action_home"
         android:orderInCategory="300"
-        android:title="User"
+        android:title="Home"
         android:icon="@drawable/ic_baseline_home_24px"
+        app:showAsAction="ifRoom" >
+    </item>
+    <item android:id="@+id/action_settings"
+        android:orderInCategory="300"
+        android:title="Settings"
+        android:icon="@drawable/ic_baseline_settings_20px"
         app:showAsAction="ifRoom" >
     </item>
     <item
         android:id="@+id/action_delete"
         android:orderInCategory="300"
-        android:title="User"
+        android:title="Delete"
         android:icon="@drawable/ic_delete"
         app:showAsAction="ifRoom" >
     </item>
