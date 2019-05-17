@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import static com.google.cloud.android.speech.diff_match_patch.Operation.DELETE;
@@ -70,7 +71,6 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
             readToast.show();
         }
 
-        setScriptText();
 
         setErrorIndexText();
 
@@ -130,8 +130,10 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
         diff_match_patch.Operation prevOperation = EQUAL;
         LinkedList<diff_match_patch.Diff> me;
 
-        me = dmp.diff_lineMode(scriptText.concat("END").replaceAll("[^a-zA-z']", " ").toLowerCase(), speechToText.concat("END").replaceAll("[^a-zA-z']", " ").toLowerCase());
+        Log.e("scriptText", scriptText);
+        Log.e("speechText",speechToText);
 
+        me = dmp.diff_lineMode(scriptText.concat("END").replaceAll("[^a-zA-z']", " ").toLowerCase(), speechToText.concat("END").replaceAll("[^a-zA-z']", " ").toLowerCase());
         for(diff_match_patch.Diff temp: me)
         {
             switch(temp.operation)
@@ -151,6 +153,7 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
                         Errors singleError = new Errors( scriptStart,  scriptEnd,  speechStart,  speechEnd);
                         errors.add(singleError);
                         scriptStart = scriptEnd = speechStart = speechEnd = -1;
+                        Log.e("DIFF", "EQUAL - "+temp.text);
                     }
 
                     currPos1 += temp.text.length();
@@ -166,8 +169,9 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
                     speechEnd = currPos2;
                     prevOperation = INSERT;
                     if(temp.text.matches("\\s+")){
-                        scriptStart = scriptEnd = -1;
+                        speechStart = speechEnd = -1;
                     }
+                    Log.e("DIFF", "INSERT - "+temp.text);
                     break;
                 case DELETE: //for 1
 
@@ -180,10 +184,17 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
                     if(temp.text.matches("\\s+")){
                         scriptStart = scriptEnd = -1;
                     }
+                    Log.e("DIFF", "DELETE - "+temp.text);
+
                     break;
             }
         }
 
+//        Iterator<Errors> e = errors.iterator();
+//        while(e.hasNext())
+//        {
+//            Log.e("errors", e.next().toString());
+//        }
         ignore(scriptText,script,',');
         ignore(scriptText,script,'.');
         ignore(scriptText,script,'!');

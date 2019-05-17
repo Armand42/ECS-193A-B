@@ -58,8 +58,7 @@
         </activity>
         <activity
             android:name=".PlayBack_List"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask">
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:screenOrientation="portrait"
@@ -125,7 +124,6 @@
         <activity
             android:name=".SpeechView"
             android:exported="true"
-            android:launchMode="singleTask"
             android:parentActivityName=".MainMenu"
             android:screenOrientation="portrait"
             >

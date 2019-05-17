@@ -102,6 +102,30 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
     }
 
     @Override
+    protected void onNewIntent(Intent intent){
+        this.setTitle("Speeches");
+
+        // Instantiate toolbar
+        mTopToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(mTopToolbar);
+
+        File dir = new File(getFilesDir() + File.separator + "speechFiles");
+
+        //get file names
+        fileNames = dir.list();
+
+        if (fileNames != null && fileNames.length != 0) {
+            ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, fileNames);
+
+            // Connect this adapter to a listview to be populated
+            listView = (ListView) findViewById(R.id.speechNames);
+            listView.setAdapter(itemsAdapter);
+
+            listView.setOnItemClickListener(this);
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
         finish();
