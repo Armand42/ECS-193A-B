@@ -117,7 +117,10 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
         //get file names
         fileNames = dir.list();
         Log.d("MAINMENU", "before if statement");
-
+        listView = findViewById(R.id.speechNames);
+        listView.setVisibility(View.VISIBLE);
+        TextView empty = (TextView)findViewById(R.id.emptyView);
+        empty.setVisibility(View.GONE);
         if (fileNames != null && fileNames.length != 0) {
             fileNamesToDisplay = new String[fileNames.length];
 
@@ -130,10 +133,16 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
             ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, fileNamesToDisplay);
 
             // Connect this adapter to a listview to be populated
-            listView = findViewById(R.id.speechNames);
             listView.setAdapter(itemsAdapter);
 
             listView.setOnItemClickListener(this);
+        }
+        else
+        {
+
+            listView.setVisibility(View.GONE);
+            empty.setVisibility(View.VISIBLE);
+
         }
     }
 
