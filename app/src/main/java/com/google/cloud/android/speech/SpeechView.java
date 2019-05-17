@@ -141,18 +141,6 @@ public class SpeechView extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void goToPlayBack(View view) {
-        Intent intent = new Intent(this, PlayBack_List.class);
-        intent.putExtra("speechName", speechName);
-        startActivity(intent);
-    }
-
-    public void goToScriptView(View view) {
-        Intent intent = new Intent(this, ScriptView.class);
-        intent.putExtra("speechName", speechName);
-        startActivity(intent);
-    }
-
     public void goToDiffView(View view) {
         Intent intent = new Intent(this, DiffViewTest.class);
         intent.putExtra("speechName", speechName);
@@ -231,6 +219,11 @@ public class SpeechView extends AppCompatActivity {
             goToSpeechSettings(view);
             return true;
         }
+        else if (id == R.id.action_edit) {
+            View view = findViewById(R.id.action_edit);
+            goToEditSpeech(view);
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -264,13 +257,11 @@ public class SpeechView extends AppCompatActivity {
         finish();
     }
 
-    private void setScriptText() {
-        // Get text body
-        TextView scriptBody = (TextView) findViewById(R.id.scriptBody);
-        // Make script scrollable
-        scriptBody.setMovementMethod(new ScrollingMovementMethod());
+    public void goToEditSpeech(View view) {
+        Intent intent = new Intent(this, NewSpeech.class);
 
-        // Set text of scriptBody to be what we read from the file
-        scriptBody.setText(scriptText);
+        intent.putExtra("filename", speechName);
+        intent.putExtra("scriptText", scriptText);
+        startActivity(intent);
     }
 }

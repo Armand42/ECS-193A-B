@@ -155,7 +155,7 @@ public class SpeechPerformance extends BaseActivity {
     }
 
     public void goToPastRuns(View view) {
-        Intent intent = new Intent(this, PlayBack_List.class);
+        Intent intent = new Intent(this, SpeechView.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
@@ -288,7 +288,7 @@ public class SpeechPerformance extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(SpeechPerformance.this, PlayBack_List.class);
+        Intent intent = new Intent(SpeechPerformance.this, SpeechView.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
         finish();

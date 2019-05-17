@@ -60,14 +60,6 @@
                 android:value=".TitleScreen" />
         </activity>
         <activity
-            android:name=".PlayBack_List"
-            android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:screenOrientation="portrait"
-                android:value=".SpeechView" />
-        </activity>
-        <activity
             android:name=".RecordAudioWithScript"
             android:screenOrientation="portrait">
 
@@ -85,13 +77,6 @@
         <activity
             android:name=".PlayBack"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".ScriptView"
-            android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".SpeechView" />
-        </activity>
         <activity
             android:name=".GoogleDriveActivity"
             android:screenOrientation="portrait" />

@@ -106,7 +106,7 @@ public class PastRunsFragment extends Fragment {
         Intent intent = new Intent(getActivity(), SpeechPerformance.class);
         intent.putExtra("speechName", speechName);
         intent.putExtra("selectedRun", selectedRun);
-        intent.putExtra("prevActivity", "playbackList");
+        intent.putExtra("prevActivity", "speechView");
         startActivity(intent);
     }
 }

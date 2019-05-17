@@ -199,7 +199,7 @@ public class PlayBack extends AppCompatActivity implements View.OnClickListener 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(PlayBack.this, PlayBack_List.class);
+        Intent intent = new Intent(PlayBack.this, SpeechView.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
         finish();
