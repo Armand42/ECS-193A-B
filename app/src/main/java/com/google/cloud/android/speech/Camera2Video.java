@@ -83,7 +83,7 @@ import static android.content.Context.MODE_PRIVATE;
 import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Paths.get;
 
-public class Camera2VideoWithScript extends Fragment
+public class Camera2Video extends Fragment
         implements View.OnClickListener, FragmentCompat.OnRequestPermissionsResultCallback {
 
     TimerFragment timerFragment;
@@ -259,8 +259,8 @@ public class Camera2VideoWithScript extends Fragment
     private String mCurrentVideoPath;
     private CaptureRequest.Builder mPreviewBuilder;
 
-    public static Camera2VideoWithScript newInstance() {
-        return new Camera2VideoWithScript();
+    public static Camera2Video newInstance() {
+        return new Camera2Video();
     }
 
     /**

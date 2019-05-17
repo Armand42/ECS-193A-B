@@ -17,10 +17,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class RecordVideo extends BaseActivity implements IMainActivity, TimerFragment.OnFragmentInteractionListener {
-    String apiResultPath;
-    String speechName;
-    Boolean displaySpeech;
-    SharedPreferences sharedPreferences;
+    private String apiResultPath, speechName;
+    private SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,11 +39,10 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
 
 
         String speechFolderPath = getApplicationContext().getFilesDir() + File.separator + "speechFiles" + File.separator + speechName;
-        String speechRunFolder  = "run" + sharedPreferences.getInt("currRun", -1);
+        String speechRunFolder = "run" + sharedPreferences.getInt("currRun", -1);
 
         apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
     }
-
 
 
     public void goToMainMenu(View view) {
@@ -77,7 +75,7 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
     protected void onStart() {
         super.onStart();
         getFragmentManager().beginTransaction()
-                .replace(R.id.container, Camera2VideoWithScript.newInstance())
+                .replace(R.id.container, Camera2Video.newInstance())
                 .commit();
         // Prepare Cloud Speech API
         bindService(new Intent(this, SpeechService.class), mServiceConnection, BIND_AUTO_CREATE);
@@ -146,6 +144,7 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
         intent.putExtra("prevActivity", "recording");
         startActivity(intent);
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -158,7 +157,7 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
     @Override
     public void stopButtonPressed(Long speechTimeMs) {
         // Set time elapsed in shared prefs
-        SharedPreferences.Editor editor = getSharedPreferences(speechName,MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = getSharedPreferences(speechName, MODE_PRIVATE).edit();
         editor.putLong("timeElapsed", speechTimeMs);
         editor.commit();
     }
