@@ -50,11 +50,7 @@
         <activity
             android:name=".DiffViewTest"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:screenOrientation="portrait"
@@ -119,12 +115,12 @@
             android:name=".MainMenu"
             android:screenOrientation="portrait"
             android:launchMode="singleTask">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-            <!-- android:theme="@style/AppTheme.Launcher"> -->
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+             android:theme="@style/AppTheme.Launcher">
         </activity>
         <activity
             android:name=".SpeechView"
