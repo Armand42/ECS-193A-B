@@ -3,7 +3,6 @@ package com.google.cloud.android.speech;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,13 +14,15 @@ import android.content.SharedPreferences;
 
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
 
 public class SpeechView extends AppCompatActivity {
-    private String filePath, speechName, scriptText;
-    private Boolean videoPlaybackState, viewScriptState, timerdisplayState;
-    private SharedPreferences defaultPreferences;
+    String filePath;
+    String speechName;
+    String scriptText;
+    Boolean videoPlaybackState;
+    Boolean viewScriptState;
+    Boolean timerdisplayState;
+
 
     String SPEECH_FOLDER_PATH;
 
@@ -33,26 +34,25 @@ public class SpeechView extends AppCompatActivity {
         Intent intent = getIntent();
         speechName = intent.getStringExtra("speechName");
         SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
-        defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
+        final File dir = getDir(speechName, MODE_PRIVATE);
         filePath = sharedPreferences.getString("filepath", "error");
+//        if(sharedPreferences.contains("filePath"))
         speechName = intent.getStringExtra("speechName");
         videoPlaybackState = sharedPreferences.getBoolean("videoPlayback", false);
         viewScriptState = sharedPreferences.getBoolean("displaySpeech", false);
         timerdisplayState = sharedPreferences.getBoolean("timerDisplay", false);
 
         // Set toolbar
-        Toolbar toolbar = findViewById(R.id.my_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setTitle(speechName);
         setSupportActionBar(toolbar);
-
-        setTitle(defaultPreferences.getString(speechName, null));
     }
 
     /**
      * Called when the user taps the Send button
      */
     public void goToSpeechToText(View view) {
-        Intent intent = new Intent(this, RecordAudio.class);
+        Intent intent = new Intent(this, RecordAudioWithScript.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
@@ -70,11 +70,31 @@ public class SpeechView extends AppCompatActivity {
     public void goToSpeechRecord(View view) {
         Intent intent;
         // Only video
-        if (videoPlaybackState)
+        if (videoPlaybackState) {
             intent = new Intent(this, RecordVideo.class);
-        else
-            intent = new Intent(this, RecordAudio.class);
+        }
+        // Audio + Script + Timer
+        else if (viewScriptState && timerdisplayState) {
+            intent = new Intent(this, RecordAudioWithScriptTimer.class);
+        }
 
+        // Only timer (just have timer and screen with no script)
+        else if (timerdisplayState) {
+            intent = new Intent(this, RecordAudioWithoutScriptTimer.class);
+        }
+
+        // else if videoPlaybackState && timerdisplayState && viewScriptState
+        // else if videoPlaybackState && timerdisplayState
+
+
+        // Audio and Script
+        else if (viewScriptState) {
+            intent = new Intent(this, RecordAudioWithScript.class);
+        }
+        // Audio and No script (all switches off)
+        else {
+            intent = new Intent(this, RecordAudioWithoutScript.class);
+        }
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
@@ -115,10 +135,6 @@ public class SpeechView extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         // Continue with delete operation
                         try {
-                            //getting speechDisplayName value from set and then removing it from set
-                            Set<String> speechNameSet = defaultPreferences.getStringSet("speechNameSet", new HashSet<String>());
-                            speechNameSet.remove(defaultPreferences.getString(speechName, null));
-
                             SPEECH_FOLDER_PATH = getFilesDir() + File.separator + "speechFiles" + File.separator + speechName;
                             File speechFolder = new File(SPEECH_FOLDER_PATH);
                             recursiveDelete(speechFolder);
@@ -162,7 +178,8 @@ public class SpeechView extends AppCompatActivity {
             View view = findViewById(R.id.action_delete);
             deleteSpeech(view);
             return true;
-        } else if (id == R.id.action_home) {
+        }
+        else if (id == R.id.action_home) {
             View view = findViewById(R.id.action_delete);
             goToMainMenu(view);
             return true;
@@ -182,7 +199,6 @@ public class SpeechView extends AppCompatActivity {
         fileOrDirectory.delete();
 
     }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();

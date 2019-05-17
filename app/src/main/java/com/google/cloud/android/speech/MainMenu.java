@@ -3,7 +3,6 @@ package com.google.cloud.android.speech;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,12 +20,10 @@ import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainMenu extends AppCompatActivity implements AdapterView.OnItemClickListener {
     ListView listView;
-    String[] fileNames, fileNamesToDisplay;
+    String[] fileNames;
     private Toolbar mTopToolbar;
 
     @Override
@@ -37,23 +34,16 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
         this.setTitle("Speeches");
 
         // Instantiate toolbar
-        mTopToolbar = findViewById(R.id.my_toolbar);
+        mTopToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(mTopToolbar);
 
-        SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         File dir = new File(getFilesDir() + File.separator + "speechFiles");
 
         //get file names
         fileNames = dir.list();
 
         if (fileNames != null && fileNames.length != 0) {
-            fileNamesToDisplay = new String[fileNames.length];
-
-            for (int i = 0; i < fileNames.length; i++) {
-                fileNamesToDisplay[i] = defaultPreferences.getString(fileNames[i], null);
-            }
-
-            ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, fileNamesToDisplay);
+            ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, fileNames);
 
             // Connect this adapter to a listview to be populated
             listView = (ListView) findViewById(R.id.speechNames);
@@ -61,12 +51,11 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
 
             listView.setOnItemClickListener(this);
         }
-//        Uncomment below for startup redirection
-//        else
-//        {
-//            Intent intent = new Intent(MainMenu.this, NewSpeech.class);
-//            startActivity(intent);
-//        }
+        else
+        {
+            Intent intent = new Intent(MainMenu.this, NewSpeech.class);
+            startActivity(intent);
+        }
 
     }
 
@@ -96,7 +85,6 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
 
     public void goToNewSpeech(View view) {
         Intent intent = new Intent(this, NewSpeech.class);
-        intent.putExtra("prevActivity", "mainMenu");
         startActivity(intent);
     }
 
@@ -110,30 +98,6 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         String speechName = fileNames[position];
         goToSpeechMenu(view, speechName);
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent){
-        this.setTitle("Speeches");
-
-        // Instantiate toolbar
-        mTopToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(mTopToolbar);
-
-        File dir = new File(getFilesDir() + File.separator + "speechFiles");
-
-        //get file names
-        fileNames = dir.list();
-
-        if (fileNames != null && fileNames.length != 0) {
-            ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, fileNames);
-
-            // Connect this adapter to a listview to be populated
-            listView = (ListView) findViewById(R.id.speechNames);
-            listView.setAdapter(itemsAdapter);
-
-            listView.setOnItemClickListener(this);
-        }
     }
 
     @Override

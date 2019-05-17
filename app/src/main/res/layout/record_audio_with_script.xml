@@ -24,7 +24,7 @@
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.google.cloud.android.speech.RecordAudio">
+    tools:context="com.google.cloud.android.speech.RecordAudioWithScript">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
