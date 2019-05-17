@@ -116,7 +116,7 @@ public class SpeechPerformance extends BaseActivity {
                 jsonObj.put("videoPlayback", videoPlaybackState);
 
                 Date todayDate = Calendar.getInstance().getTime();
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
                 String currentDateTimeString = formatter.format(todayDate);
 
 //                String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());

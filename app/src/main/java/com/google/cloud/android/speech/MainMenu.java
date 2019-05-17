@@ -37,7 +37,7 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
         this.setTitle("Speeches");
 
         // Instantiate toolbar
-        mTopToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        mTopToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(mTopToolbar);
 
         SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -45,12 +45,14 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
 
         //get file names
         fileNames = dir.list();
-        fileNamesToDisplay = new String[fileNames.length];
-        for (int i = 0; i < fileNames.length; i++) {
-            fileNamesToDisplay[i] = defaultPreferences.getString(fileNames[i], null);
-        }
 
         if (fileNames != null && fileNames.length != 0) {
+            fileNamesToDisplay = new String[fileNames.length];
+
+            for (int i = 0; i < fileNames.length; i++) {
+                fileNamesToDisplay[i] = defaultPreferences.getString(fileNames[i], null);
+            }
+
             ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, fileNamesToDisplay);
 
             // Connect this adapter to a listview to be populated
