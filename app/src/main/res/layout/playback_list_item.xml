@@ -15,26 +15,38 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:minHeight="?android:attr/listPreferredItemHeight" >
     <TextView
         android:id="@+id/runNum"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20dp"/>
+        android:layout_height="match_parent"
+        android:textSize="20dp"
+        android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+        android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+        android:paddingTop="10dp"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"/>
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_height="match_parent"
-        android:layout_width="170dp"
-        android:layout_toRightOf="@id/runNum"
-        android:layout_marginLeft="250dp">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+        android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+        android:gravity="center_vertical">
         <TextView
             android:id="@+id/runDate"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:paddingBottom="10dp"
+            android:paddingTop="5dp"/>
         <TextView
             android:id="@+id/percentAccuracy"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"/>
     </LinearLayout>
 </RelativeLayout>
