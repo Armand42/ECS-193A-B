@@ -7,6 +7,7 @@ import android.icu.text.DateFormat;
 import android.icu.text.SimpleDateFormat;
 import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -59,6 +60,8 @@ public class SpeechPerformance extends BaseActivity {
         Log.e("speechName", speechName);
         prevActivity = intent.getStringExtra("prevActivity");
         String selectedRun = intent.getStringExtra("selectedRun");
+        SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
 
         TextView speechTime = findViewById(R.id.speechTime);
@@ -140,7 +143,7 @@ public class SpeechPerformance extends BaseActivity {
 
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setTitle(speechName);
+        setTitle(defaultPreferences.getString(speechName, null));
         setSupportActionBar(toolbar);
 
     }

@@ -3,6 +3,7 @@ package com.google.cloud.android.speech;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -29,12 +30,14 @@ public class SpeechSettings extends AppCompatActivity {
 
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setTitle(speechName);
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
 
         speechName = intent.getStringExtra("speechName");
+
+        SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        setTitle(defaultPreferences.getString(speechName, null));
 
         /* Get views */
         videoPlayback = (Switch) findViewById(R.id.videoPlaybackSwitch);

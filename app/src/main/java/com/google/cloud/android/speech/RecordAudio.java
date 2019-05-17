@@ -26,6 +26,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -120,6 +121,7 @@ public class RecordAudio extends AppCompatActivity
 
         //get settings from shared preferences for speech
         sharedPreferences = getSharedPreferences(speechName,MODE_PRIVATE);
+        SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         filePath = sharedPreferences.getString("filepath", "error");
         displayScript = sharedPreferences.getBoolean("displaySpeech", false);
         displayTimer = sharedPreferences.getBoolean("timerDisplay", false);
@@ -171,7 +173,7 @@ public class RecordAudio extends AppCompatActivity
 
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setTitle("Practice: " + speechName);
+        setTitle("Practice: " + defaultPreferences.getString(speechName, null));
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

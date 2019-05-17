@@ -3,6 +3,7 @@ package com.google.cloud.android.speech;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,13 +16,16 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.HashSet;
+import java.util.Set;
 
 import android.content.SharedPreferences;
 
 
 public class NewSpeech extends AppCompatActivity {
-    String SPEECH_SCRIPT_PATH;
-    SharedPreferences sharedPref;
+    private String SPEECH_SCRIPT_PATH, speechFileName, prevActivity;
+    private SharedPreferences sharedPref, defaultPreferences;
+    private Set<String> speechNameSet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,12 +36,16 @@ public class NewSpeech extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         setTitle("New speech");
         setSupportActionBar(toolbar);
+        defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Get extras for editing a script (if they exist)
         Intent intent = getIntent();
-        String scriptName = intent.getStringExtra("filename");
+        speechFileName = intent.getStringExtra("speechName");
         String scriptText = intent.getStringExtra("scriptText");
-        if (scriptName != null) {
+        prevActivity = intent.getStringExtra("prevActivity");
+
+        if (speechFileName != null) {
+            String scriptName = defaultPreferences.getString(speechFileName, null);
             this.setTitle("Edit: " + scriptName);
             // Set the text in our speech name edit text to be our speechName
             EditText speechName = findViewById(R.id.speechName);
@@ -83,32 +91,50 @@ public class NewSpeech extends AppCompatActivity {
 
         /* Get speech name from speechText editText */
         EditText speechNameET = findViewById(R.id.speechName);
-        String speechName = speechNameET.getText().toString();
-
+        String speechDisplayName = speechNameET.getText().toString();
         String filePath;
-
-        SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + "speechFiles" + File.separator + speechName;
-        sharedPref = getSharedPreferences(speechName, MODE_PRIVATE);
+        String selectedSpeechName = defaultPreferences.getString(speechFileName, null);
+        // Get the value for the run counter
+        speechNameSet = defaultPreferences.getStringSet("speechNameSet", new HashSet<String>());
 
         // Check if speech script directory exists
-        File f = new File(SPEECH_SCRIPT_PATH);
-        if(speechName.isEmpty()){
-            emptySpeechName();
-        } else if (speechText.isEmpty()){
-            emptySpeechContent();
-        }else if (f.exists()) {
-            saveSpeech(speechName, speechText);
-        } else if (!f.exists()) {
-            f = new File(SPEECH_SCRIPT_PATH, "speech-script");
-            f.mkdirs();
-
+        if (speechDisplayName.isEmpty()) {
+            emptySpeechNameDialog();
+        } else if (speechText.isEmpty()) {
+            emptySpeechContentDialog();
+        } else if (prevActivity.equals("mainMenu") && speechNameSet.contains(speechDisplayName)) {
+            speechAlreadyExistsDialog();
+        } else if (prevActivity.equals("scriptView")) {
+            if (!selectedSpeechName.equals(speechDisplayName) && speechNameSet.contains(speechDisplayName))
+                speechAlreadyExistsDialog();
+            else
+                overwriteExistingSpeech(speechFileName, speechText, speechDisplayName);
+        } else if (!speechNameSet.contains(speechDisplayName)) {
+            Log.d("NEWSPEECH", "SPEECH NOT IN SET");
             try {
+                int counter = defaultPreferences.getInt("counter", 1);
+                String speechName = "speech" + counter;
+
+                SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + "speechFiles" + File.separator + speechName;
+
+                File f = new File(SPEECH_SCRIPT_PATH, "speech-script");
+                f.mkdirs();
+
+                sharedPref = getSharedPreferences(speechName, MODE_PRIVATE);
+
                 //CREATE the shared preference file and add necessary values
                 SharedPreferences.Editor editor = sharedPref.edit();
+                SharedPreferences.Editor defaultEditor = defaultPreferences.edit();
+
                 editor.putInt("currRun", 1);
                 editor.putInt("currScriptNum", 1);
-                editor.putString("speechNameToDisplay", speechName);
                 editor.commit();
+
+                speechNameSet.add(speechDisplayName);
+                defaultEditor.putStringSet("speechNameSet", speechNameSet);
+                defaultEditor.putInt("counter", counter + 1);
+                defaultEditor.putString(speechName, speechDisplayName);
+                defaultEditor.commit();
 
                 /* Write speech text to file */
                 filePath = FileService.writeToFile(speechName + "1", speechText,
@@ -126,7 +152,6 @@ public class NewSpeech extends AppCompatActivity {
                 // Send back to this speech's menu
                 Intent intent = new Intent(this, SpeechView.class);
                 intent.putExtra("speechName", speechName);
-
 
                 startActivity(intent);
             } catch (Exception e) {
@@ -153,7 +178,15 @@ public class NewSpeech extends AppCompatActivity {
         return true;
     }
 
-    public void emptySpeechName(){
+    public void speechAlreadyExistsDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("A speech with this name already exists")
+                .setMessage("Please enter a different name for your speech.")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    public void emptySpeechNameDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Empty Speech Name")
                 .setMessage("Please enter a name for your speech.")
@@ -161,7 +194,7 @@ public class NewSpeech extends AppCompatActivity {
                 .show();
     }
 
-    public void emptySpeechContent(){
+    public void emptySpeechContentDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Empty Speech")
                 .setMessage("Please enter text for your speech.")
@@ -169,26 +202,38 @@ public class NewSpeech extends AppCompatActivity {
                 .show();
     }
 
-    /* Delete all associated files */
-    public void saveSpeech(final String speechName, final String speechContent) {
+    public void overwriteExistingSpeech(final String speechFileName, final String speechContent, final String speechDisplayName) {
         new AlertDialog.Builder(this)
                 .setTitle("Overwrite File")
-                .setMessage("A speech with this name already exists. " +
-                        "Are you sure you want to overwrite this file?")
-
+                .setMessage("Are you sure you want to overwrite this file?")
                 // Specifying a listener allows you to take an action before dismissing the dialog.
                 // The dialog is automatically dismissed when a dialog button is clicked.
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // Continue with delete operation
                         try {
+                            SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + "speechFiles" + File.separator + speechFileName;
+
+                            File f = new File(SPEECH_SCRIPT_PATH, "speech-script");
+                            f.mkdirs();
+
+
+                            sharedPref = getSharedPreferences(speechFileName, MODE_PRIVATE);
                             int currScriptNum = sharedPref.getInt("currScriptNum", -1) + 1;
 
                             SharedPreferences.Editor editor = sharedPref.edit();
+                            SharedPreferences.Editor defaultEditor = defaultPreferences.edit();
+
                             editor.putInt("currScriptNum", currScriptNum);
                             editor.commit();
 
-                            String filePath = FileService.writeToFile(speechName + currScriptNum, speechContent,
+                            speechNameSet.remove(defaultPreferences.getString(speechFileName, null));
+                            speechNameSet.add(speechDisplayName);
+                            defaultEditor.putString(speechFileName, speechDisplayName);
+                            defaultEditor.putStringSet("speechNameSet", speechNameSet);
+                            defaultEditor.commit();
+
+                            String filePath = FileService.writeToFile(speechFileName + currScriptNum, speechContent,
                                     SPEECH_SCRIPT_PATH + File.separator + "speech-script");
 
                             editor.putString("filepath", filePath);
