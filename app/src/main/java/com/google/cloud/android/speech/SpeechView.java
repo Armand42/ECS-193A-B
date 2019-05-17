@@ -53,7 +53,6 @@ public class SpeechView extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
         final File dir = getDir(speechName, MODE_PRIVATE);
         filePath = sharedPreferences.getString("filepath", "error");
-//        if(sharedPreferences.contains("filePath"))
         speechName = intent.getStringExtra("speechName");
         videoPlaybackState = sharedPreferences.getBoolean("videoPlayback", false);
         viewScriptState = sharedPreferences.getBoolean("displaySpeech", false);
@@ -61,7 +60,8 @@ public class SpeechView extends AppCompatActivity {
 
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setTitle(speechName);
+        setTitle("Speech View");
+        toolbar.setSubtitle(speechName);
         setSupportActionBar(toolbar);
 
         // Set script view

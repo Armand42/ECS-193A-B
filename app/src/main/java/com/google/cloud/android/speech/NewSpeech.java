@@ -29,8 +29,8 @@ public class NewSpeech extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_speech);
 
-        EditText speechName = (EditText) findViewById(R.id.editText);
-        EditText speechText = (EditText) findViewById(R.id.speechName);
+        EditText speechName = (EditText) findViewById(R.id.speechName);
+        EditText speechText = (EditText) findViewById(R.id.editText);
 
         // Set what happens when focus changes for our EditTexts
         setOnFocusChangeListener(speechName);
