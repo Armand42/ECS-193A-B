@@ -92,6 +92,7 @@ public class NewSpeech extends AppCompatActivity {
         /* Get speech name from speechText editText */
         EditText speechNameET = findViewById(R.id.speechName);
         String speechDisplayName = speechNameET.getText().toString();
+        speechDisplayName = speechDisplayName.trim();
         String filePath;
         String selectedSpeechName = defaultPreferences.getString(speechFileName, null);
         // Get the value for the run counter

@@ -96,7 +96,6 @@ public class SpeechPerformance extends BaseActivity {
         }
         Log.d("apiResultPath", apiResultPath);
         AUDIO_FILE_PATH = intent.getStringExtra("audioFilePath");
-        dialog = new ProgressDialog(this);
 
         videoPlaybackState = sharedPreferences.getBoolean("videoPlayback", false);
         int percentAccuracy;
