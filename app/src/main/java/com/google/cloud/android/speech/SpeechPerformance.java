@@ -15,6 +15,7 @@ import android.view.View;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -93,6 +94,9 @@ public class SpeechPerformance extends BaseActivity {
         if(prevActivity.equals("recording")) {
             percentAccuracy = calculateAccuracy();
             setAccuracy(percentAccuracy);
+
+            // Performance message changes based on accuracy.
+            setPerformanceMessage(percentAccuracy);
 
             JSONObject jsonObj = new JSONObject();
             try {
@@ -288,5 +292,24 @@ public class SpeechPerformance extends BaseActivity {
         intent.putExtra("speechName", speechName);
         startActivity(intent);
         finish();
+    }
+
+    private void setPerformanceMessage(int percentAccuracy) {
+        TextView performanceMessage = (TextView) findViewById(R.id.performanceMessage);
+        String msg;
+        if (percentAccuracy == 100) {
+            msg = "You didn't make a single mistake! Good job.";
+
+            // Hide diffview button
+            Button diffViewButton = (Button) findViewById(R.id.diffView);
+            diffViewButton.setVisibility(View.GONE);
+        }
+        else if (percentAccuracy > 70) {
+            msg = "You're almost there! Keep practicing.";
+        }
+        else {
+            msg = "Practice makes perfect, keep it up!";
+        }
+        performanceMessage.setText(msg);
     }
 }
