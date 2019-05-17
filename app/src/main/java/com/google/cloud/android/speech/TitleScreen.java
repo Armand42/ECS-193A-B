@@ -29,7 +29,7 @@ public class TitleScreen extends AppCompatActivity {
     }
 
     public void goToDiffViewTest(View view) {
-        Intent intent = new Intent(this, DiffViewTest.class);
+        Intent intent = new Intent(this, DiffView.class);
         startActivity(intent);
     }
 }

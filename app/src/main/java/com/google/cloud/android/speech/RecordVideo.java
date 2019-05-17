@@ -17,16 +17,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class RecordVideo extends BaseActivity implements IMainActivity, TimerFragment.OnFragmentInteractionListener {
-    String apiResultPath;
-    String speechName;
-    Boolean displaySpeech;
+    private String apiResultPath, speechName;
+    private SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         speechName = intent.getStringExtra("speechName");
 
-        SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
         setContentView(R.layout.record_video);
 
         //if video and timerDisplay
@@ -34,53 +34,16 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
         Log.d("recordvideo", "timerdisplay is " + sharedPreferences.getBoolean("timerDisplay", false));
         Log.d("recordvideo", "displaySpeech is " + sharedPreferences.getBoolean("displaySpeech", false));
 
-        if(sharedPreferences.getBoolean("timerDisplay", false) && !(sharedPreferences.getBoolean("displaySpeech", false))){
-            Log.d("recordvideo", "Camera2VideoWithoutScriptTimer");
-            if (savedInstanceState == null) {
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.container, Camera2VideoWithoutScriptTimer.newInstance())
-                        .commit();
-            }
-        }
-        else
-            // if want video and script and timer
-            if(sharedPreferences.getBoolean("timerDisplay", false) && (sharedPreferences.getBoolean("displaySpeech", false))){
-                if (savedInstanceState == null) {
-                    getFragmentManager().beginTransaction()
-                            .replace(R.id.container, Camera2VideoWithScriptTimer.newInstance())
-                            .commit();
-                }
-            }
 
-        else
-        // if want video and script
-        if(sharedPreferences.getBoolean("displaySpeech", false) ){
-            if (savedInstanceState == null) {
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.container, Camera2VideoWithScript.newInstance())
-                        .commit();
-            }
-        }
-
-        // need if video and timer
-        // need if video and script and timer
-
-       //  if just want video
-        else {
-            if (savedInstanceState == null) {
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.container, com.google.cloud.android.speech.Camera2VideoWithoutScript.newInstance())
-                        .commit();
-            }
-        }
         this.setTitle("Record a Speech");
 
 
         String speechFolderPath = getApplicationContext().getFilesDir() + File.separator + "speechFiles" + File.separator + speechName;
-        String speechRunFolder  = "run" + sharedPreferences.getInt("currRun", -1);
+        String speechRunFolder = "run" + sharedPreferences.getInt("currRun", -1);
 
         apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
     }
+
 
     public void goToMainMenu(View view) {
         Intent intent = new Intent(this, MainMenu.class);
@@ -111,8 +74,9 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
     @Override
     protected void onStart() {
         super.onStart();
-
-
+        getFragmentManager().beginTransaction()
+                .replace(R.id.container, CameraToVideo.newInstance())
+                .commit();
         // Prepare Cloud Speech API
         bindService(new Intent(this, SpeechService.class), mServiceConnection, BIND_AUTO_CREATE);
     }
@@ -180,6 +144,7 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
         intent.putExtra("prevActivity", "recording");
         startActivity(intent);
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -192,7 +157,7 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
     @Override
     public void stopButtonPressed(Long speechTimeMs) {
         // Set time elapsed in shared prefs
-        SharedPreferences.Editor editor = getSharedPreferences(speechName,MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = getSharedPreferences(speechName, MODE_PRIVATE).edit();
         editor.putLong("timeElapsed", speechTimeMs);
         editor.commit();
     }

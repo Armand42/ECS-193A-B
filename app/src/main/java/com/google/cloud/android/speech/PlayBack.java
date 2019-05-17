@@ -139,11 +139,6 @@ public class PlayBack extends AppCompatActivity implements View.OnClickListener 
 
                 }
             });
-
-            // Instantiate toolbar
-            mTopToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-            setSupportActionBar(mTopToolbar);
-            this.setTitle(speechName + " : Run " + speechRunFolder.charAt(speechRunFolder.length() - 1));
         }
 
         // Make script viewable
@@ -156,7 +151,14 @@ public class PlayBack extends AppCompatActivity implements View.OnClickListener 
                     e.toString(), Toast.LENGTH_SHORT);
             readToast.show();
         }
+
+        // Instantiate toolbar
+        mTopToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(mTopToolbar);
+        this.setTitle(speechName + " : Run " + speechRunFolder.charAt(speechRunFolder.length() - 1));
     }
+
+
 
     public void goToMainMenu(View view) {
         Intent intent = new Intent(this, MainMenu.class);
@@ -176,6 +178,8 @@ public class PlayBack extends AppCompatActivity implements View.OnClickListener 
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
     // Display speech in playback
     private void setScriptText() {

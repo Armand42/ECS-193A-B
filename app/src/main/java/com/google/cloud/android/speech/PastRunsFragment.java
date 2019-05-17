@@ -80,6 +80,8 @@ public class PastRunsFragment extends Fragment {
         for (int i=1; i< dir.listFiles().length; i++){
             String jsonFilePath =  SPEECH_FOLDER_PATH + File.separator + "run" + i + File.separator + "metadata";
             Log.d("playbacklist", "jsonFilePath" + jsonFilePath);
+            Integer percentAccuracy = 0;
+            String date = "";
             JSONObject jsonObj = null;
             try {
                 jsonObj = new JSONObject(FileService.readFromFile(jsonFilePath));
@@ -87,8 +89,10 @@ public class PastRunsFragment extends Fragment {
                 e.printStackTrace();
             }
             Integer runNum = i;
-            Integer percentAccuracy = jsonObj.getInt("percentAccuracy");
-            String date = jsonObj.getString("dateRecorded");
+            if(jsonObj != null){
+                percentAccuracy = jsonObj.getInt("percentAccuracy");
+                date = jsonObj.getString( "dateRecorded");
+            }
 
             playbackListItems.add(new PlaybackListItem("Run " + runNum, date, percentAccuracy));
         }
@@ -106,7 +110,7 @@ public class PastRunsFragment extends Fragment {
         Intent intent = new Intent(getActivity(), SpeechPerformance.class);
         intent.putExtra("speechName", speechName);
         intent.putExtra("selectedRun", selectedRun);
-        intent.putExtra("prevActivity", "speechView");
+        intent.putExtra("prevActivity", "pastRuns");
         startActivity(intent);
     }
 }

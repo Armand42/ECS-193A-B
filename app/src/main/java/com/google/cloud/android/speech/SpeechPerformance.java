@@ -7,6 +7,7 @@ import android.icu.text.DateFormat;
 import android.icu.text.SimpleDateFormat;
 import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -33,6 +34,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.Locale;
 
+import static java.nio.file.Files.find;
 import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Paths.get;
 
@@ -60,6 +62,9 @@ public class SpeechPerformance extends BaseActivity {
         Log.e("speechName", speechName);
         prevActivity = intent.getStringExtra("prevActivity");
         String selectedRun = intent.getStringExtra("selectedRun");
+        SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        setTitle(defaultPreferences.getString(speechName, null));
+
         sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
 
         TextView speechTime = findViewById(R.id.speechTime);
@@ -72,18 +77,27 @@ public class SpeechPerformance extends BaseActivity {
         String speechFolderPath = getApplicationContext().getFilesDir() + File.separator + "speechFiles" + File.separator
                 + speechName;
 
-        if(!prevActivity.equals("playbackList")){
+        if (prevActivity.equals("recording")) {
             int speechRunNum = (sharedPreferences.getInt("currRun", -1) - 1);
-            speechRunFolder  = "run" + speechRunNum;
-        } else {
+            speechRunFolder = "run" + speechRunNum;
+        } else if (prevActivity.equals("pastRuns")) {
             speechRunFolder = selectedRun;
+        } else if (prevActivity.equals("DiffView")) {
+            speechRunFolder = intent.getStringExtra("speechRunFolder");
         }
 
         apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
-        selectedRunMediaPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "audio.wav";
+
+        String videoFilePath = speechFolderPath + File.separator + speechRunFolder + File.separator + "video.mp4";
+        File videoFile = new File(videoFilePath);
+
+        if (videoFile.exists()) {
+            selectedRunMediaPath = videoFilePath;
+        } else {
+            selectedRunMediaPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "audio.wav";
+        }
         Log.d("apiResultPath", apiResultPath);
         AUDIO_FILE_PATH = intent.getStringExtra("audioFilePath");
-        dialog = new ProgressDialog(this);
 
         videoPlaybackState = sharedPreferences.getBoolean("videoPlayback", false);
         int percentAccuracy;
@@ -91,9 +105,15 @@ public class SpeechPerformance extends BaseActivity {
         String jsonFilePath = speechFolderPath + File.separator + speechRunFolder + File.separator + "metadata";
         File jsonFile = new File(jsonFilePath);
 
-        if(prevActivity.equals("recording")) {
+        if (!jsonFile.exists()) {
+            Log.d("SPEECHPERFORMANCE", "CREATING NEW JSON FILE");
             percentAccuracy = calculateAccuracy();
             setAccuracy(percentAccuracy);
+
+            if (percentAccuracy == 100) {
+                Button diffViewBtn = (Button) findViewById(R.id.diffView);
+                diffViewBtn.setVisibility(View.GONE);
+            }
 
             // Performance message changes based on accuracy.
             setPerformanceMessage(percentAccuracy);
@@ -106,7 +126,7 @@ public class SpeechPerformance extends BaseActivity {
                 jsonObj.put("videoPlayback", videoPlaybackState);
 
                 Date todayDate = Calendar.getInstance().getTime();
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
                 String currentDateTimeString = formatter.format(todayDate);
 
 //                String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
@@ -133,7 +153,6 @@ public class SpeechPerformance extends BaseActivity {
 
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setTitle(speechName);
         setSupportActionBar(toolbar);
 
     }
@@ -178,6 +197,7 @@ public class SpeechPerformance extends BaseActivity {
         Intent intent = new Intent(this, DiffView.class);
         intent.putExtra("speechName", speechName);
         intent.putExtra("apiResultPath", apiResultPath);
+        intent.putExtra("speechRunFolder", speechRunFolder);
         startActivity(intent);
     }
 
@@ -216,19 +236,18 @@ public class SpeechPerformance extends BaseActivity {
     }
 
 
-    private int calculateAccuracy()
-    {
+    private int calculateAccuracy() {
 
-        String scriptText= "EMPTY SCRIPT FILE :(";
+        String scriptText = "EMPTY SCRIPT FILE :(";
         String speechToText = "EMPTY SPEECH FILE :(";
         diff_match_patch dmp = new diff_match_patch();
         LinkedList<diff_match_patch.Diff> myDiff;
-        double deletedWords = 0, insertedWords = 0, incorrectWords = 0 , totalWords = 0;
+        double deletedWords = 0, insertedWords = 0, incorrectWords = 0, totalWords = 0;
 
         diff_match_patch.Operation prevOperation = diff_match_patch.Operation.EQUAL;
 
         try {
-            scriptText = FileService.readFromFile(sharedPreferences.getString("filepath",null));
+            scriptText = FileService.readFromFile(sharedPreferences.getString("filepath", null));
             // Duplicate for now -- eventually replace with reading most recent speech to text result
             speechToText = FileService.readFromFile(apiResultPath);
 
@@ -241,17 +260,13 @@ public class SpeechPerformance extends BaseActivity {
         }
         myDiff = dmp.diff_lineMode(scriptText.replaceAll("[^a-zA-z' ]", " ").toLowerCase().concat(" "), speechToText.toLowerCase().replaceAll("[^a-zA-z' ]", " ").concat(" "));
 
-        for(diff_match_patch.Diff temp : myDiff)
-        {
-            if(temp.text != " " || temp.text != "")
-            {
+        for (diff_match_patch.Diff temp : myDiff) {
+            if (temp.text != " " || temp.text != "") {
                 String[] words = temp.text.split("\\s+");
-                switch (temp.operation)
-                {
+                switch (temp.operation) {
                     case EQUAL:
-                        Log.e("DIFF","EQUAL - "+ temp.text);
-                        if (prevOperation == diff_match_patch.Operation.DELETE || prevOperation == diff_match_patch.Operation.INSERT)
-                        {
+                        Log.e("DIFF", "EQUAL - " + temp.text);
+                        if (prevOperation == diff_match_patch.Operation.DELETE || prevOperation == diff_match_patch.Operation.INSERT) {
                             double prevIncorrect = Math.max(deletedWords, insertedWords);
                             incorrectWords += prevIncorrect;
                             totalWords += prevIncorrect;
@@ -261,13 +276,13 @@ public class SpeechPerformance extends BaseActivity {
                         deletedWords = insertedWords = 0;
                         break;
                     case DELETE:
-                        Log.e("DIFF","DELETE - "+ temp.text);
+                        Log.e("DIFF", "DELETE - " + temp.text);
 
                         deletedWords = words.length;
                         prevOperation = diff_match_patch.Operation.DELETE;
                         break;
                     case INSERT:
-                        Log.e("DIFF","INSERT - "+ temp.text);
+                        Log.e("DIFF", "INSERT - " + temp.text);
 
                         insertedWords = words.length;
                         prevOperation = diff_match_patch.Operation.INSERT;
@@ -276,14 +291,14 @@ public class SpeechPerformance extends BaseActivity {
                 }
             }
         }
-        Log.e("ACCURACY:","incorrect / total = " + incorrectWords + "/" + totalWords);
-        int percent = (100-((int)(100* (incorrectWords/totalWords))));
+        Log.e("ACCURACY:", "incorrect / total = " + incorrectWords + "/" + totalWords);
+        int percent = (100 - ((int) (100 * (incorrectWords / totalWords))));
         return percent;
     }
 
-    public void setAccuracy(int percent){
+    public void setAccuracy(int percent) {
         TextView accuracyPercentage = findViewById(R.id.accuracyPercentage);
-        accuracyPercentage.setText(""+ percent +"%");
+        accuracyPercentage.setText("" + percent + "%");
     }
 
     @Override
