@@ -176,16 +176,6 @@ public class RecordAudio extends AppCompatActivity
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //getting speech path info to create a new run
-        speechFolderPath = getApplicationContext().getFilesDir() + File.separator + "speechFiles" + File.separator
-                + speechName;
-        speechRunFolder = "run" + sharedPreferences.getInt("currRun",-1);
-
-        File f = new File(speechFolderPath, speechRunFolder);
-        f.mkdirs();
-
-        apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
-
 
         // Handle start button click
         startButton = (Button) findViewById(R.id.startButton);
@@ -221,6 +211,13 @@ public class RecordAudio extends AppCompatActivity
                 }
             }
         });
+
+        //getting speech path info to create a new run
+        speechFolderPath = getApplicationContext().getFilesDir() + File.separator + "speechFiles" + File.separator
+                + speechName;
+        speechRunFolder = "run" + sharedPreferences.getInt("currRun",-1);
+
+        apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
 
     }
 
@@ -258,6 +255,7 @@ public class RecordAudio extends AppCompatActivity
         Intent intent = new Intent(this, SpeechPerformance.class);
         intent.putExtra("speechName", speechName);
         intent.putExtra("prevActivity", "recording");
+        Log.d("RECORDAUDIO", "going to speech performance");
         startActivity(intent);
     }
 
@@ -319,6 +317,9 @@ public class RecordAudio extends AppCompatActivity
         }
         mVoiceRecorder = new VoiceRecorder(mVoiceCallback);
         mVoiceRecorder.start();
+
+        File f = new File(speechFolderPath, speechRunFolder);
+        f.mkdirs();
     }
 
     private void stopVoiceRecorder() {
@@ -402,7 +403,6 @@ public class RecordAudio extends AppCompatActivity
     }
 
     public void addToSharedPreferences() {
-
         //CREATE the shared preference file and add necessary values
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("apiResult", apiResultPath);

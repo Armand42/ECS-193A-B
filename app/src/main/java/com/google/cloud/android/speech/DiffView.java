@@ -31,7 +31,7 @@ import static com.google.cloud.android.speech.diff_match_patch.Operation.INSERT;
 
 public class DiffView extends AppCompatActivity implements IScrollListener {
 
-    String scriptText, speechToText, speechName;
+    String scriptText, speechToText, speechName, speechRunFolder;
 
     SpannableString scriptFull, speechFull;
 
@@ -49,6 +49,7 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
         Intent intent = getIntent();
         String apiResultPath = intent.getStringExtra("apiResultPath");
         speechName = intent.getStringExtra("speechName");
+        speechRunFolder = intent.getStringExtra("speechRunFolder");
 
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -228,7 +229,7 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
         Intent intent = new Intent(DiffView.this, SpeechPerformance.class);
         intent.putExtra("speechName", speechName);
         intent.putExtra("prevActivity", "DiffView");
-
+        intent.putExtra("speechRunFolder", speechRunFolder);
         startActivity(intent);
         finish();
     }
