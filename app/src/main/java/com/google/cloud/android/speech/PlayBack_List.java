@@ -32,6 +32,7 @@ public class PlayBack_List extends AppCompatActivity {
 
     private String speechName, SPEECH_FOLDER_PATH;
     SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,20 +54,12 @@ public class PlayBack_List extends AppCompatActivity {
         //get file names
         fileNames = dir.listFiles();
 
-        final List<String> filesToDisplay = new ArrayList<>();
+        playbackListItems = new ArrayList<>();
 
         TextView noVid = findViewById(R.id.text_view_id);
 
         if (fileNames != null && fileNames.length > 1) {
 
-//            for (int i = 0; i < fileNames.length; i++) {
-//                if (fileNames[i].getName().startsWith("run")) {
-//                    filesToDisplay.add(fileNames[i].getName());
-//                }
-//            }
-//
-//            ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, filesToDisplay);
-//
             // Connect this adapter to a listview to be populated
             listView = findViewById(R.id.speechNames);
 //
@@ -112,13 +105,6 @@ public class PlayBack_List extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-//    public void goToPlayBack(View view, String selectedRunMediaPath) {
-//        Intent intent = new Intent(this, PlayBack.class);
-//        intent.putExtra("speechName", speechName);
-//        intent.putExtra("selectedRunMediaPath", selectedRunMediaPath);
-//        startActivity(intent);
-//    }
-
     public void goToSpeechPerformance(View view, String selectedRun) {
         Intent intent = new Intent(this, SpeechPerformance.class);
         intent.putExtra("speechName", speechName);
@@ -133,6 +119,7 @@ public class PlayBack_List extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.base_menu, menu);
         return true;
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -143,20 +130,23 @@ public class PlayBack_List extends AppCompatActivity {
     }
 
     private void getPlaybackListData() throws JSONException {
-        playbackListItems = new ArrayList<>();
 
-        for (int i=1; i<= dir.listFiles().length -1; i++){
-            String jsonFilePath =  SPEECH_FOLDER_PATH + File.separator + "run" + i + File.separator + "metadata";
+        for (int i = 1; i <= dir.listFiles().length - 1; i++) {
+            Integer runNum = i, percentAccuracy = 0;
+            String date = "";
+            String jsonFilePath = SPEECH_FOLDER_PATH + File.separator + "run" + i + File.separator + "metadata";
             Log.d("playbacklist", "jsonFilePath" + jsonFilePath);
             JSONObject jsonObj = null;
+
             try {
                 jsonObj = new JSONObject(FileService.readFromFile(jsonFilePath));
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Integer runNum = i;
-            Integer percentAccuracy = jsonObj.getInt("percentAccuracy");
-            String date = jsonObj.getString("dateRecorded");
+            if(jsonObj != null){
+                percentAccuracy = jsonObj.getInt("percentAccuracy");
+                date = jsonObj.getString("dateRecorded");
+            }
 
             playbackListItems.add(new PlaybackListItem("Run " + runNum, date, percentAccuracy));
         }
