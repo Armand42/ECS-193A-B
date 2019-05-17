@@ -162,7 +162,6 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
             empty.setVisibility(View.VISIBLE);
 
         }
-
     }
 
 }
