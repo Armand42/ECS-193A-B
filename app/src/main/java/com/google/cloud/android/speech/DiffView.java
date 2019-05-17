@@ -163,7 +163,7 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
                     if (!(temp.text.equals("\\s*")||temp.text.equals("\n"))) {
                         templength = temp.text.length();
                         speechStart = currPos2;
-                        speech.setSpan(new ForegroundColorSpan(Color.RED), currPos2, (speechToText.length() < (currPos2 + templength)) ? (speechToText.length()) : (currPos2 += templength), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                        speech.setSpan(new ForegroundColorSpan(Color.MAGENTA), currPos2, (speechToText.length() < (currPos2 + templength)) ? (speechToText.length()) : (currPos2 += templength), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                         speechEnd = currPos2;
                         prevOperation = INSERT;
                     }
@@ -172,7 +172,7 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
                     if (!(temp.text.equals("\\s*")||temp.text.equals("\\s*\n\\s*"))) {
                         templength = temp.text.length();
                         scriptStart = currPos1;
-                        script.setSpan(new ForegroundColorSpan(Color.RED), currPos1, (scriptText.length() < (currPos1 + templength)) ? (scriptText.length()) : (currPos1 += templength), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                        script.setSpan(new ForegroundColorSpan(Color.MAGENTA), currPos1, (scriptText.length() < (currPos1 + templength)) ? (scriptText.length()) : (currPos1 += templength), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                         scriptEnd = currPos1;
                         prevOperation = DELETE;
 
@@ -236,15 +236,16 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
     private void setErrorFocus()
     {
         Errors error = errors.get(errorsIndex);
-        int highlight = getResources().getColor(R.color.highlight);
+        int highlight = getResources().getColor(R.color.light_pink);
+        int focusTextColor = Color.BLACK;
 
         // Set background colors to yellow
         speechFull.setSpan(new BackgroundColorSpan(highlight), error.speechStart, error.speechEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         scriptFull.setSpan(new BackgroundColorSpan(highlight), error.scriptStart, error.scriptEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 
-        // Set text color to white
-        speechFull.setSpan(new ForegroundColorSpan(Color.WHITE), error.speechStart, error.speechEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        scriptFull.setSpan(new ForegroundColorSpan(Color.WHITE), error.scriptStart, error.scriptEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        // Set text color to black
+        speechFull.setSpan(new ForegroundColorSpan(focusTextColor), error.speechStart, error.speechEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        scriptFull.setSpan(new ForegroundColorSpan(focusTextColor), error.scriptStart, error.scriptEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 
         setDiffTexts();
     }
@@ -259,8 +260,8 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
         scriptFull.setSpan(new BackgroundColorSpan(transparent), error.scriptStart, error.scriptEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 
         // Set text color to red
-        speechFull.setSpan(new ForegroundColorSpan(Color.RED), error.speechStart, error.speechEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        scriptFull.setSpan(new ForegroundColorSpan(Color.RED), error.scriptStart, error.scriptEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        speechFull.setSpan(new ForegroundColorSpan(Color.MAGENTA), error.speechStart, error.speechEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        scriptFull.setSpan(new ForegroundColorSpan(Color.MAGENTA), error.scriptStart, error.scriptEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
     }
 
     private void setNextErrorFocus()
@@ -309,7 +310,7 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
     private void setErrorIndexText()
     {
         TextView errorIndex = (TextView) findViewById(R.id.errorIndex);
-        String errorIndexText = String.format("%d / %d", errorsIndex+1, errors.size());
+        String errorIndexText = String.format("Errors: %d / %d", errorsIndex+1, errors.size());
         errorIndex.setText(errorIndexText);
     }
 
