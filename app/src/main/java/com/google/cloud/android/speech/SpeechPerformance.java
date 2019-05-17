@@ -71,11 +71,13 @@ public class SpeechPerformance extends BaseActivity {
         String speechFolderPath = getApplicationContext().getFilesDir() + File.separator + "speechFiles" + File.separator
                 + speechName;
 
-        if(!prevActivity.equals("playbackList")){
+        if (prevActivity.equals("recording")) {
             int speechRunNum = (sharedPreferences.getInt("currRun", -1) - 1);
-            speechRunFolder  = "run" + speechRunNum;
-        } else {
+            speechRunFolder = "run" + speechRunNum;
+        } else if (prevActivity.equals("playbackList")) {
             speechRunFolder = selectedRun;
+        } else if (prevActivity.equals("DiffView")) {
+            speechRunFolder = intent.getStringExtra("speechRunFolder");
         }
 
         apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
@@ -83,9 +85,9 @@ public class SpeechPerformance extends BaseActivity {
         String videoFilePath = speechFolderPath + File.separator + speechRunFolder + File.separator + "video.mp4";
         File videoFile = new File(videoFilePath);
 
-        if(videoFile.exists()) {
+        if (videoFile.exists()) {
             selectedRunMediaPath = videoFilePath;
-        } else{
+        } else {
             selectedRunMediaPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "audio.wav";
         }
         Log.d("apiResultPath", apiResultPath);
@@ -98,7 +100,7 @@ public class SpeechPerformance extends BaseActivity {
         String jsonFilePath = speechFolderPath + File.separator + speechRunFolder + File.separator + "metadata";
         File jsonFile = new File(jsonFilePath);
 
-        if(!jsonFile.exists()) {
+        if (!jsonFile.exists()) {
             Log.d("SPEECHPERFORMANCE", "CREATING NEW JSON FILE");
             percentAccuracy = calculateAccuracy();
             setAccuracy(percentAccuracy);
@@ -183,6 +185,7 @@ public class SpeechPerformance extends BaseActivity {
         Intent intent = new Intent(this, DiffView.class);
         intent.putExtra("speechName", speechName);
         intent.putExtra("apiResultPath", apiResultPath);
+        intent.putExtra("speechRunFolder", speechRunFolder);
         startActivity(intent);
     }
 
@@ -221,19 +224,18 @@ public class SpeechPerformance extends BaseActivity {
     }
 
 
-    private int calculateAccuracy()
-    {
+    private int calculateAccuracy() {
 
-        String scriptText= "EMPTY SCRIPT FILE :(";
+        String scriptText = "EMPTY SCRIPT FILE :(";
         String speechToText = "EMPTY SPEECH FILE :(";
         diff_match_patch dmp = new diff_match_patch();
         LinkedList<diff_match_patch.Diff> myDiff;
-        double deletedWords = 0, insertedWords = 0, incorrectWords = 0 , totalWords = 0;
+        double deletedWords = 0, insertedWords = 0, incorrectWords = 0, totalWords = 0;
 
         diff_match_patch.Operation prevOperation = diff_match_patch.Operation.EQUAL;
 
         try {
-            scriptText = FileService.readFromFile(sharedPreferences.getString("filepath",null));
+            scriptText = FileService.readFromFile(sharedPreferences.getString("filepath", null));
             // Duplicate for now -- eventually replace with reading most recent speech to text result
             speechToText = FileService.readFromFile(apiResultPath);
 
@@ -246,17 +248,13 @@ public class SpeechPerformance extends BaseActivity {
         }
         myDiff = dmp.diff_lineMode(scriptText.replaceAll("[^a-zA-z' ]", " ").toLowerCase().concat(" "), speechToText.toLowerCase().replaceAll("[^a-zA-z' ]", " ").concat(" "));
 
-        for(diff_match_patch.Diff temp : myDiff)
-        {
-            if(temp.text != " " || temp.text != "")
-            {
+        for (diff_match_patch.Diff temp : myDiff) {
+            if (temp.text != " " || temp.text != "") {
                 String[] words = temp.text.split("\\s+");
-                switch (temp.operation)
-                {
+                switch (temp.operation) {
                     case EQUAL:
-                        Log.e("DIFF","EQUAL - "+ temp.text);
-                        if (prevOperation == diff_match_patch.Operation.DELETE || prevOperation == diff_match_patch.Operation.INSERT)
-                        {
+                        Log.e("DIFF", "EQUAL - " + temp.text);
+                        if (prevOperation == diff_match_patch.Operation.DELETE || prevOperation == diff_match_patch.Operation.INSERT) {
                             double prevIncorrect = Math.max(deletedWords, insertedWords);
                             incorrectWords += prevIncorrect;
                             totalWords += prevIncorrect;
@@ -266,13 +264,13 @@ public class SpeechPerformance extends BaseActivity {
                         deletedWords = insertedWords = 0;
                         break;
                     case DELETE:
-                        Log.e("DIFF","DELETE - "+ temp.text);
+                        Log.e("DIFF", "DELETE - " + temp.text);
 
                         deletedWords = words.length;
                         prevOperation = diff_match_patch.Operation.DELETE;
                         break;
                     case INSERT:
-                        Log.e("DIFF","INSERT - "+ temp.text);
+                        Log.e("DIFF", "INSERT - " + temp.text);
 
                         insertedWords = words.length;
                         prevOperation = diff_match_patch.Operation.INSERT;
@@ -281,14 +279,14 @@ public class SpeechPerformance extends BaseActivity {
                 }
             }
         }
-        Log.e("ACCURACY:","incorrect / total = " + incorrectWords + "/" + totalWords);
-        int percent = (100-((int)(100* (incorrectWords/totalWords))));
+        Log.e("ACCURACY:", "incorrect / total = " + incorrectWords + "/" + totalWords);
+        int percent = (100 - ((int) (100 * (incorrectWords / totalWords))));
         return percent;
     }
 
-    public void setAccuracy(int percent){
+    public void setAccuracy(int percent) {
         TextView accuracyPercentage = findViewById(R.id.accuracyPercentage);
-        accuracyPercentage.setText(""+ percent +"%");
+        accuracyPercentage.setText("" + percent + "%");
     }
 
     @Override
