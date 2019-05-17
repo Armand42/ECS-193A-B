@@ -6,7 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
-    tools:context=".NewSpeech" >
+    tools:context=".NewSpeech"
+    android:clickable="true"
+    android:focusableInTouchMode="true" >
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
@@ -17,39 +19,6 @@
         android:elevation="4dp"
         app:popupTheme="@style/ActionBarPopupThemeOverlay"
         app:theme="@style/ActionBarThemeOverlay" />
-
-    <Button
-        android:id="@+id/button5"
-        android:layout_width="333dp"
-        android:layout_height="52dp"
-        android:layout_marginBottom="28dp"
-        android:background="@color/success"
-        android:fontFamily="@font/raleway"
-        android:onClick="saveFile"
-        android:text="@string/save_button"
-        android:textColor="@color/cardview_light_background"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="333dp"
-        android:layout_height="413dp"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/rectangle"
-        android:ems="10"
-        android:gravity="top|left"
-        android:hint="Enter your script"
-        android:inputType="textMultiLine"
-        android:lines="20"
-        android:padding="8dp"
-        android:scrollbars="vertical"
-        app:autoSizeTextType="uniform"
-        app:layout_constraintBottom_toTopOf="@+id/button5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/speechName"
@@ -65,4 +34,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
         app:layout_constraintVertical_bias="1.0" />
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="357dp"
+        android:layout_height="476dp"
+        android:layout_marginBottom="36dp"
+        android:background="@drawable/rectangle"
+        android:ems="10"
+        android:gravity="top|left"
+        android:hint="Enter your script"
+        android:inputType="textMultiLine"
+        android:lines="20"
+        android:padding="8dp"
+        android:scrollbars="vertical"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </android.support.constraint.ConstraintLayout>

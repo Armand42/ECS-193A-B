@@ -42,7 +42,7 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
         //get file names
         fileNames = dir.list();
 
-        if (fileNames.length != 0) {
+        if (fileNames != null) {
             ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, fileNames);
 
             // Connect this adapter to a listview to be populated

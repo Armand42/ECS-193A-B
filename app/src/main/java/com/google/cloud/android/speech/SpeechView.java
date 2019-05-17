@@ -180,7 +180,7 @@ public class SpeechView extends AppCompatActivity {
             return true;
         }
         else if (id == R.id.action_home) {
-            View view = findViewById(R.id.action_delete);
+            View view = findViewById(R.id.action_home);
             goToMainMenu(view);
             return true;
         }
