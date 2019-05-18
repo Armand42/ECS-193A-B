@@ -51,15 +51,10 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.966" />
 
-
     <com.gigamole.library.PulseView
         android:id="@+id/pv"
         android:layout_width="0dp"
         android:layout_height="700dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/timer_container"
         app:pv_alpha="70"
         app:pv_color="#6D8885"
         app:pv_icon="@drawable/circlecropped"
@@ -67,7 +62,11 @@
         app:pv_icon_width="150dp"
         app:pv_interpolator="@android:anim/linear_interpolator"
         app:pv_measure="height"
-        app:pv_spawn_period="500" />
+        app:pv_spawn_period="500"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="61dp" />
+
+
 
     <FrameLayout
         android:id="@+id/timer_container"
@@ -81,8 +80,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
         app:layout_constraintVertical_bias="1.0"
-        tools:context="com.google.cloud.android.speech.Timer" >
-
-    </FrameLayout>
+        tools:context="com.google.cloud.android.speech.Timer" />
 
 </android.support.constraint.ConstraintLayout>
