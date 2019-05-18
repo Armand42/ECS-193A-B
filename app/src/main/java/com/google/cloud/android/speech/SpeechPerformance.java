@@ -16,6 +16,7 @@ import android.view.View;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +34,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.Locale;
 
+import static java.nio.file.Files.find;
 import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Paths.get;
 
@@ -78,7 +80,7 @@ public class SpeechPerformance extends BaseActivity {
         if (prevActivity.equals("recording")) {
             int speechRunNum = (sharedPreferences.getInt("currRun", -1) - 1);
             speechRunFolder = "run" + speechRunNum;
-        } else if (prevActivity.equals("playbackList")) {
+        } else if (prevActivity.equals("pastRuns")) {
             speechRunFolder = selectedRun;
         } else if (prevActivity.equals("DiffView")) {
             speechRunFolder = intent.getStringExtra("speechRunFolder");
@@ -107,6 +109,14 @@ public class SpeechPerformance extends BaseActivity {
             Log.d("SPEECHPERFORMANCE", "CREATING NEW JSON FILE");
             percentAccuracy = calculateAccuracy();
             setAccuracy(percentAccuracy);
+
+            if (percentAccuracy == 100) {
+                Button diffViewBtn = (Button) findViewById(R.id.diffView);
+                diffViewBtn.setVisibility(View.GONE);
+            }
+
+            // Performance message changes based on accuracy.
+            setPerformanceMessage(percentAccuracy);
 
             JSONObject jsonObj = new JSONObject();
             try {
@@ -164,7 +174,7 @@ public class SpeechPerformance extends BaseActivity {
     }
 
     public void goToPastRuns(View view) {
-        Intent intent = new Intent(this, PlayBack_List.class);
+        Intent intent = new Intent(this, SpeechView.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
@@ -293,9 +303,28 @@ public class SpeechPerformance extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(SpeechPerformance.this, PlayBack_List.class);
+        Intent intent = new Intent(SpeechPerformance.this, SpeechView.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
         finish();
+    }
+
+    private void setPerformanceMessage(int percentAccuracy) {
+        TextView performanceMessage = (TextView) findViewById(R.id.performanceMessage);
+        String msg;
+        if (percentAccuracy == 100) {
+            msg = "You didn't make a single mistake! Good job.";
+
+            // Hide diffview button
+            Button diffViewButton = (Button) findViewById(R.id.diffView);
+            diffViewButton.setVisibility(View.GONE);
+        }
+        else if (percentAccuracy > 70) {
+            msg = "You're almost there! Keep practicing.";
+        }
+        else {
+            msg = "Practice makes perfect, keep it up!";
+        }
+        performanceMessage.setText(msg);
     }
 }

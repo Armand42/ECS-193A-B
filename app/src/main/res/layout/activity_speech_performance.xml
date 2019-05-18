@@ -17,9 +17,9 @@
         app:theme="@style/ActionBarThemeOverlay" />
 
     <TextView
-        android:id="@+id/textView3"
-        android:layout_width="255dp"
-        android:layout_height="0dp"
+        android:id="@+id/performanceMessage"
+        android:layout_width="355dp"
+        android:layout_height="109dp"
         android:layout_marginStart="26dp"
         android:layout_marginTop="80dp"
         android:text="@string/speech_performance_display"
@@ -66,12 +66,12 @@
         android:id="@+id/speechTime"
         android:layout_width="143dp"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="108dp"
         android:layout_marginBottom="308dp"
         android:text="TextView"
         app:layout_constraintBottom_toTopOf="@+id/button10"
-        app:layout_constraintStart_toStartOf="@+id/textView3"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintStart_toStartOf="@+id/performanceMessage"
+        app:layout_constraintTop_toBottomOf="@+id/performanceMessage" />
 
     <Button
         android:id="@+id/diffView"
@@ -106,24 +106,25 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView3"
-        app:layout_constraintVertical_bias="0.183" />
+        app:layout_constraintTop_toTopOf="@+id/performanceMessage"
+        app:layout_constraintVertical_bias="0.066" />
 
     <TextView
         android:id="@+id/accuracy"
         android:layout_width="98dp"
         android:layout_height="36dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="136dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
-        android:text="Accuracy "
+        android:layout_marginBottom="8dp"
+        android:text="Accuracy: "
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/accuracyPercentage"
-        app:layout_constraintEnd_toEndOf="@+id/speechTime"
-        app:layout_constraintStart_toStartOf="@+id/accuracyPercentage"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.148"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/speechTime"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.096" />
 
 </android.support.constraint.ConstraintLayout>
