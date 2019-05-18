@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import static com.google.cloud.android.speech.diff_match_patch.Operation.DELETE;
@@ -71,7 +72,6 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
             readToast.show();
         }
 
-        setScriptText();
 
         setErrorIndexText();
 
@@ -132,7 +132,6 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
         LinkedList<diff_match_patch.Diff> me;
 
         me = dmp.diff_lineMode(scriptText.concat("END").replaceAll("[^a-zA-z']", " ").toLowerCase(), speechToText.concat("END").replaceAll("[^a-zA-z']", " ").toLowerCase());
-
         for(diff_match_patch.Diff temp: me)
         {
             switch(temp.operation)
@@ -152,6 +151,7 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
                         Errors singleError = new Errors( scriptStart,  scriptEnd,  speechStart,  speechEnd);
                         errors.add(singleError);
                         scriptStart = scriptEnd = speechStart = speechEnd = -1;
+                        Log.e("DIFF", "EQUAL - "+temp.text);
                     }
 
                     currPos1 += temp.text.length();
@@ -161,23 +161,27 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
                     prevOperation = EQUAL;
                     break;
                 case INSERT://for 2
-                    if (!(temp.text.equals("\\s*")||temp.text.equals("\n"))) {
-                        templength = temp.text.length();
-                        speechStart = currPos2;
-                        speech.setSpan(new ForegroundColorSpan(Color.RED), currPos2, (speechToText.length() < (currPos2 + templength)) ? (speechToText.length()) : (currPos2 += templength), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                        speechEnd = currPos2;
-                        prevOperation = INSERT;
+                    templength = temp.text.length();
+                    speechStart = currPos2;
+                    speech.setSpan(new ForegroundColorSpan(Color.RED), currPos2, (speechToText.length() < (currPos2 + templength)) ? (speechToText.length()) : (currPos2 += templength), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                    speechEnd = currPos2;
+                    prevOperation = INSERT;
+                    if(temp.text.matches("\\s+")){
+                        speechStart = speechEnd = -1;
                     }
                     break;
                 case DELETE: //for 1
-                    if (!(temp.text.equals("\\s*")||temp.text.equals("\\s*\n\\s*"))) {
-                        templength = temp.text.length();
-                        scriptStart = currPos1;
-                        script.setSpan(new ForegroundColorSpan(Color.RED), currPos1, (scriptText.length() < (currPos1 + templength)) ? (scriptText.length()) : (currPos1 += templength), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                        scriptEnd = currPos1;
-                        prevOperation = DELETE;
 
+                    templength = temp.text.length();
+                    scriptStart = currPos1;
+                    script.setSpan(new ForegroundColorSpan(Color.RED), currPos1, (scriptText.length() < (currPos1 + templength)) ? (scriptText.length()) : (currPos1 += templength), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                    scriptEnd = currPos1;
+                    prevOperation = DELETE;
+
+                    if(temp.text.matches("\\s+")){
+                        scriptStart = scriptEnd = -1;
                     }
+
                     break;
             }
         }
@@ -237,15 +241,16 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
     private void setErrorFocus()
     {
         Errors error = errors.get(errorsIndex);
-        int highlight = getResources().getColor(R.color.highlight);
+        int highlight = getResources().getColor(R.color.light_pink);
+        int focusTextColor = Color.BLACK;
 
         // Set background colors to yellow
         speechFull.setSpan(new BackgroundColorSpan(highlight), error.speechStart, error.speechEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         scriptFull.setSpan(new BackgroundColorSpan(highlight), error.scriptStart, error.scriptEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 
-        // Set text color to white
-        speechFull.setSpan(new ForegroundColorSpan(Color.WHITE), error.speechStart, error.speechEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        scriptFull.setSpan(new ForegroundColorSpan(Color.WHITE), error.scriptStart, error.scriptEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        // Set text color to black
+        speechFull.setSpan(new ForegroundColorSpan(focusTextColor), error.speechStart, error.speechEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        scriptFull.setSpan(new ForegroundColorSpan(focusTextColor), error.scriptStart, error.scriptEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 
         setDiffTexts();
     }
@@ -310,7 +315,7 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
     private void setErrorIndexText()
     {
         TextView errorIndex = (TextView) findViewById(R.id.errorIndex);
-        String errorIndexText = String.format("%d / %d", errorsIndex+1, errors.size());
+        String errorIndexText = String.format("Errors: %d / %d", errorsIndex+1, errors.size());
         errorIndex.setText(errorIndexText);
     }
 

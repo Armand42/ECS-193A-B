@@ -18,48 +18,33 @@
         app:popupTheme="@style/ActionBarPopupThemeOverlay"
         app:theme="@style/ActionBarThemeOverlay" />
 
-    <LinearLayout
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabs"
         android:layout_width="match_parent"
-        android:layout_height="343dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="536dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:tabSelectedTextColor="@color/status_not_hearing"
+        app:tabTextColor="#000000" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="453dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:gravity="center|top"
-        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <Button
-            android:id="@+id/editSettings"
-            android:layout_width="276dp"
-            android:layout_height="49dp"
-            android:background="@drawable/border_button_dark"
-            android:fontFamily="@font/raleway"
-            android:onClick="goToSpeechSettings"
-            android:text="@string/edit_settings_button"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/viewPastRecordings"
-            android:layout_width="276dp"
-            android:layout_height="49dp"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/border_button_dark"
-            android:fontFamily="@font/raleway"
-            android:onClick="goToPlayBack"
-            android:text="@string/view_past_runs_button"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/viewScript"
-            android:layout_width="276dp"
-            android:layout_height="49dp"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/border_button_dark"
-            android:fontFamily="@font/raleway"
-            android:onClick="goToScriptView"
-            android:text="View Script"
-            android:textStyle="bold" />
-    </LinearLayout>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tabs"
+        app:layout_constraintVertical_bias="0.059" />
 
     <Button
         android:id="@+id/startButton"

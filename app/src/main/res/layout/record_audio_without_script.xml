@@ -20,7 +20,7 @@
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient"
+    android:background="#fff"
     tools:context="com.google.cloud.android.speech.RecordAudio">
 
     <android.support.v7.widget.Toolbar
@@ -56,10 +56,10 @@
         android:layout_width="0dp"
         android:layout_height="700dp"
         app:pv_alpha="70"
-        app:pv_color="#fff"
-        app:pv_icon="@drawable/ic_speakerpreplogo"
-        app:pv_icon_height="200dp"
-        app:pv_icon_width="200dp"
+        app:pv_color="#6D8885"
+        app:pv_icon="@drawable/circlecropped"
+        app:pv_icon_height="150dp"
+        app:pv_icon_width="150dp"
         app:pv_interpolator="@android:anim/linear_interpolator"
         app:pv_measure="height"
         app:pv_spawn_period="500"

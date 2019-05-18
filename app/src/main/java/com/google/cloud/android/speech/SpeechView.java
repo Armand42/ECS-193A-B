@@ -3,22 +3,39 @@ package com.google.cloud.android.speech;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.SectionIndexer;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.content.SharedPreferences;
 
 
+import org.json.JSONException;
+
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
 
 public class SpeechView extends AppCompatActivity {
+    File fileNames[], dir;
+
+    private SectionsPageAdapter mSectionsPageAdapter;
+    private ViewPager mViewPager;
     private String filePath, speechName, scriptText;
     private Boolean videoPlaybackState, viewScriptState, timerdisplayState;
     private SharedPreferences defaultPreferences;
@@ -34,7 +51,7 @@ public class SpeechView extends AppCompatActivity {
         speechName = intent.getStringExtra("speechName");
         SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
         defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
+        final File dir = getDir(speechName, MODE_PRIVATE);
         filePath = sharedPreferences.getString("filepath", "error");
         speechName = intent.getStringExtra("speechName");
         videoPlaybackState = sharedPreferences.getBoolean("videoPlayback", false);
@@ -42,10 +59,39 @@ public class SpeechView extends AppCompatActivity {
         timerdisplayState = sharedPreferences.getBoolean("timerDisplay", false);
 
         // Set toolbar
-        Toolbar toolbar = findViewById(R.id.my_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setTitle("Speech View");
+        toolbar.setSubtitle(defaultPreferences.getString(speechName, null));
         setSupportActionBar(toolbar);
 
-        setTitle(defaultPreferences.getString(speechName, null));
+        // Set script view
+        try {
+            scriptText = FileService.readFromFile(sharedPreferences.getString("filepath", null));
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast readToast = Toast.makeText(getApplicationContext(),
+                    e.toString(), Toast.LENGTH_SHORT);
+            readToast.show();
+        }
+
+        getFileNames();
+
+        mSectionsPageAdapter = new SectionsPageAdapter(getSupportFragmentManager());
+
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        setupViewPager(mViewPager);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(mViewPager);
+
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
+        adapter.addFragment(new ScriptViewFragment(scriptText), "Your script");
+        adapter.addFragment(new PastRunsFragment(speechName, fileNames, SPEECH_FOLDER_PATH, dir), "Your past runs");
+        viewPager.setAdapter(adapter);
     }
 
     /**
@@ -74,25 +120,12 @@ public class SpeechView extends AppCompatActivity {
             intent = new Intent(this, RecordVideo.class);
         else
             intent = new Intent(this, RecordAudio.class);
-
-        intent.putExtra("speechName", speechName);
-        startActivity(intent);
-    }
-
-    public void goToPlayBack(View view) {
-        Intent intent = new Intent(this, PlayBack_List.class);
-        intent.putExtra("speechName", speechName);
-        startActivity(intent);
-    }
-
-    public void goToScriptView(View view) {
-        Intent intent = new Intent(this, ScriptView.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
 
     public void goToDiffView(View view) {
-        Intent intent = new Intent(this, DiffViewTest.class);
+        Intent intent = new Intent(this, DiffView.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
@@ -162,9 +195,20 @@ public class SpeechView extends AppCompatActivity {
             View view = findViewById(R.id.action_delete);
             deleteSpeech(view);
             return true;
-        } else if (id == R.id.action_home) {
-            View view = findViewById(R.id.action_delete);
+        }
+        else if (id == R.id.action_home) {
+            View view = findViewById(R.id.action_home);
             goToMainMenu(view);
+            return true;
+        }
+        else if (id == R.id.action_settings) {
+            View view = findViewById(R.id.action_settings);
+            goToSpeechSettings(view);
+            return true;
+        }
+        else if (id == R.id.action_edit) {
+            View view = findViewById(R.id.action_edit);
+            goToEditSpeech(view);
             return true;
         }
 
@@ -180,7 +224,15 @@ public class SpeechView extends AppCompatActivity {
         }
 
         fileOrDirectory.delete();
+    }
 
+    private void getFileNames() {
+        SPEECH_FOLDER_PATH = getFilesDir() + File.separator + "speechFiles" + File.separator + speechName;
+
+        dir = new File(SPEECH_FOLDER_PATH);
+
+        //get file names
+        fileNames = dir.listFiles();
     }
 
     @Override
@@ -192,4 +244,11 @@ public class SpeechView extends AppCompatActivity {
         finish();
     }
 
+    public void goToEditSpeech(View view) {
+        Intent intent = new Intent(this, NewSpeech.class);
+
+        intent.putExtra("speechName", speechName);
+        intent.putExtra("scriptText", scriptText);
+        startActivity(intent);
+    }
 }

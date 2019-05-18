@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -32,6 +33,13 @@ public class NewSpeech extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_speech);
 
+        EditText speechName = (EditText) findViewById(R.id.speechName);
+        EditText speechText = (EditText) findViewById(R.id.editText);
+
+        // Set what happens when focus changes for our EditTexts
+        setOnFocusChangeListener(speechName);
+        setOnFocusChangeListener(speechText);
+
         // Set toolbar
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         setTitle("New speech");
@@ -48,16 +56,19 @@ public class NewSpeech extends AppCompatActivity {
             String scriptName = defaultPreferences.getString(speechFileName, null);
             this.setTitle("Edit: " + scriptName);
             // Set the text in our speech name edit text to be our speechName
-            EditText speechName = findViewById(R.id.speechName);
             speechName.setText(scriptName);
         } else {
             this.setTitle("Enter a Speech");
         }
         if (scriptText != null) {
-            EditText speechText = findViewById(R.id.editText);
             speechText.setText(scriptText);
         }
 
+    }
+
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(NewSpeech.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     @Override
@@ -65,8 +76,13 @@ public class NewSpeech extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_home) {
-            View view = findViewById(R.id.action_delete);
+            View view = findViewById(R.id.action_home);
             goToMainMenu(view);
+            return true;
+        }
+        else if (id == R.id.action_save) {
+            View view = findViewById(R.id.action_save);
+            saveFile(view);
             return true;
         }
 
@@ -92,6 +108,7 @@ public class NewSpeech extends AppCompatActivity {
         /* Get speech name from speechText editText */
         EditText speechNameET = findViewById(R.id.speechName);
         String speechDisplayName = speechNameET.getText().toString();
+        speechDisplayName = speechDisplayName.trim();
         String filePath;
         String selectedSpeechName = defaultPreferences.getString(speechFileName, null);
         // Get the value for the run counter
@@ -144,11 +161,6 @@ public class NewSpeech extends AppCompatActivity {
                 editor.putString("filepath", filePath);
                 editor.commit();
 
-                // Show notification on successful save
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        "File saved!", Toast.LENGTH_SHORT);
-                toast.show();
-
                 // Send back to this speech's menu
                 Intent intent = new Intent(this, SpeechView.class);
                 intent.putExtra("speechName", speechName);
@@ -174,7 +186,7 @@ public class NewSpeech extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.base_menu, menu);
+        getMenuInflater().inflate(R.menu.new_speech_menu, menu);
         return true;
     }
 
@@ -252,6 +264,17 @@ public class NewSpeech extends AppCompatActivity {
                 .setNegativeButton(android.R.string.no, null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+    }
+
+    private void setOnFocusChangeListener(EditText editText) {
+        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
     }
 
 }

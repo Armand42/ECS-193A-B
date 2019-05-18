@@ -342,6 +342,7 @@ public class CameraToVideo extends Fragment
         mPlayBackVideo.setOnClickListener(this);
         mIsFirstRecording = true;
         dialog = new ProgressDialog(getContext());
+        dialog.setCanceledOnTouchOutside(false);
         speechName = getActivity().getIntent().getStringExtra("speechName");
         Long timeLeftInMilliseconds = sharedPref.getLong("timerMilliseconds", 600000);
         // Set timer on layout

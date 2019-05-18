@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,40 +29,41 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
     ListView listView;
     String[] fileNames, fileNamesToDisplay;
     private Toolbar mTopToolbar;
+    private final String subTitleText = "Select a speech";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_menu);
         getIntent();
-        this.setTitle("Speeches");
 
         // Instantiate toolbar
-        mTopToolbar = findViewById(R.id.my_toolbar);
+        mTopToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        mTopToolbar.setTitle("Home");
+        mTopToolbar.setSubtitle(Html.fromHtml("<font color='#ffffff'>" + subTitleText + "</font>"));
         setSupportActionBar(mTopToolbar);
 
-        SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        File dir = new File(getFilesDir() + File.separator + "speechFiles");
+        getFileNames();
+//        Uncomment below for startup redirection
+//        else
+//        {
+//            Intent intent = new Intent(MainMenu.this, NewSpeech.class);
+//            startActivity(intent);
+//        }
 
-        //get file names
-        fileNames = dir.list();
+    }
 
-        if (fileNames != null && fileNames.length != 0) {
-            fileNamesToDisplay = new String[fileNames.length];
+    @Override
+    protected void onStart() {
+        super.onStart();
 
-            for (int i = 0; i < fileNames.length; i++) {
-                fileNamesToDisplay[i] = defaultPreferences.getString(fileNames[i], null);
-            }
+        // Instantiate toolbar
+        mTopToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        mTopToolbar.setTitle("Home");
+        mTopToolbar.setSubtitle(Html.fromHtml("<font color='#ffffff'>" + subTitleText + "</font>"));
+        setSupportActionBar(mTopToolbar);
 
-            ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, fileNamesToDisplay);
-
-            // Connect this adapter to a listview to be populated
-            listView = (ListView) findViewById(R.id.speechNames);
-            listView.setAdapter(itemsAdapter);
-
-            listView.setOnItemClickListener(this);
-        }
-
+        getFileNames();
     }
 
     @Override
@@ -107,9 +109,59 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
     }
 
     @Override
+    protected void onNewIntent(Intent intent){
+        setContentView(R.layout.main_menu);
+        getIntent();
+        this.setTitle("Home");
+
+        // Instantiate toolbar
+        mTopToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        mTopToolbar.setSubtitle(Html.fromHtml("<font color='#ffffff'>" + subTitleText + "</font>"));
+
+        getFileNames();
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+
+    private void getFileNames(){
+        Log.d("MAINMENU", "beginning of getfilenames");
+        SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        File dir = new File(getFilesDir() + File.separator + "speechFiles");
+        dir.mkdirs();
+        //get file names
+        fileNames = dir.list();
+        Log.d("MAINMENU", "before if statement");
+        listView = findViewById(R.id.speechNames);
+        listView.setVisibility(View.VISIBLE);
+        TextView empty = (TextView)findViewById(R.id.emptyView);
+        empty.setVisibility(View.GONE);
+        if (fileNames != null && fileNames.length != 0) {
+            fileNamesToDisplay = new String[fileNames.length];
+
+            for (int i = 0; i < fileNames.length; i++) {
+                Log.d("MAINMENU", "inside for loop");
+
+                fileNamesToDisplay[i] = defaultPreferences.getString(fileNames[i], "");
+            }
+
+            ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, fileNamesToDisplay);
+
+            // Connect this adapter to a listview to be populated
+            listView.setAdapter(itemsAdapter);
+
+            listView.setOnItemClickListener(this);
+        }
+        else
+        {
+
+            listView.setVisibility(View.GONE);
+            empty.setVisibility(View.VISIBLE);
+
+        }
     }
 
 }

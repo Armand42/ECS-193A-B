@@ -156,6 +156,8 @@ public class RecordAudio extends AppCompatActivity
         } else {
             // Handle start button click
             pulseView = findViewById(R.id.pv);
+
+
         }
 
         if(displayTimer){
@@ -175,9 +177,6 @@ public class RecordAudio extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setTitle("Practice: " + defaultPreferences.getString(speechName, null));
         setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_24px);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
         // Handle start button click
         startButton = (Button) findViewById(R.id.startButton);
@@ -186,10 +185,11 @@ public class RecordAudio extends AppCompatActivity
                 // Code here executes on main thread after user presses button
                 //  timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
                 startButton.getBackground().setAlpha(200);
-
+                pulseView.startPulse();
                 // Stop button behavior
                 if (startButton.getText() == "STOP") {
-                    if(displayTimer)
+                    pulseView.finishPulse();
+                    if(displayTimer && timerFragment != null)
                         timerFragment.stopTimer();
 
                     // Stop listening
@@ -197,7 +197,7 @@ public class RecordAudio extends AppCompatActivity
                     goToSpeechPerformance(getCurrentFocus());
                 }
                 else {
-                    if(displayTimer)
+                    if(displayTimer && timerFragment != null)
                         timerFragment.startTimer();
 
                     startButton.setText("STOP");
@@ -234,7 +234,7 @@ public class RecordAudio extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.action_home) {
-            View view = findViewById(R.id.action_delete);
+            View view = findViewById(R.id.action_home);
             goToMainMenu(view);
             return true;
         }
