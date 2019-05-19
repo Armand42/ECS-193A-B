@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -104,10 +105,12 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
         switch(id)
         {
             case R.id.action_focus_next:
-                setNextErrorFocus();
+                if(errors.size() == 0)
+                    setNextErrorFocus();
                 return true;
             case R.id.action_focus_prev:
-                setPrevErrorFocus();
+                if(errors.size() == 0)
+                    setPrevErrorFocus();
                 return true;
             case R.id.action_home:
                 View view = findViewById(R.id.action_delete);
@@ -198,9 +201,11 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
         speechFull = speech;
 
         // Set first error focus highlights if errors exist
-        setErrorFocus();
+        if(errors.size() == 0) {
 
-        setDiffTexts();
+            setErrorFocus();
+            setDiffTexts();
+        }
     }
 
     public void goToMainMenu(View view) {
