@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +52,9 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
         String apiResultPath = intent.getStringExtra("apiResultPath");
         speechName = intent.getStringExtra("speechName");
         speechRunFolder = intent.getStringExtra("speechRunFolder");
+        Log.d("diff view", "api result path is " + apiResultPath);
+        Log.d("diff view", "speechname  is " + speechName);
+        Log.d("diff view", "speechRunFOlder " + speechRunFolder);
 
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -63,7 +67,7 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
             scriptText = FileService.readFromFile(sharedPreferences.getString("filepath",null));
 
             speechToText = FileService.readFromFile(apiResultPath);
-
+            Log.d("diff view", "speech to text result is " + speechToText);
             setScriptText();
         } catch (IOException e) {
             e.printStackTrace();
@@ -104,10 +108,12 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
         switch(id)
         {
             case R.id.action_focus_next:
-                setNextErrorFocus();
+                if(errors.size() != 0)
+                    setNextErrorFocus();
                 return true;
             case R.id.action_focus_prev:
-                setPrevErrorFocus();
+                if(errors.size() != 0)
+                    setPrevErrorFocus();
                 return true;
             case R.id.action_home:
                 View view = findViewById(R.id.action_delete);
@@ -131,7 +137,7 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
         diff_match_patch.Operation prevOperation = EQUAL;
         LinkedList<diff_match_patch.Diff> me;
 
-        me = dmp.diff_lineMode(scriptText.concat("END").replaceAll("[^a-zA-z']", " ").toLowerCase(), speechToText.concat("END").replaceAll("[^a-zA-z']", " ").toLowerCase());
+        me = dmp.diff_lineMode(scriptText.concat("END").replaceAll("[^a-zA-z0-9']", " ").toLowerCase(), speechToText.concat("END").replaceAll("[^a-zA-z0-9']", " ").toLowerCase());
         for(diff_match_patch.Diff temp: me)
         {
             switch(temp.operation)
@@ -198,9 +204,11 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
         speechFull = speech;
 
         // Set first error focus highlights if errors exist
-        setErrorFocus();
+        if(errors.size() != 0) {
 
-        setDiffTexts();
+            setErrorFocus();
+            setDiffTexts();
+        }
     }
 
     public void goToMainMenu(View view) {

@@ -305,6 +305,7 @@ public class SpeechPerformance extends BaseActivity {
     public void onBackPressed() {
         Intent intent = new Intent(SpeechPerformance.this, SpeechView.class);
         intent.putExtra("speechName", speechName);
+        intent.putExtra("prevActivity", "speechPerformance");
         startActivity(intent);
         finish();
     }
