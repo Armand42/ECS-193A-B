@@ -52,6 +52,9 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
         String apiResultPath = intent.getStringExtra("apiResultPath");
         speechName = intent.getStringExtra("speechName");
         speechRunFolder = intent.getStringExtra("speechRunFolder");
+        Log.d("diff view", "api result path is " + apiResultPath);
+        Log.d("diff view", "speechname  is " + speechName);
+        Log.d("diff view", "speechRunFOlder " + speechRunFolder);
 
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -64,7 +67,7 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
             scriptText = FileService.readFromFile(sharedPreferences.getString("filepath",null));
 
             speechToText = FileService.readFromFile(apiResultPath);
-
+            Log.d("diff view", "speech to text result is " + speechToText);
             setScriptText();
         } catch (IOException e) {
             e.printStackTrace();
@@ -105,11 +108,11 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
         switch(id)
         {
             case R.id.action_focus_next:
-                if(errors.size() == 0)
+                if(errors.size() != 0)
                     setNextErrorFocus();
                 return true;
             case R.id.action_focus_prev:
-                if(errors.size() == 0)
+                if(errors.size() != 0)
                     setPrevErrorFocus();
                 return true;
             case R.id.action_home:
@@ -201,7 +204,7 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
         speechFull = speech;
 
         // Set first error focus highlights if errors exist
-        if(errors.size() == 0) {
+        if(errors.size() != 0) {
 
             setErrorFocus();
             setDiffTexts();
