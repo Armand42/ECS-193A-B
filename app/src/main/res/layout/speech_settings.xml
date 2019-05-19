@@ -17,115 +17,81 @@
         app:popupTheme="@style/ActionBarPopupThemeOverlay"
         app:theme="@style/ActionBarThemeOverlay" />
 
-    <Button
-        android:id="@+id/saveButton"
-        android:layout_width="127dp"
-        android:layout_height="51dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="157dp"
-        android:layout_marginBottom="89dp"
-        android:background="@drawable/border_button_dark"
-        android:onClick="goToSpeechMenu"
-        android:text="@string/save_button"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/displayTimerSwitch" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="160dp"
-        android:layout_height="54dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="212dp"
-        android:text="@string/speech_settings_max_time"
-        android:textColor="@android:color/black"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Switch
-        android:id="@+id/videoPlaybackSwitch"
-        android:layout_width="277dp"
-        android:layout_height="39dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="288dp"
-        android:layout_marginEnd="82dp"
-        android:text="@string/speech_settings_video_playback_toggle"
-        android:theme="@style/SwitchTheme"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Switch
-        android:id="@+id/displayTimerSwitch"
-        android:layout_width="277dp"
-        android:layout_height="54dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="65dp"
-        android:layout_marginEnd="82dp"
-        android:layout_marginBottom="297dp"
-        android:text="@string/speech_settings_timer_toggle"
-        android:theme="@style/SwitchTheme"
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
+        android:gravity="center"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/videoPlaybackSwitch" />
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar">
 
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="20dp" />
+        <Switch
+            android:id="@+id/displaySpeechSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Show Script"
+            android:textAlignment="viewStart"
+            android:theme="@style/SwitchTheme"
+            tools:layout_editor_absoluteX="30dp"
+            tools:layout_editor_absoluteY="213dp" />
 
-    <Button
-        android:id="@+id/cancelButton"
-        android:layout_width="127dp"
-        android:layout_height="51dp"
-        android:layout_marginStart="70dp"
-        android:layout_marginTop="157dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginBottom="89dp"
-        android:background="@drawable/border_button_dark"
-        android:onClick="goToSpeechMenu"
-        android:text="@string/cancel_button"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/saveButton"
-        app:layout_constraintTop_toBottomOf="@+id/displayTimerSwitch" />
+        <Switch
+            android:id="@+id/videoPlaybackSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Record Video"
+            android:theme="@style/SwitchTheme"
+            tools:layout_editor_absoluteX="30dp"
+            tools:layout_editor_absoluteY="288dp" />
 
-    <EditText
-        android:id="@+id/speechTime"
-        android:layout_width="191dp"
-        android:layout_height="43dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="204dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
-        android:ems="10"
-        android:inputType="number"
-        android:maxLength="3"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        <Switch
+            android:id="@+id/displayTimerSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Show Timer"
+            android:theme="@style/SwitchTheme"
+            tools:layout_editor_absoluteX="30dp"
+            tools:layout_editor_absoluteY="349dp" />
 
-    <Switch
-        android:id="@+id/displaySpeechSwitch"
-        android:layout_width="277dp"
-        android:layout_height="39dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
-        android:text="Display Speech"
-        android:theme="@style/SwitchTheme"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.194"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/displayTimerSwitch" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="8"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/speech_settings_max_time"
+                android:textColor="@android:color/black"
+                tools:layout_editor_absoluteX="30dp"
+                tools:layout_editor_absoluteY="427dp" />
+
+            <EditText
+                android:id="@+id/speechTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="number"
+                android:maxLength="3"
+                android:textAlignment="center"
+                tools:layout_editor_absoluteX="204dp"
+                tools:layout_editor_absoluteY="438dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
