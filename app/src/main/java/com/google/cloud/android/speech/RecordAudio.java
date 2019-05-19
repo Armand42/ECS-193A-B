@@ -17,6 +17,7 @@
 package com.google.cloud.android.speech;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -68,6 +69,7 @@ public class RecordAudio extends AppCompatActivity
     private SharedPreferences sharedPreferences;
     private VoiceRecorder mVoiceRecorder;
     private PulseView pulseView;
+    private ProgressDialog dialog;
 
     private final VoiceRecorder.Callback mVoiceCallback = new VoiceRecorder.Callback() {
 
@@ -115,6 +117,8 @@ public class RecordAudio extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
+        dialog = new ProgressDialog(this);
+        dialog.setCanceledOnTouchOutside(false);
 
         // Handle metadata
         speechName = intent.getStringExtra("speechName");
@@ -182,34 +186,50 @@ public class RecordAudio extends AppCompatActivity
         startButton = (Button) findViewById(R.id.startButton);
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+
                 // Code here executes on main thread after user presses button
                 //  timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
-                startButton.getBackground().setAlpha(200);
+
                 pulseView.startPulse();
                 // Stop button behavior
                 if (startButton.getText() == "STOP") {
-                    pulseView.finishPulse();
+                    Log.d("RECORD AUDIO", "stop button pressed");
+                    dialog.setMessage("Preparing your speech!");
+                    dialog.show();
+
+                    //dialog.setMessage("Preparing your speech!");
+                    //dialog.show();
+                    //startButton.setVisibility(View.INVISIBLE);
+                    //pulseView.finishPulse();
+
                     if(displayTimer && timerFragment != null)
                         timerFragment.stopTimer();
 
                     // Stop listening
                     stopVoiceRecorder();
+                    pulseView.finishPulse();
+
+
                     goToSpeechPerformance(getCurrentFocus());
                 }
                 else {
+
                     if(displayTimer && timerFragment != null)
                         timerFragment.startTimer();
 
-                    startButton.setText("STOP");
+                    //startButton.setText("STOP");
+
 
                     // Change UI elements
-                    startButton.setBackgroundTintList(getResources().getColorStateList(R.color.cardview_dark_background));
+                    //startButton.setBackgroundTintList(getResources().getColorStateList(R.color.transparent));
 
                     // Start listening
                     startVoiceRecorder();
+
                     startButton.setEnabled(false);
-                    startButton.setText("RECORDING");
-                    startButton.setBackgroundColor(Color.RED);
+                    //startButton.setText("RECORDING");
+
+                    //startButton.setBackgroundColor(Color.RED);
                 }
             }
         });

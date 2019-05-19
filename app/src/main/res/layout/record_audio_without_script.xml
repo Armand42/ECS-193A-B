@@ -28,58 +28,68 @@
         style="@style/HeaderBar"
         android:layout_width="match_parent"
         android:layout_height="61dp"
-        android:layout_marginBottom="8dp"
         android:elevation="4dp"
         app:popupTheme="@style/ActionBarPopupThemeOverlay"
         app:theme="@style/ActionBarThemeOverlay" />
 
-    <Button
-        android:id="@+id/startButton"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/border_circle_red"
-        android:gravity="center_vertical|center_horizontal"
-        android:text="START"
-        android:textColor="#fff"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.966" />
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <com.gigamole.library.PulseView
-        android:id="@+id/pv"
-        android:layout_width="0dp"
-        android:layout_height="700dp"
-        app:pv_alpha="70"
-        app:pv_color="#6D8885"
-        app:pv_icon="@drawable/circlecropped"
-        app:pv_icon_height="150dp"
-        app:pv_icon_width="150dp"
-        app:pv_interpolator="@android:anim/linear_interpolator"
-        app:pv_measure="height"
-        app:pv_spawn_period="500"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="61dp" />
+        <com.gigamole.library.PulseView
+            android:id="@+id/pv"
+            android:layout_width="200dp"
+            android:layout_height="201dp"
+            android:layout_marginBottom="230dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/timer_container"
+            app:pv_alpha="100"
+            app:pv_color="#F76C80"
+            app:pv_icon="@drawable/redmicro"
+            app:pv_icon_height="150dp"
+            app:pv_icon_width="150dp"
+            app:pv_interpolator="@android:anim/linear_interpolator"
+            app:pv_measure="width"
+            app:pv_spawn_period="700" />
 
+        <Button
+            android:id="@+id/startButton"
+            android:layout_width="118dp"
+            android:layout_height="119dp"
+            android:layout_marginTop="240dp"
+            android:layout_marginBottom="8dp"
+            android:alpha="0.0"
+            android:background="@drawable/redmicro"
+            android:gravity="center_vertical|center_horizontal"
+            android:textColor="#fff"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.25" />
 
+        <FrameLayout
+            android:id="@+id/timer_container"
+            android:layout_width="408dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="74dp"
+            android:layout_marginBottom="142dp"
+            android:background="@color/cardview_shadow_end_color"
+            app:layout_constraintBottom_toTopOf="@+id/pv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            tools:context="com.google.cloud.android.speech.Timer">
 
-    <FrameLayout
-        android:id="@+id/timer_container"
-        android:layout_width="408dp"
-        android:layout_height="49dp"
-        android:layout_marginBottom="608dp"
-        android:background="@color/cardview_shadow_end_color"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
-        app:layout_constraintVertical_bias="1.0"
-        tools:context="com.google.cloud.android.speech.Timer" />
+        </FrameLayout>
+    </android.support.constraint.ConstraintLayout>
+
 
 </android.support.constraint.ConstraintLayout>
