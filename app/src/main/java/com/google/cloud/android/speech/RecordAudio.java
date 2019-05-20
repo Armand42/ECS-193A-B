@@ -12,6 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *//*
+ * Copyright 2016 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.google.cloud.android.speech;
@@ -43,7 +57,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.gigamole.library.PulseView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -69,7 +82,6 @@ public class RecordAudio extends AppCompatActivity
     private SpeechService mSpeechService;
     private SharedPreferences sharedPreferences;
     private VoiceRecorder mVoiceRecorder;
-    private PulseView pulseView;
     private ProgressDialog dialog;
 
     private final VoiceRecorder.Callback mVoiceCallback = new VoiceRecorder.Callback() {
@@ -123,8 +135,6 @@ public class RecordAudio extends AppCompatActivity
 
         // Handle metadata
         speechName = intent.getStringExtra("speechName");
-        pulseView = findViewById(R.id.pv);
-
 
         //get settings from shared preferences for speech
         sharedPreferences = getSharedPreferences(speechName,MODE_PRIVATE);
@@ -160,16 +170,9 @@ public class RecordAudio extends AppCompatActivity
                         e.toString(), Toast.LENGTH_SHORT);
                 readToast.show();
             }
-
-        } //else {
-            // Handle start button click
-          //  pulseView = findViewById(R.id.pv);
-
-
-        //}
-
-
         }
+
+
 
         if(displayTimer){
             timeLeftInMilliseconds = sharedPreferences.getLong("timerMilliseconds", 600000);
@@ -195,10 +198,8 @@ public class RecordAudio extends AppCompatActivity
             public void onClick(View v) {
 
                 // Code here executes on main thread after user presses button
-                //  timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
 
 
-//                pulseView.startPulse();
                 // Stop button behavior
                 if (recording) {
                     Log.d("RECORD AUDIO", "stop button pressed");
@@ -206,22 +207,11 @@ public class RecordAudio extends AppCompatActivity
                     dialog.show();
 
 
-
-                startButton.getBackground().setAlpha(200);
-                if(!displayScript)
-                    pulseView.startPulse();
-                // Stop button behavior
-                if (startButton.getText() == "STOP") {
-                    if(!displayScript)
-                        pulseView.finishPulse();
-
                     if(displayTimer && timerFragment != null)
                         timerFragment.stopTimer();
 
                     // Stop listening
                     stopVoiceRecorder();
-//                    pulseView.finishPulse();
-
 
                     goToSpeechPerformance(getCurrentFocus());
                 }
@@ -233,19 +223,11 @@ public class RecordAudio extends AppCompatActivity
                     //TextView message = (TextView) findViewById(R.id.textView3);
                     //message.setText("Tap again to stop");
                     startButton.setBackground(getResources().getDrawable(R.drawable.finalredstop));
-                    //startButton.setText("STOP");
-
-
-                    // Change UI elements
-                    //startButton.setBackgroundTintList(getResources().getColorStateList(R.color.transparent));
 
                     // Start listening
                     startVoiceRecorder();
 
                     startButton.setEnabled(false);
-                    //startButton.setText("RECORDING");
-
-                    //startButton.setBackgroundColor(Color.RED);
                 }
             }
         });
