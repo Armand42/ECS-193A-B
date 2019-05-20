@@ -125,7 +125,6 @@ public class SpeechPerformance extends BaseActivity {
                 jsonObj.put("timeElapsed", timeElapsed);
                 jsonObj.put("videoPlayback", videoPlaybackState);
                 jsonObj.put("note", "Enter notes here.");
-                Log.d("json add change", "Enter notes here.");
                 Date todayDate = Calendar.getInstance().getTime();
                 SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
                 String currentDateTimeString = formatter.format(todayDate);
@@ -145,7 +144,6 @@ public class SpeechPerformance extends BaseActivity {
                 percentAccuracy = jsonObj.getInt("percentAccuracy");
                 setAccuracy(percentAccuracy);
                 String note = jsonObj.getString("note");
-                Log.d("json add change", note);
                 notes.setText(note);
 
             } catch (JSONException e) {
@@ -161,6 +159,15 @@ public class SpeechPerformance extends BaseActivity {
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_baseline_home_24px);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("ONCLICK", "going home");
+                goToMainMenu(view);
+
+            }
+        });
 
     }
 
@@ -236,11 +243,7 @@ public class SpeechPerformance extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_home) {
-            View view = findViewById(R.id.action_delete);
-            goToMainMenu(view);
-            return true;
-        }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -338,10 +341,8 @@ public class SpeechPerformance extends BaseActivity {
     }
     private void saveSpeech()
     {
-        Log.d("json add change", notes.getText().toString());
         try{
         JSONObject jsonObj = new JSONObject(FileService.readFromFile(jsonFilePath));
-        Log.d("json add change", notes.getText().toString());
         jsonObj.put("note", notes.getText().toString());
         FileService.writeToFile("metadata", jsonObj.toString(),
                 speechFolderPath + File.separator + speechRunFolder);

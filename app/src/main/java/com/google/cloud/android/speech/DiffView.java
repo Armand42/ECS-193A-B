@@ -58,8 +58,16 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
 
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        this.setTitle("Diff View");
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_baseline_home_24px);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToMainMenu(view);
+
+            }
+        });
+        this.setTitle("Diff View");
         // Make script viewable
         // Create the shared preference file and get necessary values
         SharedPreferences sharedPreferences = getSharedPreferences(intent.getStringExtra("speechName"), MODE_PRIVATE);
@@ -114,10 +122,6 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
             case R.id.action_focus_prev:
                 if(errors.size() != 0)
                     setPrevErrorFocus();
-                return true;
-            case R.id.action_home:
-                View view = findViewById(R.id.action_delete);
-                goToMainMenu(view);
                 return true;
         }
 

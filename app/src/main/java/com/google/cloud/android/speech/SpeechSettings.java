@@ -29,9 +29,17 @@ public class SpeechSettings extends AppCompatActivity {
 
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_baseline_home_24px);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToMainMenu(view);
+
+            }
+        });
         setTitle("Speech Settings");
         toolbar.setSubtitle(speechName);
-        setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
 
@@ -67,12 +75,7 @@ public class SpeechSettings extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_home) {
-            View view = findViewById(R.id.action_delete);
-            goToMainMenu(view);
-            return true;
-        }
-        else if(id == R.id.action_save){
+        if(id == R.id.action_save){
             addToSharedPreferences();
             goToSpeechMenu();
             return true;

@@ -189,8 +189,16 @@ public class RecordAudio extends AppCompatActivity
 
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setTitle("Practice: " + defaultPreferences.getString(speechName, null));
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_baseline_home_24px);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToMainMenu(view);
+
+            }
+        });
+        setTitle("Practice: " + defaultPreferences.getString(speechName, null));
 
         // Handle start button click
         startButton = findViewById(R.id.startButton);
@@ -251,12 +259,6 @@ public class RecordAudio extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
-        if (id == R.id.action_home) {
-            View view = findViewById(R.id.action_home);
-            goToMainMenu(view);
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }

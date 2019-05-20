@@ -60,9 +60,17 @@ public class SpeechView extends AppCompatActivity {
 
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(toolbar);
         setTitle("Speech View");
         toolbar.setSubtitle(defaultPreferences.getString(speechName, null));
-        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_baseline_home_24px);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToMainMenu(view);
+
+            }
+        });
 
         // Set script view
         try {
@@ -194,11 +202,6 @@ public class SpeechView extends AppCompatActivity {
         if (id == R.id.action_delete) {
             View view = findViewById(R.id.action_delete);
             deleteSpeech(view);
-            return true;
-        }
-        else if (id == R.id.action_home) {
-            View view = findViewById(R.id.action_home);
-            goToMainMenu(view);
             return true;
         }
         else if (id == R.id.action_settings) {

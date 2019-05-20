@@ -62,11 +62,6 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_home) {
-            View view = findViewById(R.id.action_delete);
-            goToMainMenu(view);
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
