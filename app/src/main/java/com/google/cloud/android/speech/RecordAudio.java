@@ -222,7 +222,7 @@ public class RecordAudio extends AppCompatActivity
                         timerFragment.startTimer();
                     //TextView message = (TextView) findViewById(R.id.textView3);
                     //message.setText("Tap again to stop");
-                    startButton.setBackground(getResources().getDrawable(R.drawable.finalredstop));
+                    startButton.setBackground(getResources().getDrawable(R.drawable.redstopbut));
 
                     // Start listening
                     startVoiceRecorder();
