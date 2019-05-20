@@ -47,7 +47,6 @@
         android:layout_marginRight="70dp"
 
 
-
         android:foregroundGravity="center_vertical" />
 
     <LinearLayout
@@ -56,35 +55,50 @@
         android:layout_height="47dp"
         android:orientation="horizontal">
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
         <Button
             android:id="@+id/restart"
-            android:layout_width="137dp"
-            android:layout_height="44dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_gravity="top|left"
-            android:background="@drawable/border_button_black"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/ic_retry"
             android:fontFamily="@font/raleway"
-            android:text="Restart"
             android:textColor="@android:color/background_light" />
 
         <Button
             android:id="@+id/video"
-            android:layout_width="137dp"
-            android:layout_height="44.5dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_gravity="center"
-            android:background="@drawable/border_button_green"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="25dp"
+
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/redmicro"
             android:fontFamily="@font/raleway"
-            android:text="Start"
             android:textColor="@android:color/background_light" />
 
         <Button
             android:id="@+id/playback"
-            android:layout_width="137dp"
-            android:layout_height="match_parent"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_gravity="top|right"
-            android:background="@drawable/border_button_red"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/ic_stop"
             android:fontFamily="@font/raleway"
-            android:text="Stop"
             android:textColor="@android:color/background_light" />
+        </FrameLayout>
     </LinearLayout>
 
 
