@@ -3,4 +3,7 @@
     <item android:id="@+id/edit"
         android:icon="@drawable/edit_24px"
         android:title="Edit Run Name"/>
+    <item android:id="@+id/deleteRun"
+        android:icon="@drawable/edit_24px"
+        android:title="Delete Run"/>
 </menu>

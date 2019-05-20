@@ -41,11 +41,9 @@ import static java.nio.file.Paths.get;
 
 public class SpeechPerformance extends BaseActivity {
     private String speechName;
-    private static String apiResultPath;
-    private static String selectedRunMediaPath;
+    private static String apiResultPath, selectedRunMediaPath;
     private static String AUDIO_FILE_PATH;
     private static final String TAG = "MyActivity";
-    private SpeechService mSpeechService;
     private String prevActivity;
 
     SharedPreferences sharedPreferences;
@@ -106,7 +104,6 @@ public class SpeechPerformance extends BaseActivity {
         File jsonFile = new File(jsonFilePath);
 
         if (!jsonFile.exists()) {
-            Log.d("SPEECHPERFORMANCE", "CREATING NEW JSON FILE");
             percentAccuracy = calculateAccuracy();
             setAccuracy(percentAccuracy);
 
@@ -124,12 +121,12 @@ public class SpeechPerformance extends BaseActivity {
                 jsonObj.put("currScriptNum", sharedPreferences.getInt("currScriptNum", -1));
                 jsonObj.put("timeElapsed", timeElapsed);
                 jsonObj.put("videoPlayback", videoPlaybackState);
+                jsonObj.put("runDisplayName", speechRunFolder);
 
                 Date todayDate = Calendar.getInstance().getTime();
                 SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
                 String currentDateTimeString = formatter.format(todayDate);
 
-//                String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
                 jsonObj.put("dateRecorded", currentDateTimeString);
                 FileService.writeToFile("metadata", jsonObj.toString(),
                         speechFolderPath + File.separator + speechRunFolder);
