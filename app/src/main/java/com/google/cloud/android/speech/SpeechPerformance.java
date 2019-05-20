@@ -3,9 +3,7 @@ package com.google.cloud.android.speech;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.icu.text.DateFormat;
 import android.icu.text.SimpleDateFormat;
-import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
@@ -13,10 +11,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.content.ComponentName;
-import android.content.ServiceConnection;
-import android.os.IBinder;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,23 +21,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.Locale;
 
-import static java.nio.file.Files.find;
-import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Paths.get;
 
 
 public class SpeechPerformance extends BaseActivity {
-    private String speechName;
+    private String speechName, speechFolderPath,jsonFilePath;
     private static String apiResultPath;
     private static String selectedRunMediaPath;
     private static String AUDIO_FILE_PATH;
@@ -52,6 +42,7 @@ public class SpeechPerformance extends BaseActivity {
     Boolean videoPlaybackState;
     String speechRunFolder;
     private ProgressDialog dialog;
+    EditText notes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +57,16 @@ public class SpeechPerformance extends BaseActivity {
         setTitle(defaultPreferences.getString(speechName, null));
 
         sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
+        notes = (EditText) findViewById(R.id.note_body);
+        notes.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+
 
         TextView speechTime = findViewById(R.id.speechTime);
         // Set speech time textview to the elapsed time from this speech
@@ -74,7 +75,7 @@ public class SpeechPerformance extends BaseActivity {
         int seconds = (int) timeElapsed % 60000 / 1000;
         speechTime.setText(String.format("Speech time: %02d:%02d", minutes, seconds));
 
-        String speechFolderPath = getApplicationContext().getFilesDir() + File.separator + "speechFiles" + File.separator
+        speechFolderPath = getApplicationContext().getFilesDir() + File.separator + "speechFiles" + File.separator
                 + speechName;
 
         if (prevActivity.equals("recording")) {
@@ -100,9 +101,9 @@ public class SpeechPerformance extends BaseActivity {
         AUDIO_FILE_PATH = intent.getStringExtra("audioFilePath");
 
         videoPlaybackState = sharedPreferences.getBoolean("videoPlayback", false);
-        int percentAccuracy;
+        int percentAccuracy = 100;
 
-        String jsonFilePath = speechFolderPath + File.separator + speechRunFolder + File.separator + "metadata";
+        jsonFilePath = speechFolderPath + File.separator + speechRunFolder + File.separator + "metadata";
         File jsonFile = new File(jsonFilePath);
 
         if (!jsonFile.exists()) {
@@ -115,16 +116,16 @@ public class SpeechPerformance extends BaseActivity {
                 diffViewBtn.setVisibility(View.GONE);
             }
 
-            // Performance message changes based on accuracy.
-            setPerformanceMessage(percentAccuracy);
 
-            JSONObject jsonObj = new JSONObject();
+
+            final JSONObject jsonObj = new JSONObject();
             try {
                 jsonObj.put("percentAccuracy", percentAccuracy);
                 jsonObj.put("currScriptNum", sharedPreferences.getInt("currScriptNum", -1));
                 jsonObj.put("timeElapsed", timeElapsed);
                 jsonObj.put("videoPlayback", videoPlaybackState);
-
+                jsonObj.put("note", "Enter notes here.");
+                Log.d("json add change", "Enter notes here.");
                 Date todayDate = Calendar.getInstance().getTime();
                 SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
                 String currentDateTimeString = formatter.format(todayDate);
@@ -143,6 +144,10 @@ public class SpeechPerformance extends BaseActivity {
                 JSONObject jsonObj = new JSONObject(FileService.readFromFile(jsonFilePath));
                 percentAccuracy = jsonObj.getInt("percentAccuracy");
                 setAccuracy(percentAccuracy);
+                String note = jsonObj.getString("note");
+                Log.d("json add change", note);
+                notes.setText(note);
+
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -150,6 +155,8 @@ public class SpeechPerformance extends BaseActivity {
             }
 
         }
+        // Performance message changes based on accuracy.
+        setPerformanceMessage(percentAccuracy);
 
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -180,6 +187,7 @@ public class SpeechPerformance extends BaseActivity {
     }
 
     public void goToPlayback(View view) {
+        saveSpeech();
         Intent intent = new Intent(this, PlayBack.class);
         intent.putExtra("speechName", speechName);
         intent.putExtra("selectedRunMediaPath", selectedRunMediaPath);
@@ -194,6 +202,7 @@ public class SpeechPerformance extends BaseActivity {
     }
 
     public void goToDiffView(View view) {
+        saveSpeech();
         Intent intent = new Intent(this, DiffView.class);
         intent.putExtra("speechName", speechName);
         intent.putExtra("apiResultPath", apiResultPath);
@@ -209,6 +218,7 @@ public class SpeechPerformance extends BaseActivity {
     }
 
     public void goToMainMenu(View view) {
+        saveSpeech();
         Intent intent = new Intent(this, MainMenu.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
@@ -253,7 +263,6 @@ public class SpeechPerformance extends BaseActivity {
 
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("FILE NOT FOUND:", e.toString());
             Toast readToast = Toast.makeText(getApplicationContext(),
                     e.toString(), Toast.LENGTH_SHORT);
             readToast.show();
@@ -265,7 +274,6 @@ public class SpeechPerformance extends BaseActivity {
                 String[] words = temp.text.split("\\s+");
                 switch (temp.operation) {
                     case EQUAL:
-                        Log.e("DIFF", "EQUAL - " + temp.text);
                         if (prevOperation == diff_match_patch.Operation.DELETE || prevOperation == diff_match_patch.Operation.INSERT) {
                             double prevIncorrect = Math.max(deletedWords, insertedWords);
                             incorrectWords += prevIncorrect;
@@ -276,14 +284,10 @@ public class SpeechPerformance extends BaseActivity {
                         deletedWords = insertedWords = 0;
                         break;
                     case DELETE:
-                        Log.e("DIFF", "DELETE - " + temp.text);
-
                         deletedWords = words.length;
                         prevOperation = diff_match_patch.Operation.DELETE;
                         break;
                     case INSERT:
-                        Log.e("DIFF", "INSERT - " + temp.text);
-
                         insertedWords = words.length;
                         prevOperation = diff_match_patch.Operation.INSERT;
                         break;
@@ -298,11 +302,12 @@ public class SpeechPerformance extends BaseActivity {
 
     public void setAccuracy(int percent) {
         TextView accuracyPercentage = findViewById(R.id.accuracyPercentage);
-        accuracyPercentage.setText("" + percent + "%");
+        accuracyPercentage.setText("Accuracy: " + percent + "%");
     }
 
     @Override
     public void onBackPressed() {
+        saveSpeech();
         Intent intent = new Intent(SpeechPerformance.this, SpeechView.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
@@ -327,4 +332,26 @@ public class SpeechPerformance extends BaseActivity {
         }
         performanceMessage.setText(msg);
     }
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(NewSpeech.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+    private void saveSpeech()
+    {
+        Log.d("json add change", notes.getText().toString());
+        try{
+        JSONObject jsonObj = new JSONObject(FileService.readFromFile(jsonFilePath));
+        Log.d("json add change", notes.getText().toString());
+        jsonObj.put("note", notes.getText().toString());
+        FileService.writeToFile("metadata", jsonObj.toString(),
+                speechFolderPath + File.separator + speechRunFolder);
+        } catch (JSONException e) {
+        e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
