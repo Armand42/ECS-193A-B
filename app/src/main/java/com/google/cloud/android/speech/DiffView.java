@@ -147,7 +147,7 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
             switch(temp.operation)
             {
                 case EQUAL:
-                    if ((prevOperation == DELETE || prevOperation == INSERT)  )
+                    if ((prevOperation == DELETE || prevOperation == INSERT) && ( scriptStart!=-1 || speechStart!=-1)  )
                     {
                         if (scriptStart == -1 || scriptEnd == -1)
                         {
