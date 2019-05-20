@@ -33,15 +33,16 @@
         app:popupTheme="@style/ActionBarPopupThemeOverlay"
         app:theme="@style/ActionBarThemeOverlay" />
 
+
+
     <Button
         android:id="@+id/startButton"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="116dp"
+        android:layout_height="122dp"
+        android:layout_marginTop="240dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/border_circle_red"
+        android:background="@drawable/redmicro"
         android:gravity="center_vertical|center_horizontal"
-        android:text="START"
         android:textColor="#fff"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -49,22 +50,7 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.966" />
-
-    <com.gigamole.library.PulseView
-        android:id="@+id/pv"
-        android:layout_width="0dp"
-        android:layout_height="700dp"
-        app:pv_alpha="70"
-        app:pv_color="#070404"
-        app:pv_icon="@drawable/circlecropped"
-        app:pv_icon_height="150dp"
-        app:pv_icon_width="150dp"
-        app:pv_interpolator="@android:anim/linear_interpolator"
-        app:pv_measure="height"
-        app:pv_spawn_period="500"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="61dp" />
+        app:layout_constraintVertical_bias="0.203" />
 
 
     <FrameLayout

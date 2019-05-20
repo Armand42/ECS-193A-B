@@ -12,11 +12,26 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *//*
+ * Copyright 2016 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.google.cloud.android.speech;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -38,10 +53,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.gigamole.library.PulseView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -61,13 +76,13 @@ public class RecordAudio extends AppCompatActivity
 
     private String filePath, speechName, scriptText, speechFolderPath, speechRunFolder;
     private Button startButton;
-    private Boolean displayTimer, displayScript;
+    private Boolean displayTimer, displayScript, recording;
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 1;
     private Long timeLeftInMilliseconds;
     private SpeechService mSpeechService;
     private SharedPreferences sharedPreferences;
     private VoiceRecorder mVoiceRecorder;
-    private PulseView pulseView;
+    private ProgressDialog dialog;
 
     private final VoiceRecorder.Callback mVoiceCallback = new VoiceRecorder.Callback() {
 
@@ -115,11 +130,11 @@ public class RecordAudio extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
+        dialog = new ProgressDialog(this);
+        dialog.setCanceledOnTouchOutside(false);
 
         // Handle metadata
         speechName = intent.getStringExtra("speechName");
-        pulseView = findViewById(R.id.pv);
-
 
         //get settings from shared preferences for speech
         sharedPreferences = getSharedPreferences(speechName,MODE_PRIVATE);
@@ -127,7 +142,7 @@ public class RecordAudio extends AppCompatActivity
         filePath = sharedPreferences.getString("filepath", "error");
         displayScript = sharedPreferences.getBoolean("displaySpeech", false);
         displayTimer = sharedPreferences.getBoolean("timerDisplay", false);
-
+        recording = false;
         //set appropriate content view based on settings
         if(displayScript && displayTimer) {
             setContentView(R.layout.activity_record_audio_with_script_timer);
@@ -156,6 +171,9 @@ public class RecordAudio extends AppCompatActivity
                 readToast.show();
             }
         }
+
+
+
         if(displayTimer){
             timeLeftInMilliseconds = sharedPreferences.getLong("timerMilliseconds", 600000);
 
@@ -175,39 +193,41 @@ public class RecordAudio extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         // Handle start button click
-        startButton = (Button) findViewById(R.id.startButton);
+        startButton = findViewById(R.id.startButton);
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+
                 // Code here executes on main thread after user presses button
-                //  timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
-                startButton.getBackground().setAlpha(200);
-                if(!displayScript)
-                    pulseView.startPulse();
+
+
                 // Stop button behavior
-                if (startButton.getText() == "STOP") {
-                    if(!displayScript)
-                        pulseView.finishPulse();
+                if (recording) {
+                    Log.d("RECORD AUDIO", "stop button pressed");
+                    dialog.setMessage("Preparing your speech!");
+                    dialog.show();
+
+
                     if(displayTimer && timerFragment != null)
                         timerFragment.stopTimer();
 
                     // Stop listening
                     stopVoiceRecorder();
+
                     goToSpeechPerformance(getCurrentFocus());
                 }
                 else {
+                    Log.d("RECORD AUDIO", "start button pressed");
+                    recording = true;
                     if(displayTimer && timerFragment != null)
                         timerFragment.startTimer();
-
-                    startButton.setText("STOP");
-
-                    // Change UI elements
-                    startButton.setBackgroundTintList(getResources().getColorStateList(R.color.cardview_dark_background));
+                    //TextView message = (TextView) findViewById(R.id.textView3);
+                    //message.setText("Tap again to stop");
+                    startButton.setBackground(getResources().getDrawable(R.drawable.finalredstop));
 
                     // Start listening
                     startVoiceRecorder();
+
                     startButton.setEnabled(false);
-                    startButton.setText("RECORDING");
-                    startButton.setBackgroundColor(Color.RED);
                 }
             }
         });
@@ -220,6 +240,7 @@ public class RecordAudio extends AppCompatActivity
         apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
 
     }
+
 
     public void goToMainMenu(View view) {
         Intent intent = new Intent(this, MainMenu.class);
@@ -281,7 +302,7 @@ public class RecordAudio extends AppCompatActivity
     @Override
     protected void onStop() {
         // Stop listening to voice
-        stopVoiceRecorder();
+//        stopVoiceRecorder();
 
         // Stop Cloud Speech API
         mSpeechService.removeListener(mSpeechServiceListener);
@@ -354,8 +375,6 @@ public class RecordAudio extends AppCompatActivity
                             public void run() {
                                 if (isFinal) {
                                     startButton.setEnabled(true);
-                                    startButton.setText("STOP");
-                                    startButton.setBackgroundColor(getResources().getColor(R.color.primary_dark));
                                     try {
                                         appendToFile(apiResultPath, text);
                                         appendToFile(apiResultPath, " ");
