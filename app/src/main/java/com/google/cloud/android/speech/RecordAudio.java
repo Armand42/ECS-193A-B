@@ -123,6 +123,8 @@ public class RecordAudio extends AppCompatActivity
 
         // Handle metadata
         speechName = intent.getStringExtra("speechName");
+        pulseView = findViewById(R.id.pv);
+
 
         //get settings from shared preferences for speech
         sharedPreferences = getSharedPreferences(speechName,MODE_PRIVATE);
@@ -158,12 +160,16 @@ public class RecordAudio extends AppCompatActivity
                         e.toString(), Toast.LENGTH_SHORT);
                 readToast.show();
             }
+
         } //else {
             // Handle start button click
           //  pulseView = findViewById(R.id.pv);
 
 
         //}
+
+
+        }
 
         if(displayTimer){
             timeLeftInMilliseconds = sharedPreferences.getLong("timerMilliseconds", 600000);
@@ -191,6 +197,7 @@ public class RecordAudio extends AppCompatActivity
                 // Code here executes on main thread after user presses button
                 //  timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
 
+
 //                pulseView.startPulse();
                 // Stop button behavior
                 if (recording) {
@@ -198,6 +205,15 @@ public class RecordAudio extends AppCompatActivity
                     dialog.setMessage("Preparing your speech!");
                     dialog.show();
 
+
+
+                startButton.getBackground().setAlpha(200);
+                if(!displayScript)
+                    pulseView.startPulse();
+                // Stop button behavior
+                if (startButton.getText() == "STOP") {
+                    if(!displayScript)
+                        pulseView.finishPulse();
 
                     if(displayTimer && timerFragment != null)
                         timerFragment.stopTimer();

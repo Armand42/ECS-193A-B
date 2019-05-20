@@ -72,6 +72,11 @@ public class SpeechSettings extends AppCompatActivity {
             goToMainMenu(view);
             return true;
         }
+        else if(id == R.id.action_save){
+            addToSharedPreferences();
+            goToSpeechMenu();
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -93,7 +98,7 @@ public class SpeechSettings extends AppCompatActivity {
 
 
 
-    public void goToSpeechMenu (View view){
+    public void goToSpeechMenu (){
         Intent intent = new Intent(this, SpeechView.class);
         intent.putExtra("speechName", speechName);
         addToSharedPreferences();
@@ -103,7 +108,7 @@ public class SpeechSettings extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.base_menu, menu);
+        getMenuInflater().inflate(R.menu.new_speech_menu, menu);
         return true;
     }
     @Override
