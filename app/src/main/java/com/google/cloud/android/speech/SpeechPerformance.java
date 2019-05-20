@@ -263,7 +263,6 @@ public class SpeechPerformance extends BaseActivity {
 
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("FILE NOT FOUND:", e.toString());
             Toast readToast = Toast.makeText(getApplicationContext(),
                     e.toString(), Toast.LENGTH_SHORT);
             readToast.show();
@@ -275,7 +274,6 @@ public class SpeechPerformance extends BaseActivity {
                 String[] words = temp.text.split("\\s+");
                 switch (temp.operation) {
                     case EQUAL:
-                        Log.e("DIFF", "EQUAL - " + temp.text);
                         if (prevOperation == diff_match_patch.Operation.DELETE || prevOperation == diff_match_patch.Operation.INSERT) {
                             double prevIncorrect = Math.max(deletedWords, insertedWords);
                             incorrectWords += prevIncorrect;
@@ -286,14 +284,10 @@ public class SpeechPerformance extends BaseActivity {
                         deletedWords = insertedWords = 0;
                         break;
                     case DELETE:
-                        Log.e("DIFF", "DELETE - " + temp.text);
-
                         deletedWords = words.length;
                         prevOperation = diff_match_patch.Operation.DELETE;
                         break;
                     case INSERT:
-                        Log.e("DIFF", "INSERT - " + temp.text);
-
                         insertedWords = words.length;
                         prevOperation = diff_match_patch.Operation.INSERT;
                         break;
