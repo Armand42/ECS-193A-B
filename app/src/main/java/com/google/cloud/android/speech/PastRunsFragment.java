@@ -18,6 +18,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -38,6 +40,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 import static android.content.Context.MODE_PRIVATE;
+import static android.support.v4.content.ContextCompat.getSystemService;
 
 public class PastRunsFragment extends Fragment {
     private String speechName, userInputtedRunName;
@@ -162,7 +165,7 @@ public class PastRunsFragment extends Fragment {
         final String originalRunName = playbackListItems.get(index).runNum;
         int i = item.getItemId();
         if (i == R.id.edit) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setTitle("Rename run");
 
             LinearLayout layout = new LinearLayout(getContext());
@@ -172,6 +175,8 @@ public class PastRunsFragment extends Fragment {
             params.setMargins(50, 0, 30, 0);
 
             final EditText textBox = new EditText(getContext());
+
+
             textBox.setInputType(InputType.TYPE_CLASS_TEXT);
             textBox.setSingleLine();
             textBox.setText(originalRunName);
@@ -196,7 +201,11 @@ public class PastRunsFragment extends Fragment {
                 }
             });
 
-            builder.show();
+            AlertDialog alertToShow = builder.create();
+            alertToShow.getWindow().setSoftInputMode(
+                    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+            alertToShow.show();
+
             return true;
         } else if (i == R.id.deleteRun) {
             deleteRun(originalRunName, index);
