@@ -155,6 +155,14 @@ public class PlayBack extends AppCompatActivity implements View.OnClickListener 
         // Instantiate toolbar
         mTopToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(mTopToolbar);
+        mTopToolbar.setNavigationIcon(R.drawable.ic_baseline_home_24px);
+        mTopToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToMainMenu(view);
+
+            }
+        });
         this.setTitle(speechName + " : Run " + speechRunFolder.charAt(speechRunFolder.length() - 1));
     }
 
@@ -169,12 +177,6 @@ public class PlayBack extends AppCompatActivity implements View.OnClickListener 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
-        if (id == R.id.action_home) {
-            View view = findViewById(R.id.action_delete);
-            goToMainMenu(view);
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }

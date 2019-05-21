@@ -57,9 +57,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import org.json.JSONException;
 import org.json.JSONObject;
+
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -164,6 +164,7 @@ public class RecordAudio extends AppCompatActivity
 
         }
         if(displayScript){
+
             try {
                 scriptText = FileService.readFromFile(filePath);
                 setScriptText();
@@ -178,6 +179,7 @@ public class RecordAudio extends AppCompatActivity
 
 
         if(displayTimer){
+            Log.d("timer", "TIMER IS HERE");
             timeLeftInMilliseconds = sharedPreferences.getLong("timerMilliseconds", 600000);
 
             // Set timer on layout
@@ -187,21 +189,29 @@ public class RecordAudio extends AppCompatActivity
                         .commit();
             }
 
-            timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
         }
 
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setTitle("Practice: " + defaultPreferences.getString(speechName, null));
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_baseline_home_24px);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToMainMenu(view);
+
+            }
+        });
+        setTitle("Practice: " + defaultPreferences.getString(speechName, null));
 
         // Handle start button click
         startButton = findViewById(R.id.startButton);
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
+                timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
                 // Code here executes on main thread after user presses button
-
+                Log.d("RECORD AUDIO", "start button clicked");
 
                 // Stop button behavior
                 if (recording) {
@@ -220,12 +230,18 @@ public class RecordAudio extends AppCompatActivity
                 }
                 else {
                     Log.d("RECORD AUDIO", "start button pressed");
+
+                    Log.d("RECORD AUDIO", "display timer is " + displayTimer + " timerFragment is null: " + (timerFragment == null) );
                     recording = true;
-                    if(displayTimer && timerFragment != null)
+                    if(displayTimer && timerFragment != null) {
+                        Log.d("YOOOOOO", "TIMER HAS STARTing");
+
                         timerFragment.startTimer();
+                        Log.d("YOOOOOO", "TIMER HAS STARTED");
+                    }
                     //TextView message = (TextView) findViewById(R.id.textView3);
                     //message.setText("Tap again to stop");
-                    startButton.setBackground(getResources().getDrawable(R.drawable.finalredstop));
+                    startButton.setBackground(getResources().getDrawable(R.drawable.redstopbut));
 
                     // Start listening
                     startVoiceRecorder();
@@ -254,12 +270,6 @@ public class RecordAudio extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
-        if (id == R.id.action_home) {
-            View view = findViewById(R.id.action_home);
-            goToMainMenu(view);
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }

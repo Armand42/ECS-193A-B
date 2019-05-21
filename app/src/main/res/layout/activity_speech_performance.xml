@@ -10,121 +10,143 @@
         android:id="@+id/my_toolbar"
         style="@style/HeaderBar"
         android:layout_width="match_parent"
-        android:layout_height="61dp"
-        android:layout_marginBottom="8dp"
+        android:layout_height="0dp"
         android:elevation="4dp"
         app:popupTheme="@style/ActionBarPopupThemeOverlay"
         app:theme="@style/ActionBarThemeOverlay" />
 
-    <TextView
-        android:id="@+id/performanceMessage"
-        android:layout_width="355dp"
-        android:layout_height="109dp"
-        android:layout_marginStart="26dp"
-        android:layout_marginTop="80dp"
-        android:text="@string/speech_performance_display"
-        android:textColor="@android:color/background_dark"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/speechTime"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="spread_inside" />
-
-    <Button
-        android:id="@+id/button10"
-        android:layout_width="254dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/border_button_dark"
-        android:onClick="goToSpeechView"
-        android:text="@string/to_speech_menu_button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.515"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
-        app:layout_constraintVertical_bias="0.466" />
-
-
-    <Button
-        android:id="@+id/playback"
-        android:layout_width="254dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/border_button_dark"
-        android:onClick="goToPlayback"
-        android:text="@string/playback_button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.515"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button10"
-        app:layout_constraintVertical_bias="0.054" />
-
-    <TextView
-        android:id="@+id/speechTime"
-        android:layout_width="143dp"
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="108dp"
-        android:layout_marginBottom="308dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toTopOf="@+id/button10"
-        app:layout_constraintStart_toStartOf="@+id/performanceMessage"
-        app:layout_constraintTop_toBottomOf="@+id/performanceMessage" />
-
-    <Button
-        android:id="@+id/diffView"
-        android:layout_width="254dp"
-        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/border_button_dark"
-        android:onClick="goToDiffView"
-        android:text="Diff View"
+        android:layout_marginBottom="16dp"
+        android:scrollbarStyle="outsideInset"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.515"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
-        app:layout_constraintVertical_bias="0.696" />
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar">
 
-    <TextView
-        android:id="@+id/accuracyPercentage"
-        android:layout_width="260dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="128dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:ems="10"
-        android:text="%"
-        android:textAlignment="center"
-        android:textSize="36sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/button10"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/performanceMessage"
-        app:layout_constraintVertical_bias="0.066" />
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/accuracy"
-        android:layout_width="98dp"
-        android:layout_height="36dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="136dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Accuracy: "
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.148"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/speechTime"
-        app:layout_constraintVertical_bias="0.096" />
+            <TextView
+                android:id="@+id/performanceMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"
+                android:text="@string/speech_performance_display"
+                android:textAlignment="center"
+                android:textColor="@android:color/background_dark"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                tools:layout_editor_absoluteX="26dp"
+                tools:layout_editor_absoluteY="80dp" />
+
+            <TextView
+                android:id="@+id/accuracyPercentage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:foregroundGravity="center"
+                android:text="Accuracy: %"
+                android:textAlignment="viewStart"
+                android:textSize="20sp"
+                tools:layout_editor_absoluteX="75dp"
+                tools:layout_editor_absoluteY="211dp" />
+
+            <TextView
+                android:id="@+id/speechTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:foregroundGravity="center"
+                android:text="Time: 00:00"
+                android:textAlignment="viewStart"
+                android:textSize="20sp"
+                tools:layout_editor_absoluteX="75dp"
+                tools:layout_editor_absoluteY="211dp" />
+
+            <TextView
+                android:id="@+id/note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Notes:"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/note_body"
+                android:layout_width="match_parent"
+                android:layout_height="270dp"
+                android:layout_weight="4"
+                android:background="@android:color/transparent"
+                android:gravity="top|left"
+                android:hint="Enter your notes here"
+                android:inputType="textMultiLine"
+                android:lines="20"
+                android:padding="8dp"
+                android:scrollbars="vertical"
+                android:textAlignment="viewStart"
+                android:textSize="15sp"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
+
+                <Button
+                    android:id="@+id/playback"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_button_dark"
+                    android:lineSpacingExtra="12sp"
+                    android:minHeight="60dp"
+                    android:onClick="goToPlayback"
+                    android:text="Play Recording"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/diffView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_button_dark"
+                    android:minHeight="60dp"
+                    android:onClick="goToDiffView"
+                    android:text="View Mistakes"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
 
 </android.support.constraint.ConstraintLayout>

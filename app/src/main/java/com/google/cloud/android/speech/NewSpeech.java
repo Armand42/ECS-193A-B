@@ -44,8 +44,16 @@ public class NewSpeech extends AppCompatActivity {
 
         // Set toolbar
         Toolbar toolbar = findViewById(R.id.my_toolbar);
-        setTitle("New speech");
         setSupportActionBar(toolbar);
+        setTitle("New speech");
+        toolbar.setNavigationIcon(R.drawable.ic_baseline_home_24px);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToMainMenu(view);
+
+            }
+        });
         defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Get extras for editing a script (if they exist)
@@ -77,12 +85,7 @@ public class NewSpeech extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_home) {
-            View view = findViewById(R.id.action_home);
-            goToMainMenu(view);
-            return true;
-        }
-        else if (id == R.id.action_save) {
+        if (id == R.id.action_save) {
             View view = findViewById(R.id.action_save);
             saveFile(view);
             return true;

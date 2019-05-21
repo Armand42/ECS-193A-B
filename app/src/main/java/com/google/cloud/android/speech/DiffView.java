@@ -58,8 +58,16 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
 
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        this.setTitle("Diff View");
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_baseline_home_24px);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToMainMenu(view);
+
+            }
+        });
+        this.setTitle("Diff View");
         // Make script viewable
         // Create the shared preference file and get necessary values
         SharedPreferences sharedPreferences = getSharedPreferences(intent.getStringExtra("speechName"), MODE_PRIVATE);
@@ -115,10 +123,6 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
                 if(errors.size() != 0)
                     setPrevErrorFocus();
                 return true;
-            case R.id.action_home:
-                View view = findViewById(R.id.action_delete);
-                goToMainMenu(view);
-                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -143,7 +147,7 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
             switch(temp.operation)
             {
                 case EQUAL:
-                    if ((prevOperation == DELETE || prevOperation == INSERT) && (scriptStart!=-1 && scriptEnd !=-1) )
+                    if ((prevOperation == DELETE || prevOperation == INSERT) && ( scriptStart!=-1 || speechStart!=-1)  )
                     {
                         if (scriptStart == -1 || scriptEnd == -1)
                         {
@@ -157,7 +161,6 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
                         Errors singleError = new Errors( scriptStart,  scriptEnd,  speechStart,  speechEnd);
                         errors.add(singleError);
                         scriptStart = scriptEnd = speechStart = speechEnd = -1;
-                        Log.e("DIFF", "EQUAL - "+temp.text);
                     }
 
                     currPos1 += temp.text.length();
@@ -172,6 +175,7 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
                     speech.setSpan(new ForegroundColorSpan(Color.RED), currPos2, (speechToText.length() < (currPos2 + templength)) ? (speechToText.length()) : (currPos2 += templength), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                     speechEnd = currPos2;
                     prevOperation = INSERT;
+
                     if(temp.text.matches("\\s+")){
                         speechStart = speechEnd = -1;
                     }
@@ -202,6 +206,11 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
 
         scriptFull = script;
         speechFull = speech;
+
+        Iterator<Errors> e = errors.iterator();
+        while( e.hasNext()){
+            Log.e("ERRORS:", e.next().toString());
+        }
 
         // Set first error focus highlights if errors exist
         if(errors.size() != 0) {
