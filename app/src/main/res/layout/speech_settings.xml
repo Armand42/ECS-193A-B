@@ -80,13 +80,15 @@
 
             <EditText
                 android:id="@+id/speechTime"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:backgroundTint="@color/switchColors"
                 android:ems="10"
+                android:gravity="right"
                 android:inputType="number"
                 android:maxLength="3"
-                android:textAlignment="center"
+                android:textAlignment="gravity"
                 tools:layout_editor_absoluteX="204dp"
                 tools:layout_editor_absoluteY="438dp" />
 

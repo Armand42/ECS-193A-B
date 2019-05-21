@@ -35,6 +35,7 @@
         <item name="android:fontFamily">@font/raleway</item>
         <item name="fontFamily">@font/raleway</item>
         <item name="android:textColor">@android:color/background_dark</item>
+
     </style>
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -56,7 +57,7 @@
     </style>
 
     <style name="SwitchTheme" parent="Theme.AppCompat.Light">
-        <item name="android:colorControlActivated">#000000</item>
+        <item name="android:colorControlActivated">@color/switchColors</item>
     </style>
 
     <style name="ActionBarThemeOverlay" parent="">

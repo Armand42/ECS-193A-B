@@ -25,6 +25,8 @@
 
 
     <color name="colorPrimary">#3679C5</color>
+    <color name="switchColors">#2b619e</color>
+
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
