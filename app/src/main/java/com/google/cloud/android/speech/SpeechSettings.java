@@ -98,6 +98,7 @@ public class SpeechSettings extends AppCompatActivity {
     public void goToMainMenu(View view) {
         Intent intent = new Intent(this, MainMenu.class);
         intent.putExtra("speechName", speechName);
+        hideSoftKeyboard(SpeechSettings.this);
         startActivity(intent);
     }
 
@@ -106,10 +107,9 @@ public class SpeechSettings extends AppCompatActivity {
         int id = item.getItemId();
 
         if(id == R.id.action_save){
+            hideSoftKeyboard(SpeechSettings.this);
             addToSharedPreferences();
             goToSpeechMenu();
-            if(timerDisplay.isChecked())
-                hideSoftKeyboard(SpeechSettings.this);
             return true;
         }
 
