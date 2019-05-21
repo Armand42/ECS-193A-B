@@ -758,7 +758,6 @@ public class CameraToVideo extends Fragment
                         @Override
                         public void run() {
                             // UI
-                            mButtonVideo.setText("Pause");
                             mIsRecordingVideo = true;
                             mIsFirstRecording = false;
                             // Start recording
