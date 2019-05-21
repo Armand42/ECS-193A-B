@@ -22,6 +22,8 @@ import java.util.Set;
 
 import android.content.SharedPreferences;
 
+import org.json.JSONObject;
+
 
 public class NewSpeech extends AppCompatActivity {
     private String SPEECH_SCRIPT_PATH, speechFileName, prevActivity;
@@ -42,8 +44,16 @@ public class NewSpeech extends AppCompatActivity {
 
         // Set toolbar
         Toolbar toolbar = findViewById(R.id.my_toolbar);
-        setTitle("New speech");
         setSupportActionBar(toolbar);
+        setTitle("New speech");
+        toolbar.setNavigationIcon(R.drawable.ic_baseline_home_24px);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToMainMenu(view);
+
+            }
+        });
         defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Get extras for editing a script (if they exist)
@@ -75,12 +85,7 @@ public class NewSpeech extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_home) {
-            View view = findViewById(R.id.action_home);
-            goToMainMenu(view);
-            return true;
-        }
-        else if (id == R.id.action_save) {
+        if (id == R.id.action_save) {
             View view = findViewById(R.id.action_save);
             saveFile(view);
             return true;
@@ -142,9 +147,10 @@ public class NewSpeech extends AppCompatActivity {
                 //CREATE the shared preference file and add necessary values
                 SharedPreferences.Editor editor = sharedPref.edit();
                 SharedPreferences.Editor defaultEditor = defaultPreferences.edit();
-
+                JSONObject jsonObj = new JSONObject();
                 editor.putInt("currRun", 1);
                 editor.putInt("currScriptNum", 1);
+                editor.putString("runDisplayNameToFilepath", jsonObj.toString());
                 editor.commit();
 
                 speechNameSet.add(speechDisplayName);

@@ -58,7 +58,8 @@ public class FileService {
         //This point and below is responsible for the write operation
         FileOutputStream outputStream = null;
         try {
-            file.createNewFile();
+            if(!file.exists())
+                file.createNewFile();
             //second argument of FileOutputStream constructor indicates whether
             //to append or create new file if one exists -- for now we're creating a new file
             outputStream = new FileOutputStream(file, false);

@@ -4,12 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".RecordAudio">
 
-    <item android:id="@+id/action_home"
-        android:orderInCategory="300"
-        android:title="User"
-        android:icon="@drawable/ic_baseline_home_24px"
-        app:showAsAction="ifRoom" >
-    </item>
     <item
         android:id="@+id/action_focus_next"
         android:title="FocusNext"

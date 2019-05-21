@@ -9,12 +9,15 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
@@ -36,7 +39,7 @@ public class SpeechView extends AppCompatActivity {
 
     private SectionsPageAdapter mSectionsPageAdapter;
     private ViewPager mViewPager;
-    private String filePath, speechName, scriptText;
+    private String filePath, speechName, scriptText, prevActivity;
     private Boolean videoPlaybackState, viewScriptState, timerdisplayState;
     private SharedPreferences defaultPreferences;
 
@@ -49,6 +52,7 @@ public class SpeechView extends AppCompatActivity {
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         speechName = intent.getStringExtra("speechName");
+        prevActivity = intent.getStringExtra("prevActivity");
         SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
         defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         final File dir = getDir(speechName, MODE_PRIVATE);
@@ -60,9 +64,17 @@ public class SpeechView extends AppCompatActivity {
 
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(toolbar);
         setTitle("Speech View");
         toolbar.setSubtitle(defaultPreferences.getString(speechName, null));
-        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_baseline_home_24px);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToMainMenu(view);
+
+            }
+        });
 
         // Set script view
         try {
@@ -85,6 +97,18 @@ public class SpeechView extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if(prevActivity != null && prevActivity.equals("speechPerformance")){
+            TabLayout tabLayout = findViewById(R.id.tabs);
+            TabLayout.Tab tab = tabLayout.getTabAt(1);
+            tab.select();
+        }
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -152,7 +176,6 @@ public class SpeechView extends AppCompatActivity {
                             Set<String> speechNameSet = defaultPreferences.getStringSet("speechNameSet", new HashSet<String>());
                             speechNameSet.remove(defaultPreferences.getString(speechName, null));
 
-                            SPEECH_FOLDER_PATH = getFilesDir() + File.separator + "speechFiles" + File.separator + speechName;
                             File speechFolder = new File(SPEECH_FOLDER_PATH);
                             recursiveDelete(speechFolder);
 
@@ -194,11 +217,6 @@ public class SpeechView extends AppCompatActivity {
         if (id == R.id.action_delete) {
             View view = findViewById(R.id.action_delete);
             deleteSpeech(view);
-            return true;
-        }
-        else if (id == R.id.action_home) {
-            View view = findViewById(R.id.action_home);
-            goToMainMenu(view);
             return true;
         }
         else if (id == R.id.action_settings) {
@@ -246,9 +264,10 @@ public class SpeechView extends AppCompatActivity {
 
     public void goToEditSpeech(View view) {
         Intent intent = new Intent(this, NewSpeech.class);
-
+        intent.putExtra("prevActivity", "scriptView");
         intent.putExtra("speechName", speechName);
         intent.putExtra("scriptText", scriptText);
         startActivity(intent);
     }
+
 }
