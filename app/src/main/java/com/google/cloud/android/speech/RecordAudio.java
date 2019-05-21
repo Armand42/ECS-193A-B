@@ -161,6 +161,7 @@ public class RecordAudio extends AppCompatActivity
 
         }
         if(displayScript){
+
             try {
                 scriptText = FileService.readFromFile(filePath);
                 setScriptText();
@@ -172,9 +173,12 @@ public class RecordAudio extends AppCompatActivity
             }
         }
 
+       // timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
+       // Log.d("RECORD AUDIO", " timerFragment is null: " + (timerFragment == null) );
 
 
         if(displayTimer){
+            Log.d("timer", "TIMER IS HERE");
             timeLeftInMilliseconds = sharedPreferences.getLong("timerMilliseconds", 600000);
 
             // Set timer on layout
@@ -184,7 +188,6 @@ public class RecordAudio extends AppCompatActivity
                         .commit();
             }
 
-            timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
         }
 
         // Set toolbar
@@ -204,9 +207,9 @@ public class RecordAudio extends AppCompatActivity
         startButton = findViewById(R.id.startButton);
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
+                timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
                 // Code here executes on main thread after user presses button
-
+                Log.d("RECORD AUDIO", "start button clicked");
 
                 // Stop button behavior
                 if (recording) {
@@ -225,9 +228,14 @@ public class RecordAudio extends AppCompatActivity
                 }
                 else {
                     Log.d("RECORD AUDIO", "start button pressed");
+                    Log.d("RECORD AUDIO", "display timer is " + displayTimer + " timerFragment is null: " + (timerFragment == null) );
                     recording = true;
-                    if(displayTimer && timerFragment != null)
+                    if(displayTimer && timerFragment != null) {
+                        Log.d("YOOOOOO", "TIMER HAS STARTing");
+
                         timerFragment.startTimer();
+                        Log.d("YOOOOOO", "TIMER HAS STARTED");
+                    }
                     //TextView message = (TextView) findViewById(R.id.textView3);
                     //message.setText("Tap again to stop");
                     startButton.setBackground(getResources().getDrawable(R.drawable.redstopbut));
