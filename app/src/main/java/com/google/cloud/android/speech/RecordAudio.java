@@ -57,6 +57,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -161,6 +164,7 @@ public class RecordAudio extends AppCompatActivity
 
         }
         if(displayScript){
+
             try {
                 scriptText = FileService.readFromFile(filePath);
                 setScriptText();
@@ -175,6 +179,7 @@ public class RecordAudio extends AppCompatActivity
 
 
         if(displayTimer){
+            Log.d("timer", "TIMER IS HERE");
             timeLeftInMilliseconds = sharedPreferences.getLong("timerMilliseconds", 600000);
 
             // Set timer on layout
@@ -184,7 +189,6 @@ public class RecordAudio extends AppCompatActivity
                         .commit();
             }
 
-            timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
         }
 
         // Set toolbar
@@ -205,8 +209,9 @@ public class RecordAudio extends AppCompatActivity
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
+                timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
                 // Code here executes on main thread after user presses button
-
+                Log.d("RECORD AUDIO", "start button clicked");
 
                 // Stop button behavior
                 if (recording) {
@@ -225,9 +230,15 @@ public class RecordAudio extends AppCompatActivity
                 }
                 else {
                     Log.d("RECORD AUDIO", "start button pressed");
+
+                    Log.d("RECORD AUDIO", "display timer is " + displayTimer + " timerFragment is null: " + (timerFragment == null) );
                     recording = true;
-                    if(displayTimer && timerFragment != null)
+                    if(displayTimer && timerFragment != null) {
+                        Log.d("YOOOOOO", "TIMER HAS STARTing");
+
                         timerFragment.startTimer();
+                        Log.d("YOOOOOO", "TIMER HAS STARTED");
+                    }
                     //TextView message = (TextView) findViewById(R.id.textView3);
                     //message.setText("Tap again to stop");
                     startButton.setBackground(getResources().getDrawable(R.drawable.redstopbut));
@@ -426,6 +437,22 @@ public class RecordAudio extends AppCompatActivity
     public void addToSharedPreferences() {
         //CREATE the shared preference file and add necessary values
         SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        String runDisplayNameToFilepath = sharedPreferences.getString("runDisplayNameToFilepath", null);
+        JSONObject jsonObj = null;
+        try {
+            jsonObj = new JSONObject(runDisplayNameToFilepath);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if(jsonObj != null){
+            try {
+                jsonObj.put(speechRunFolder, speechFolderPath + File.separator + speechRunFolder);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        editor.putString("runDisplayNameToFilepath", jsonObj.toString());
         editor.putString("apiResult", apiResultPath);
         editor.putInt("currRun",1 + sharedPreferences.getInt("currRun",-1));
         Log.d("ADD TO SHARED PREF", "incrementing curr Run");

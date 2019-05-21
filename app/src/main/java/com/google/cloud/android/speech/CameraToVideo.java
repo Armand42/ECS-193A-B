@@ -79,6 +79,9 @@ import com.github.hiteshsondhi88.libffmpeg.FFmpegLoadBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import static android.content.Context.MODE_PRIVATE;
 import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Paths.get;
@@ -320,15 +323,15 @@ public class CameraToVideo extends Fragment
         if(displayTimer)
         {
             if (sharedPref.getBoolean("displaySpeech", false))
-                return inflater.inflate(R.layout.fragment_camera2_video_timer, container, false);
+                return inflater.inflate(R.layout.fragment_camera_to_video_timer_script, container, false);
             else
-                return inflater.inflate(R.layout.fragment_camera3_video_timer, container, false);
+                return inflater.inflate(R.layout.fragment_camera_to_video_timer, container, false);
         }
         else {
             if (sharedPref.getBoolean("displaySpeech", false))
-                return inflater.inflate(R.layout.fragment_camera2_video, container, false);
+                return inflater.inflate(R.layout.fragment_camera_to_video_script, container, false);
             else
-                return inflater.inflate(R.layout.fragment_camera3_video, container, false);
+                return inflater.inflate(R.layout.fragment_camera_to_video, container, false);
         }
 
     }
@@ -421,8 +424,8 @@ public class CameraToVideo extends Fragment
                 apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
 
 
-                extractAudioFromVideo();
-                updateSharedPreferences();
+                extractAudioFromVideo(speechFolderPath, speechRunFolder);
+                updateSharedPreferences(speechFolderPath, speechRunFolder);
                 break;
             }
             case R.id.restart: {
@@ -716,8 +719,6 @@ public class CameraToVideo extends Fragment
         File f = new File(speechFolderPath, newRunFolder);
         f.mkdirs();
         Log.d("CAMERA2VIDEO", "RUN CREATED");
-//        final File dir = context.getDir(speechName, MODE_PRIVATE);
-        //CREATE the shared preference file and get necessary values
         return speechFolderPath + File.separator + newRunFolder + File.separator + "video.mp4";
 
     }
@@ -801,7 +802,6 @@ public class CameraToVideo extends Fragment
 
 
     private void stopRecordingVideo() {
-        // UI
 
         mCurrentVideoPath = mNextVideoAbsolutePath;
 
@@ -811,13 +811,6 @@ public class CameraToVideo extends Fragment
         mMediaRecorder.stop();
         mMediaRecorder.reset();
 
-
-//        Activity activity = getActivity();
-//        if (null != activity) {
-//            Toast.makeText(activity, "Video saved: " + mNextVideoAbsolutePath,
-//                    Toast.LENGTH_SHORT).show();
-//            Log.d(TAG, "Video saved: " + mNextVideoAbsolutePath);
-//        }
         mNextVideoAbsolutePath = null;
         startPreview();
     }
@@ -906,9 +899,7 @@ public class CameraToVideo extends Fragment
     }
 
 
-    private void extractAudioFromVideo() {
-        String speechFolderPath = getContext().getFilesDir() + File.separator + "speechFiles" + File.separator + speechName;
-        String newRunFolder = "run" + sharedPref.getInt("currRun", -1);
+    private void extractAudioFromVideo(String speechFolderPath, String newRunFolder) {
 
         AUDIO_FILE_PATH = speechFolderPath + File.separator + newRunFolder + File.separator
                 + "audio.wav";
@@ -1010,10 +1001,25 @@ public class CameraToVideo extends Fragment
         });
     }
 
-    public void updateSharedPreferences(){
+    public void updateSharedPreferences(String speechFolderPath, String speechRunFolder){
         //update the currVideoNum
         Log.d("CAMERA2VIDEO", "Shared Pref updated");
         SharedPreferences.Editor editor = sharedPref.edit();
+        String runDisplayNameToFilepath = sharedPref.getString("runDisplayNameToFilepath", null);
+        JSONObject jsonObj = null;
+        try {
+            jsonObj = new JSONObject(runDisplayNameToFilepath);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if(jsonObj != null){
+            try {
+                jsonObj.put(speechRunFolder, speechFolderPath + File.separator + speechRunFolder);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        editor.putString("runDisplayNameToFilepath", jsonObj.toString());
         editor.putString("videoFilePath", VIDEO_FILE_PATH);
         editor.putInt("currRun", 1 + sharedPref.getInt("currRun", -1));
         editor.commit();

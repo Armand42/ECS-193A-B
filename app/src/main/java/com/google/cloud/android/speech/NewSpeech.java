@@ -22,6 +22,8 @@ import java.util.Set;
 
 import android.content.SharedPreferences;
 
+import org.json.JSONObject;
+
 
 public class NewSpeech extends AppCompatActivity {
     private String SPEECH_SCRIPT_PATH, speechFileName, prevActivity;
@@ -145,9 +147,10 @@ public class NewSpeech extends AppCompatActivity {
                 //CREATE the shared preference file and add necessary values
                 SharedPreferences.Editor editor = sharedPref.edit();
                 SharedPreferences.Editor defaultEditor = defaultPreferences.edit();
-
+                JSONObject jsonObj = new JSONObject();
                 editor.putInt("currRun", 1);
                 editor.putInt("currScriptNum", 1);
+                editor.putString("runDisplayNameToFilepath", jsonObj.toString());
                 editor.commit();
 
                 speechNameSet.add(speechDisplayName);

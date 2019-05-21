@@ -30,12 +30,12 @@ import static java.nio.file.Paths.get;
 
 
 public class SpeechPerformance extends BaseActivity {
+
     private String speechName, speechFolderPath,jsonFilePath;
     private static String apiResultPath;
     private static String selectedRunMediaPath;
     private static String AUDIO_FILE_PATH;
     private static final String TAG = "MyActivity";
-    private SpeechService mSpeechService;
     private String prevActivity;
 
     SharedPreferences sharedPreferences;
@@ -107,7 +107,6 @@ public class SpeechPerformance extends BaseActivity {
         File jsonFile = new File(jsonFilePath);
 
         if (!jsonFile.exists()) {
-            Log.d("SPEECHPERFORMANCE", "CREATING NEW JSON FILE");
             percentAccuracy = calculateAccuracy();
             setAccuracy(percentAccuracy);
 
@@ -124,12 +123,12 @@ public class SpeechPerformance extends BaseActivity {
                 jsonObj.put("currScriptNum", sharedPreferences.getInt("currScriptNum", -1));
                 jsonObj.put("timeElapsed", timeElapsed);
                 jsonObj.put("videoPlayback", videoPlaybackState);
+                jsonObj.put("runDisplayName", speechRunFolder);
                 jsonObj.put("note", "Enter notes here.");
                 Date todayDate = Calendar.getInstance().getTime();
                 SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
                 String currentDateTimeString = formatter.format(todayDate);
 
-//                String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
                 jsonObj.put("dateRecorded", currentDateTimeString);
                 FileService.writeToFile("metadata", jsonObj.toString(),
                         speechFolderPath + File.separator + speechRunFolder);
@@ -313,6 +312,7 @@ public class SpeechPerformance extends BaseActivity {
         saveSpeech();
         Intent intent = new Intent(SpeechPerformance.this, SpeechView.class);
         intent.putExtra("speechName", speechName);
+        intent.putExtra("prevActivity", "speechPerformance");
         startActivity(intent);
         finish();
     }
