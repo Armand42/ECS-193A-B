@@ -1,5 +1,6 @@
 package com.google.cloud.android.speech;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -84,6 +85,7 @@ public class SpeechSettings extends AppCompatActivity {
             // Set speechLength editText to be this value (in minutes = /60000)
             speechTime.setText(Long.toString(speechLengthMs / 60000));
             speechTime.setSelection(speechTime.getText().length());
+            //show numeric keyboard
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
         } else {
@@ -106,6 +108,8 @@ public class SpeechSettings extends AppCompatActivity {
         if(id == R.id.action_save){
             addToSharedPreferences();
             goToSpeechMenu();
+            if(timerDisplay.isChecked())
+                hideSoftKeyboard(SpeechSettings.this);
             return true;
         }
 
@@ -133,7 +137,6 @@ public class SpeechSettings extends AppCompatActivity {
     public void goToSpeechMenu() {
         Intent intent = new Intent(this, SpeechView.class);
         intent.putExtra("speechName", speechName);
-        addToSharedPreferences();
         startActivity(intent);
     }
 
@@ -151,5 +154,13 @@ public class SpeechSettings extends AppCompatActivity {
         intent.putExtra("speechName", speechName);
         startActivity(intent);
         finish();
+    }
+
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) activity.getSystemService(
+                        Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(
+                activity.getCurrentFocus().getWindowToken(), 0);
     }
 }
