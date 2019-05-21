@@ -52,92 +52,80 @@
     <LinearLayout
 
         android:layout_width="match_parent"
-        android:layout_height="47dp"
+        android:layout_height="100dp"
         android:orientation="horizontal">
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/restart"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_gravity="top|left"
-            android:layout_marginLeft="25dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/ic_retry"
-            android:fontFamily="@font/raleway"
-            android:textColor="@android:color/background_light" />
+            <Button
+                android:id="@+id/restart"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center|left"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/ic_retry"
+                android:fontFamily="@font/raleway"
+                android:textColor="@android:color/background_light" />
 
-        <Button
-            android:id="@+id/video"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center"
-            android:layout_marginLeft="25dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="25dp"
+            <Button
+                android:id="@+id/video"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="25dp"
 
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/redmicro"
-            android:fontFamily="@font/raleway"
-            android:textColor="@android:color/background_light" />
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/redmicro"
+                android:fontFamily="@font/raleway"
+                android:textColor="@android:color/background_light" />
 
-        <Button
-            android:id="@+id/playback"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_gravity="top|right"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/ic_stop"
-            android:fontFamily="@font/raleway"
-            android:textColor="@android:color/background_light" />
+            <Button
+                android:id="@+id/playback"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center|right"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/ic_stop"
+                android:fontFamily="@font/raleway"
+                android:textColor="@android:color/background_light" />
         </FrameLayout>
     </LinearLayout>
 
-
-    <RelativeLayout
-
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight=".5">
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="0dp"
+        android:orientation="vertical">
 
+        <ScrollView
+            android:id="@+id/scriptBodyWrapper"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:fillViewport="true"
+            android:scrollbars="vertical">
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="0dp"
-            android:orientation="vertical">
-
-            <ScrollView
-                android:id="@+id/scriptBodyWrapper"
-                android:layout_width="fill_parent"
+            <TextView
+                android:id="@+id/scriptBody"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
-                android:fillViewport="true"
-                android:scrollbars="vertical">
+                android:background="@drawable/rectangle"
+                android:text="TextView"
 
-                <TextView
-                    android:id="@+id/scriptBody"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/rectangle"
-                    android:text="TextView"
-
-                    />
-            </ScrollView>
-        </LinearLayout>
-
-    </RelativeLayout>
-
+                />
+        </ScrollView>
+    </LinearLayout>
 
 </LinearLayout>

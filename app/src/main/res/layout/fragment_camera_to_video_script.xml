@@ -52,7 +52,7 @@
                 android:id="@+id/restart"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
-                android:layout_gravity="top|left"
+                android:layout_gravity="center|left"
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="16dp"
@@ -63,8 +63,8 @@
 
             <Button
                 android:id="@+id/video"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="10dp"
@@ -79,7 +79,7 @@
                 android:id="@+id/playback"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
-                android:layout_gravity="top|right"
+                android:layout_gravity="center|right"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="25dp"
