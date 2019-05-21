@@ -288,34 +288,38 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
 
     private void setNextErrorFocus()
     {
+        // Get curr error and set background to transparent
+        // Set text to red
+        unsetErrorFocus();
         if (errorsIndex < errors.size()-1)
         {
-            // Get curr error and set background to transparent
-            // Set text to red
-            unsetErrorFocus();
-
             // Go to next error
             errorsIndex++;
-            setErrorFocus();
-            setErrorIndexText();
-            scroll();
+        } else {
+            // We're at the last error
+            // Go to first error
+            errorsIndex = 0;
         }
+        setErrorFocus();
+        setErrorIndexText();
+        scroll();
     }
 
     private void setPrevErrorFocus()
     {
+        unsetErrorFocus();
         if (errorsIndex > 0)
         {
-            // Get curr error and set background to transparent
-            // Set text to red
-            unsetErrorFocus();
-
             // Go to prev error
             errorsIndex--;
-            setErrorFocus();
-            setErrorIndexText();
-            scroll();
+        } else {
+            // We're at the first error
+            // Go to last error
+            errorsIndex = errors.size()-1;
         }
+        setErrorFocus();
+        setErrorIndexText();
+        scroll();
     }
 
     private void setDiffTexts()

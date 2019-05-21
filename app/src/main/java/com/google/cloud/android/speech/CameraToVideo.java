@@ -323,15 +323,15 @@ public class CameraToVideo extends Fragment
         if(displayTimer)
         {
             if (sharedPref.getBoolean("displaySpeech", false))
-                return inflater.inflate(R.layout.fragment_camera2_video_timer, container, false);
+                return inflater.inflate(R.layout.fragment_camera_to_video_timer_script, container, false);
             else
-                return inflater.inflate(R.layout.fragment_camera3_video_timer, container, false);
+                return inflater.inflate(R.layout.fragment_camera_to_video_timer, container, false);
         }
         else {
             if (sharedPref.getBoolean("displaySpeech", false))
-                return inflater.inflate(R.layout.fragment_camera2_video, container, false);
+                return inflater.inflate(R.layout.fragment_camera_to_video_script, container, false);
             else
-                return inflater.inflate(R.layout.fragment_camera3_video, container, false);
+                return inflater.inflate(R.layout.fragment_camera_to_video, container, false);
         }
 
     }
