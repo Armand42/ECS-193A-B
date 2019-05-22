@@ -386,8 +386,7 @@ public class RecordAudio extends AppCompatActivity
                         if (mVoiceRecorder !=null)
                             mVoiceRecorder.dismiss();
                         try {
-                            appendToFile(apiResultPath, text);
-                            appendToFile(apiResultPath, " ");
+                            appendToFile(apiResultPath, text.concat(" "));
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
