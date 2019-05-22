@@ -57,7 +57,6 @@ public class SpeechView extends AppCompatActivity {
         defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         final File dir = getDir(speechName, MODE_PRIVATE);
         filePath = sharedPreferences.getString("filepath", "error");
-        speechName = intent.getStringExtra("speechName");
         videoPlaybackState = sharedPreferences.getBoolean("videoPlayback", false);
         viewScriptState = sharedPreferences.getBoolean("displaySpeech", false);
         timerdisplayState = sharedPreferences.getBoolean("timerDisplay", false);
@@ -65,7 +64,7 @@ public class SpeechView extends AppCompatActivity {
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
-        setTitle("Speech View");
+        toolbar.setTitle("Speech View");
         toolbar.setSubtitle(defaultPreferences.getString(speechName, null));
         toolbar.setNavigationIcon(R.drawable.ic_baseline_home_24px);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -113,8 +112,8 @@ public class SpeechView extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
-        adapter.addFragment(new ScriptViewFragment(scriptText), "Your script");
         adapter.addFragment(new PastRunsFragment(speechName, fileNames, SPEECH_FOLDER_PATH, dir), "Your past runs");
+        adapter.addFragment(new ScriptViewFragment(scriptText), "Your script");
         viewPager.setAdapter(adapter);
     }
 

@@ -30,9 +30,11 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
+    <color name="armandRed">#F53432</color>
+
     <color name="black_overlay">#66000000</color>
     <color name="success">#36C5B9</color>
-    <color name="colorWarning">#A4033E</color>
+    <color name="colorWarning">#9C0037</color>
     <color name="transparent">#00FFFFFF</color>
     <color name="light_gray">#FFFFFF</color>
     <color name="light_green">#BFFFC7</color>

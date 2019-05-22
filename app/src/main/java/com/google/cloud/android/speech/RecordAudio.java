@@ -66,7 +66,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
+import java.text.SimpleDateFormat;
 
 public class RecordAudio extends AppCompatActivity
         implements  MessageDialogFragment.Listener,
@@ -88,6 +88,8 @@ public class RecordAudio extends AppCompatActivity
     private SharedPreferences sharedPreferences;
     private VoiceRecorder mVoiceRecorder;
     private ProgressDialog dialog;
+
+    private long startTime, endTime;
 
     private final VoiceRecorder.Callback mVoiceCallback = new VoiceRecorder.Callback() {
 
@@ -222,8 +224,17 @@ public class RecordAudio extends AppCompatActivity
                     dialog.show();
 
 
-                    if(displayTimer && timerFragment != null)
+                    // Timer on
+                    if(displayTimer && timerFragment != null) {
                         timerFragment.stopTimer();
+                    } else {
+                        // Timer off, capture the time we stopped
+                        endTime = System.currentTimeMillis();
+
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        // TODO: Time for speeches without timer
+//                        editor.putLong("timeElapsed", endTime - startTime);
+                    }
 
                     // Stop listening
                     stopVoiceRecorder();
@@ -235,15 +246,20 @@ public class RecordAudio extends AppCompatActivity
 
                     Log.d("RECORD AUDIO", "display timer is " + displayTimer + " timerFragment is null: " + (timerFragment == null) );
                     recording = true;
+
+                    // Timer on
                     if(displayTimer && timerFragment != null) {
                         Log.d("YOOOOOO", "TIMER HAS STARTing");
 
                         timerFragment.startTimer();
                         Log.d("YOOOOOO", "TIMER HAS STARTED");
+                    } else {
+                        // Timer off, capture time we started
+                        startTime = System.currentTimeMillis();
                     }
                     //TextView message = (TextView) findViewById(R.id.textView3);
                     //message.setText("Tap again to stop");
-                    startButton.setBackground(getResources().getDrawable(R.drawable.redstopbut));
+                    startButton.setBackground(getResources().getDrawable(R.drawable.ic_stop_red));
 
                     // Start listening
                     startVoiceRecorder();
