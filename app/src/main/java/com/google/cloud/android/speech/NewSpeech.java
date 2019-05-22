@@ -222,8 +222,8 @@ public class NewSpeech extends AppCompatActivity {
 
     public void overwriteExistingSpeech(final String speechFileName, final String speechContent, final String speechDisplayName) {
         new AlertDialog.Builder(this)
-                .setTitle("Overwrite File")
-                .setMessage("Are you sure you want to overwrite this file?")
+                .setTitle("Edit Speech")
+                .setMessage("Are you sure you want to edit this speech?")
                 // Specifying a listener allows you to take an action before dismissing the dialog.
                 // The dialog is automatically dismissed when a dialog button is clicked.
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
