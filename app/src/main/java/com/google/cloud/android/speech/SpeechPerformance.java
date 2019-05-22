@@ -54,7 +54,6 @@ public class SpeechPerformance extends BaseActivity {
         prevActivity = intent.getStringExtra("prevActivity");
         String selectedRun = intent.getStringExtra("selectedRun");
         SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        setTitle(defaultPreferences.getString(speechName, null));
 
         sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
         notes = (EditText) findViewById(R.id.note_body);
@@ -157,6 +156,8 @@ public class SpeechPerformance extends BaseActivity {
 
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        toolbar.setSubtitle(defaultPreferences.getString(speechName, null));
+        toolbar.setTitle("Speech Performance");
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_baseline_home_24px);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {

@@ -1,20 +1,25 @@
 package com.google.cloud.android.speech;
 
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 public class RecordVideo extends BaseActivity implements IMainActivity, TimerFragment.OnFragmentInteractionListener {
     private String apiResultPath, speechName;
@@ -31,8 +36,8 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
 
         //if video and timerDisplay
         //  then camerafragmentwithtimer
-        Log.d("recordvideo", "timerdisplay is " + sharedPreferences.getBoolean("timerDisplay", false));
-        Log.d("recordvideo", "displaySpeech is " + sharedPreferences.getBoolean("displaySpeech", false));
+//        Log.d("recordvideo", "timerdisplay is " + sharedPreferences.getBoolean("timerDisplay", false));
+//        Log.d("recordvideo", "displaySpeech is " + sharedPreferences.getBoolean("displaySpeech", false));
 
 
         this.setTitle("Record a Speech");
@@ -42,13 +47,6 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
         String speechRunFolder = "run" + sharedPreferences.getInt("currRun", -1);
 
         apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
-    }
-
-
-    public void goToMainMenu(View view) {
-        Intent intent = new Intent(this, MainMenu.class);
-        intent.putExtra("speechName", speechName);
-        startActivity(intent);
     }
 
     @Override
@@ -142,11 +140,29 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        Intent intent = new Intent(RecordVideo.this, SpeechView.class);
+        // Start taking action for back press
+        final Intent intent = new Intent(RecordVideo.this, SpeechView.class);
         intent.putExtra("speechName", speechName);
-        startActivity(intent);
-        finish();
+        new AlertDialog.Builder(this)
+                .setTitle("Exit recording?")
+                .setMessage("Your current speech run will be lost.")
+
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO: Delete this speech run
+
+                        // Finish action for pressing back
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+
+                // A null listener allows the button to dismiss the dialog and take no further action.
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(R.drawable.ic_baseline_warning_24px)
+                .show();
     }
 
     @Override
@@ -160,5 +176,25 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    private void displayWarningDialog(String destination) {
+        new AlertDialog.Builder(this)
+                .setTitle("Exit recording?")
+                .setMessage("Your current speech run will be lost.")
+
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO: Delete this speech run
+
+                    }
+                })
+
+                // A null listener allows the button to dismiss the dialog and take no further action.
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(R.drawable.ic_baseline_warning_24px)
+                .show();
     }
 }

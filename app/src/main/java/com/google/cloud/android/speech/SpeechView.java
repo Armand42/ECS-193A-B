@@ -64,7 +64,7 @@ public class SpeechView extends AppCompatActivity {
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
-        setTitle("Speech View");
+        toolbar.setTitle("Speech View");
         toolbar.setSubtitle(defaultPreferences.getString(speechName, null));
         toolbar.setNavigationIcon(R.drawable.ic_baseline_home_24px);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -112,8 +112,8 @@ public class SpeechView extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
-        adapter.addFragment(new ScriptViewFragment(scriptText), "Your script");
         adapter.addFragment(new PastRunsFragment(speechName, fileNames, SPEECH_FOLDER_PATH, dir), "Your past runs");
+        adapter.addFragment(new ScriptViewFragment(scriptText), "Your script");
         viewPager.setAdapter(adapter);
     }
 
@@ -193,7 +193,7 @@ public class SpeechView extends AppCompatActivity {
 
                 // A null listener allows the button to dismiss the dialog and take no further action.
                 .setNegativeButton(android.R.string.no, null)
-                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setIcon(R.drawable.ic_baseline_warning_24px)
                 .show();
     }
 

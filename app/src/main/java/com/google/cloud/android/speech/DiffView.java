@@ -39,6 +39,7 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
 
     ObservableScrollView scriptScroll, speechToTextScroll;
     int scriptStart= -1,  scriptEnd= -1,  speechStart = -1,  speechEnd = -1, errorsIndex = 0;
+    int highlight;
 
     // Make an arraylist for all the errors
     ArrayList<Errors> errors = new ArrayList<Errors>();
@@ -47,6 +48,8 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diff_view_test);
+
+        highlight = getResources().getColor(R.color.colorWarning);
 
         Intent intent = getIntent();
         String apiResultPath = intent.getStringExtra("apiResultPath");
@@ -172,7 +175,7 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
                 case INSERT://for 2
                     templength = temp.text.length();
                     speechStart = currPos2;
-                    speech.setSpan(new ForegroundColorSpan(Color.RED), currPos2, (speechToText.length() < (currPos2 + templength)) ? (speechToText.length()) : (currPos2 += templength), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                    speech.setSpan(new ForegroundColorSpan(highlight), currPos2, (speechToText.length() < (currPos2 + templength)) ? (speechToText.length()) : (currPos2 += templength), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                     speechEnd = currPos2;
                     prevOperation = INSERT;
 
@@ -184,7 +187,7 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
 
                     templength = temp.text.length();
                     scriptStart = currPos1;
-                    script.setSpan(new ForegroundColorSpan(Color.RED), currPos1, (scriptText.length() < (currPos1 + templength)) ? (scriptText.length()) : (currPos1 += templength), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                    script.setSpan(new ForegroundColorSpan(highlight), currPos1, (scriptText.length() < (currPos1 + templength)) ? (scriptText.length()) : (currPos1 += templength), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                     scriptEnd = currPos1;
                     prevOperation = DELETE;
 
@@ -258,14 +261,13 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
     private void setErrorFocus()
     {
         Errors error = errors.get(errorsIndex);
-        int highlight = getResources().getColor(R.color.light_pink);
-        int focusTextColor = Color.BLACK;
+        int focusTextColor = Color.WHITE;
 
-        // Set background colors to yellow
+        // Set background colors
         speechFull.setSpan(new BackgroundColorSpan(highlight), error.speechStart, error.speechEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         scriptFull.setSpan(new BackgroundColorSpan(highlight), error.scriptStart, error.scriptEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 
-        // Set text color to black
+        // Set text color
         speechFull.setSpan(new ForegroundColorSpan(focusTextColor), error.speechStart, error.speechEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         scriptFull.setSpan(new ForegroundColorSpan(focusTextColor), error.scriptStart, error.scriptEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 
@@ -282,8 +284,8 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
         scriptFull.setSpan(new BackgroundColorSpan(transparent), error.scriptStart, error.scriptEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 
         // Set text color to red
-        speechFull.setSpan(new ForegroundColorSpan(Color.RED), error.speechStart, error.speechEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        scriptFull.setSpan(new ForegroundColorSpan(Color.RED), error.scriptStart, error.scriptEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        speechFull.setSpan(new ForegroundColorSpan(highlight), error.speechStart, error.speechEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        scriptFull.setSpan(new ForegroundColorSpan(highlight), error.scriptStart, error.scriptEnd, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
     }
 
     private void setNextErrorFocus()
