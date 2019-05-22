@@ -71,7 +71,7 @@
                 android:layout_marginRight="25dp"
 
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/redmicro"
+                android:background="@drawable/ic_baseline_camera_alt_24px"
                 android:fontFamily="@font/raleway"
                 android:textColor="@android:color/background_light" />
 
