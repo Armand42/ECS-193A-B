@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +28,7 @@ public class SpeechSettings extends AppCompatActivity {
 
     EditText speechTime;
     long speechLengthMs;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,8 @@ public class SpeechSettings extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
         // Get speech length from shared prefs (default value of 10 minutes)
         speechLengthMs = sharedPreferences.getLong("timerMilliseconds", 600000);
+
+        Log.d("TIMMMMMMMEEEEE", "TIMEEEE VALUEEEEE" + speechLengthMs);
 
         videoPlayback.setChecked(sharedPreferences.getBoolean("videoPlayback", false));
         displaySpeech.setChecked(sharedPreferences.getBoolean("displaySpeech", false));
@@ -106,11 +111,18 @@ public class SpeechSettings extends AppCompatActivity {
         int id = item.getItemId();
 
         if(id == R.id.action_save){
+            // if timer display is enabled check for a valid time
+            if(timerDisplay.isChecked()) {
+                if (speechTime.getText().toString().equals("0") || speechTime.getText().toString().equals("")) {
+                    invalidTimerValueDialog();
+                    return false;
+                }
+                hideSoftKeyboard(SpeechSettings.this);
+            }
+
             addToSharedPreferences();
             goToSpeechMenu();
-            if(timerDisplay.isChecked())
-                hideSoftKeyboard(SpeechSettings.this);
-            return true;
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -162,5 +174,13 @@ public class SpeechSettings extends AppCompatActivity {
                         Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(
                 activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    public void invalidTimerValueDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Invalid Timer Value")
+                .setMessage("Please enter a valid time")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 }
