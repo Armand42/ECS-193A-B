@@ -164,7 +164,7 @@ public class SpeechView extends AppCompatActivity {
     public void deleteSpeech(View view) {
         new AlertDialog.Builder(this)
                 .setTitle("Delete this speech?")
-                .setMessage("All associated files will be lost.")
+                .setMessage("All associated speech runs will be lost.")
 
                 // Specifying a listener allows you to take an action before dismissing the dialog.
                 // The dialog is automatically dismissed when a dialog button is clicked.
