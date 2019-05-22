@@ -37,8 +37,8 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -46,14 +46,12 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -77,7 +75,9 @@ public class RecordAudio extends AppCompatActivity
 
     private static String apiResultPath;
 
+
     private String filePath, speechName, scriptText, speechFolderPath, speechRunFolder;
+    private String speechToText;
     private Button startButton;
     private Boolean displayTimer, displayScript, recording;
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 1;
@@ -146,6 +146,8 @@ public class RecordAudio extends AppCompatActivity
         displayScript = sharedPreferences.getBoolean("displaySpeech", false);
         displayTimer = sharedPreferences.getBoolean("timerDisplay", false);
         recording = false;
+
+        speechToText = "";
         //set appropriate content view based on settings
         if(displayScript && displayTimer) {
             setContentView(R.layout.activity_record_audio_with_script_timer);
@@ -154,17 +156,14 @@ public class RecordAudio extends AppCompatActivity
         else if(displayScript) {
             setContentView(R.layout.record_audio_with_script);
             Log.d("RECORDAUDIO", "SCRIPT WITHOUT TIMER");
-
         }else if(displayTimer) {
             setContentView(R.layout.activity_record_audio_without_script_timer);
             Log.d("RECORDAUDIO", "NO SCRIPT + TIMER");
         }else {
             setContentView(R.layout.record_audio_without_script);
             Log.d("RECORDAUDIO", "NO SCRIPT + NO TIMER");
-
         }
         if(displayScript){
-
             try {
                 scriptText = FileService.readFromFile(filePath);
                 setScriptText();
@@ -203,7 +202,6 @@ public class RecordAudio extends AppCompatActivity
             }
         });
         setTitle("Practice: " + defaultPreferences.getString(speechName, null));
-        timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
 
         // Handle start button click
         startButton = findViewById(R.id.startButton);
@@ -213,6 +211,7 @@ public class RecordAudio extends AppCompatActivity
          * **/
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
 
                 // Code here executes on main thread after user presses button
                 // Stop button behavior
@@ -221,21 +220,22 @@ public class RecordAudio extends AppCompatActivity
                     Log.d("RECORD AUDIO", "Stopping...");
                     dialog.setMessage("Preparing your speech!");
                     dialog.show();
-
-
-                    if(displayTimer && timerFragment != null)
-                        timerFragment.stopTimer();
-
-                    // Stop listening
                     Log.d("RECORD AUDIO", "Stopping Speech API");
                     stopSpeechAPI();
                     Log.d("RECORD AUDIO", "Stopping Voice Recorder");
                     stopVoiceRecorder();
-                    goToSpeechPerformance(getCurrentFocus());
+
+                    new MyTask().execute();
+
+
+                    goToSpeechPerformance();
                 }
                 else {
+
                     recording = true;
+                    Log.d("RECORD AUDIO", "condition is " + (displayTimer && timerFragment != null));
                     if(displayTimer && timerFragment != null) {
+
 
                         timerFragment.startTimer();
                     }
@@ -283,12 +283,11 @@ public class RecordAudio extends AppCompatActivity
         scriptBody.setText(scriptText);
     }
 
-    public void goToSpeechPerformance(View view) {
-        addToSharedPreferences();
+    public void goToSpeechPerformance() {
+        Log.d("RECORDAUDIO", "going to speech performance");
         Intent intent = new Intent(this, SpeechPerformance.class);
         intent.putExtra("speechName", speechName);
         intent.putExtra("prevActivity", "recording");
-        Log.d("RECORDAUDIO", "going to speech performance");
         startActivity(intent);
     }
 
@@ -323,6 +322,8 @@ public class RecordAudio extends AppCompatActivity
     protected void onStop() {
         // Stop listening to voice
 //        stopVoiceRecorder();
+
+// Stop listening
 
 
         super.onStop();
@@ -382,14 +383,18 @@ public class RecordAudio extends AppCompatActivity
             new SpeechService.Listener() {
                 @Override
                 public void onSpeechRecognized(final String text, final boolean isFinal) {
-                    if (isFinal && !TextUtils.isEmpty(text)) {
-                        if (mVoiceRecorder !=null)
-                            mVoiceRecorder.dismiss();
-                        try {
-                            appendToFile(apiResultPath, text.concat(" "));
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+
+                    if (isFinal && !text.isEmpty()) {
+                        mVoiceRecorder.dismiss();
+                        speechToText = speechToText.concat(text).concat(" ");
+                        Log.d("RECORD AUDIO","speechTo Text: " + speechToText);
+//
+//                        try {
+////                            appendToFile(apiResultPath, text);
+////                            appendToFile(apiResultPath, " ");
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
                     }
 
                 }
@@ -470,6 +475,22 @@ public class RecordAudio extends AppCompatActivity
         intent.putExtra("speechName", speechName);
         startActivity(intent);
         finish();
+    }
+
+    private class MyTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            addToSharedPreferences();
+            try {
+                Log.d("RECORD AUDIO", "before appending");
+
+                appendToFile(apiResultPath, speechToText);
+                Log.d("RECORD AUDIO", "after appending");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 
 }
