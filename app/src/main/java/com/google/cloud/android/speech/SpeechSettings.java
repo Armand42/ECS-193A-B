@@ -105,6 +105,7 @@ public class SpeechSettings extends AppCompatActivity {
         hideKeyboard(view);
         Intent intent = new Intent(this, MainMenu.class);
         intent.putExtra("speechName", speechName);
+        hideSoftKeyboard(SpeechSettings.this);
         startActivity(intent);
     }
 
@@ -118,7 +119,7 @@ public class SpeechSettings extends AppCompatActivity {
         }
 
         if(id == R.id.action_save){
-            // if timer display is enabled check for a valid time
+         // if timer display is enabled check for a valid time
             if(timerDisplay.isChecked()) {
                 if (speechTime.getText().toString().trim().isEmpty() || speechTime.getText().toString().equals("0") || maxMinutes > 60){
                     invalidTimerValueDialog();
@@ -132,7 +133,6 @@ public class SpeechSettings extends AppCompatActivity {
             goToSpeechMenu();
 
         }
-
 
         return super.onOptionsItemSelected(item);
     }

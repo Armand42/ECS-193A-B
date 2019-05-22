@@ -67,9 +67,9 @@ import java.io.IOException;
 
 
 public class RecordAudio extends AppCompatActivity
-        implements  MessageDialogFragment.Listener,
+        implements MessageDialogFragment.Listener,
         TimerFragment.OnFragmentInteractionListener,
-        IMainActivity{
+        IMainActivity {
 
     private TimerFragment timerFragment;
 
@@ -140,30 +140,29 @@ public class RecordAudio extends AppCompatActivity
         speechName = intent.getStringExtra("speechName");
 
         //get settings from shared preferences for speech
-        sharedPreferences = getSharedPreferences(speechName,MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
         SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         filePath = sharedPreferences.getString("filepath", "error");
         displayScript = sharedPreferences.getBoolean("displaySpeech", false);
         displayTimer = sharedPreferences.getBoolean("timerDisplay", false);
         recording = false;
         //set appropriate content view based on settings
-        if(displayScript && displayTimer) {
+        if (displayScript && displayTimer) {
             setContentView(R.layout.activity_record_audio_with_script_timer);
             Log.d("RECORDAUDIO", "SCRIPT + TIMER");
-        }
-        else if(displayScript) {
+        } else if (displayScript) {
             setContentView(R.layout.record_audio_with_script);
             Log.d("RECORDAUDIO", "SCRIPT WITHOUT TIMER");
 
-        }else if(displayTimer) {
+        } else if (displayTimer) {
             setContentView(R.layout.activity_record_audio_without_script_timer);
             Log.d("RECORDAUDIO", "NO SCRIPT + TIMER");
-        }else {
+        } else {
             setContentView(R.layout.record_audio_without_script);
             Log.d("RECORDAUDIO", "NO SCRIPT + NO TIMER");
 
         }
-        if(displayScript){
+        if (displayScript) {
 
             try {
                 scriptText = FileService.readFromFile(filePath);
@@ -176,9 +175,7 @@ public class RecordAudio extends AppCompatActivity
             }
         }
 
-
-
-        if(displayTimer){
+        if (displayTimer) {
             Log.d("timer", "TIMER IS HERE");
             timeLeftInMilliseconds = sharedPreferences.getLong("timerMilliseconds", 600000);
 
@@ -223,7 +220,7 @@ public class RecordAudio extends AppCompatActivity
                     dialog.show();
 
 
-                    if(displayTimer && timerFragment != null)
+                    if (displayTimer && timerFragment != null)
                         timerFragment.stopTimer();
 
                     // Stop listening
@@ -253,7 +250,7 @@ public class RecordAudio extends AppCompatActivity
         //getting speech path info to create a new run
         speechFolderPath = getApplicationContext().getFilesDir() + File.separator + "speechFiles" + File.separator
                 + speechName;
-        speechRunFolder = "run" + sharedPreferences.getInt("currRun",-1);
+        speechRunFolder = "run" + sharedPreferences.getInt("currRun", -1);
 
         apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
 
@@ -398,6 +395,7 @@ public class RecordAudio extends AppCompatActivity
 
     private void appendToFile(String speechScriptPath, String apiResultText)throws IOException {
         Log.d("RECORD AUDIO", "APPENDING TO FILE: " + apiResultText);
+
         File file = new File(speechScriptPath);
 
         //This point and below is responsible for the write operation
@@ -415,6 +413,7 @@ public class RecordAudio extends AppCompatActivity
         }
 
     }
+
     @Override
     public void onFragmentInteraction(Uri uri) {
         //you can leave it empty
@@ -439,7 +438,7 @@ public class RecordAudio extends AppCompatActivity
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if(jsonObj != null){
+        if (jsonObj != null) {
             try {
                 jsonObj.put(speechRunFolder, speechFolderPath + File.separator + speechRunFolder);
             } catch (JSONException e) {
@@ -448,7 +447,7 @@ public class RecordAudio extends AppCompatActivity
         }
         editor.putString("runDisplayNameToFilepath", jsonObj.toString());
         editor.putString("apiResult", apiResultPath);
-        editor.putInt("currRun",1 + sharedPreferences.getInt("currRun",-1));
+        editor.putInt("currRun", 1 + sharedPreferences.getInt("currRun", -1));
         Log.d("ADD TO SHARED PREF", "incrementing curr Run");
         editor.commit();
     }
@@ -464,6 +463,7 @@ public class RecordAudio extends AppCompatActivity
             ex.printStackTrace();
         }
     }
+
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(RecordAudio.this, SpeechView.class);
