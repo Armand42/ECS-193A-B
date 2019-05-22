@@ -33,6 +33,7 @@ package com.google.cloud.android.speech;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -44,6 +45,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -260,13 +262,6 @@ public class RecordAudio extends AppCompatActivity
 
     }
 
-
-    public void goToMainMenu(View view) {
-        Intent intent = new Intent(this, MainMenu.class);
-        intent.putExtra("speechName", speechName);
-        startActivity(intent);
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -472,10 +467,52 @@ public class RecordAudio extends AppCompatActivity
     }
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(RecordAudio.this, SpeechView.class);
+        // Start taking action for back press
+        final Intent intent = new Intent(RecordAudio.this, SpeechView.class);
         intent.putExtra("speechName", speechName);
-        startActivity(intent);
-        finish();
+        new AlertDialog.Builder(this)
+                .setTitle("Exit recording?")
+                .setMessage("Your current speech run will be lost.")
+
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO: Delete this speech run
+
+                        // Finish action for pressing back
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+
+                // A null listener allows the button to dismiss the dialog and take no further action.
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(R.drawable.ic_baseline_warning_24px)
+                .show();
+    }
+
+    public void goToMainMenu(View view) {
+        // Start taking action for home button press
+        final Intent intent = new Intent(this, MainMenu.class);
+        intent.putExtra("speechName", speechName);
+        new AlertDialog.Builder(this)
+                .setTitle("Exit recording?")
+                .setMessage("Your current speech run will be lost.")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO: Delete this speech run
+
+                        // Finish action for pressing back
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+
+                // A null listener allows the button to dismiss the dialog and take no further action.
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(R.drawable.ic_baseline_warning_24px)
+                .show();
     }
 
 }
