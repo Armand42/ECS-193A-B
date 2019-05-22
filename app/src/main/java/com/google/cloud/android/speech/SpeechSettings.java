@@ -66,7 +66,7 @@ public class SpeechSettings extends AppCompatActivity {
         // Get speech length from shared prefs (default value of 10 minutes)
         speechLengthMs = sharedPreferences.getLong("timerMilliseconds", 600000);
 
-        Log.d("TIMMMMMMMEEEEE", "TIMEEEE VALUEEEEE" + speechLengthMs);
+
 
         videoPlayback.setChecked(sharedPreferences.getBoolean("videoPlayback", false));
         displaySpeech.setChecked(sharedPreferences.getBoolean("displaySpeech", false));
@@ -108,15 +108,21 @@ public class SpeechSettings extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        long maxMinutes = 0;
         int id = item.getItemId();
+
+        if (!(speechTime.getText().toString().trim().isEmpty())) {
+            maxMinutes = Long.parseLong(speechTime.getText().toString());
+        }
 
         if(id == R.id.action_save){
             // if timer display is enabled check for a valid time
             if(timerDisplay.isChecked()) {
-                if (speechTime.getText().toString().equals("0") || speechTime.getText().toString().equals("")) {
+                if (speechTime.getText().toString().trim().isEmpty() || speechTime.getText().toString().equals("0") || maxMinutes > 60){
                     invalidTimerValueDialog();
                     return false;
                 }
+
                 hideSoftKeyboard(SpeechSettings.this);
             }
 
@@ -179,7 +185,7 @@ public class SpeechSettings extends AppCompatActivity {
     public void invalidTimerValueDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Invalid Timer Value")
-                .setMessage("Please enter a valid time")
+                .setMessage("Please enter a time from 1 - 60.")
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }
