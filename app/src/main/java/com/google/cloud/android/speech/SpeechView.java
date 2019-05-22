@@ -105,7 +105,7 @@ public class SpeechView extends AppCompatActivity {
 
         if(prevActivity != null && prevActivity.equals("speechPerformance")){
             TabLayout tabLayout = findViewById(R.id.tabs);
-            TabLayout.Tab tab = tabLayout.getTabAt(1);
+            TabLayout.Tab tab = tabLayout.getTabAt(0);
             tab.select();
         }
     }

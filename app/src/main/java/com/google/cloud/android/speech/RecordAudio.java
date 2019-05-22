@@ -237,8 +237,7 @@ public class RecordAudio extends AppCompatActivity
                     }
 
                     // Stop listening
-                    Log.d("RECORD AUDIO", "Stopping Speech API");
-                    stopSpeechAPI();
+
                     Log.d("RECORD AUDIO", "Stopping Voice Recorder");
                     stopVoiceRecorder();
                     goToSpeechPerformance(getCurrentFocus());
@@ -332,7 +331,8 @@ public class RecordAudio extends AppCompatActivity
     protected void onStop() {
         // Stop listening to voice
 //        stopVoiceRecorder();
-
+        Log.d("RECORD AUDIO", "Stopping Speech API");
+        stopSpeechAPI();
 
         super.onStop();
     }
