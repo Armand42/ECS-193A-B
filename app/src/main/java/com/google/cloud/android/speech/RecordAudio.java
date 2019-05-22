@@ -203,19 +203,22 @@ public class RecordAudio extends AppCompatActivity
             }
         });
         setTitle("Practice: " + defaultPreferences.getString(speechName, null));
+        timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
 
         // Handle start button click
         startButton = findViewById(R.id.startButton);
+        /**
+         * NAJI,
+         * Please look at the onClickListener below. Our start button also acts as the stop button.
+         * **/
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
                 // Code here executes on main thread after user presses button
-                Log.d("RECORD AUDIO", "start button clicked");
-
                 // Stop button behavior
                 if (recording) {
-                    Log.d("RECORD AUDIO", "stop button pressed");
+                    startButton.setEnabled(false);
+                    Log.d("RECORD AUDIO", "Stopping...");
                     dialog.setMessage("Preparing your speech!");
                     dialog.show();
 
@@ -224,20 +227,17 @@ public class RecordAudio extends AppCompatActivity
                         timerFragment.stopTimer();
 
                     // Stop listening
+                    Log.d("RECORD AUDIO", "Stopping Speech API");
+                    stopSpeechAPI();
+                    Log.d("RECORD AUDIO", "Stopping Voice Recorder");
                     stopVoiceRecorder();
-
                     goToSpeechPerformance(getCurrentFocus());
                 }
                 else {
-                    Log.d("RECORD AUDIO", "start button pressed");
-
-                    Log.d("RECORD AUDIO", "display timer is " + displayTimer + " timerFragment is null: " + (timerFragment == null) );
                     recording = true;
                     if(displayTimer && timerFragment != null) {
-                        Log.d("YOOOOOO", "TIMER HAS STARTing");
 
                         timerFragment.startTimer();
-                        Log.d("YOOOOOO", "TIMER HAS STARTED");
                     }
                     //TextView message = (TextView) findViewById(R.id.textView3);
                     //message.setText("Tap again to stop");
@@ -246,7 +246,6 @@ public class RecordAudio extends AppCompatActivity
                     // Start listening
                     startVoiceRecorder();
 
-                    startButton.setEnabled(false);
                 }
             }
         });
@@ -312,15 +311,19 @@ public class RecordAudio extends AppCompatActivity
         }
     }
 
+    private void stopSpeechAPI()
+    {
+        // Stop Cloud Speech API
+        mSpeechService.removeListener(mSpeechServiceListener);
+        unbindService(mServiceConnection);
+        mSpeechService = null;
+    }
+
     @Override
     protected void onStop() {
         // Stop listening to voice
 //        stopVoiceRecorder();
 
-        // Stop Cloud Speech API
-        mSpeechService.removeListener(mSpeechServiceListener);
-        unbindService(mServiceConnection);
-        mSpeechService = null;
 
         super.onStop();
     }
@@ -379,31 +382,23 @@ public class RecordAudio extends AppCompatActivity
             new SpeechService.Listener() {
                 @Override
                 public void onSpeechRecognized(final String text, final boolean isFinal) {
-                    if (isFinal) {
-                        mVoiceRecorder.dismiss();
+                    if (isFinal && !TextUtils.isEmpty(text)) {
+                        if (mVoiceRecorder !=null)
+                            mVoiceRecorder.dismiss();
+                        try {
+                            appendToFile(apiResultPath, text);
+                            appendToFile(apiResultPath, " ");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
-                    if (!TextUtils.isEmpty(text)) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (isFinal) {
-                                    startButton.setEnabled(true);
-                                    try {
-                                        appendToFile(apiResultPath, text);
-                                        appendToFile(apiResultPath, " ");
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        });
-                    }
+
                 }
             };
 
 
     private void appendToFile(String speechScriptPath, String apiResultText)throws IOException {
-        Log.d("AUDIO ONLY", "APPENDING TO FILE");
+        Log.d("RECORD AUDIO", "APPENDING TO FILE: " + apiResultText);
         File file = new File(speechScriptPath);
 
         //This point and below is responsible for the write operation
