@@ -57,7 +57,6 @@ public class SpeechView extends AppCompatActivity {
         defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         final File dir = getDir(speechName, MODE_PRIVATE);
         filePath = sharedPreferences.getString("filepath", "error");
-        speechName = intent.getStringExtra("speechName");
         videoPlaybackState = sharedPreferences.getBoolean("videoPlayback", false);
         viewScriptState = sharedPreferences.getBoolean("displaySpeech", false);
         timerdisplayState = sharedPreferences.getBoolean("timerDisplay", false);
@@ -121,15 +120,6 @@ public class SpeechView extends AppCompatActivity {
     /**
      * Called when the user taps the Send button
      */
-    public void goToSpeechToText(View view) {
-        Intent intent = new Intent(this, RecordAudio.class);
-        intent.putExtra("speechName", speechName);
-        startActivity(intent);
-    }
-
-    /**
-     * Called when the user taps the Send button
-     */
     public void goToSpeechSettings(View view) {
         Intent intent = new Intent(this, SpeechSettings.class);
         intent.putExtra("speechName", speechName);
@@ -175,6 +165,10 @@ public class SpeechView extends AppCompatActivity {
                             //getting speechDisplayName value from set and then removing it from set
                             Set<String> speechNameSet = defaultPreferences.getStringSet("speechNameSet", new HashSet<String>());
                             speechNameSet.remove(defaultPreferences.getString(speechName, null));
+
+                            SharedPreferences.Editor defaultEditor = defaultPreferences.edit();
+                            defaultEditor.putStringSet("speechNameSet", speechNameSet);
+                            defaultEditor.commit();
 
                             File speechFolder = new File(SPEECH_FOLDER_PATH);
                             recursiveDelete(speechFolder);

@@ -107,7 +107,7 @@ public class SpeechSettings extends AppCompatActivity {
         int id = item.getItemId();
 
         if(id == R.id.action_save){
-            hideSoftKeyboard(SpeechSettings.this);
+//            hideSoftKeyboard(SpeechSettings.this);
             addToSharedPreferences();
             goToSpeechMenu();
             return true;
