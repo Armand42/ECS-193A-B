@@ -93,6 +93,7 @@ public class SpeechSettings extends AppCompatActivity {
             //show numeric keyboard
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+
         } else {
             speechTimeLabel.setAlpha(128 / 255);
             speechTime.setText("");
@@ -101,6 +102,7 @@ public class SpeechSettings extends AppCompatActivity {
     }
 
     public void goToMainMenu(View view) {
+        hideKeyboard(view);
         Intent intent = new Intent(this, MainMenu.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
@@ -131,6 +133,7 @@ public class SpeechSettings extends AppCompatActivity {
 
         }
 
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -146,11 +149,15 @@ public class SpeechSettings extends AppCompatActivity {
             EditText maxTimerText = (EditText) findViewById(R.id.speechTime);
             long seconds = Long.parseLong(maxTimerText.getText().toString());
             editor.putLong("timerMilliseconds", seconds * 60000);
+
         }
         editor.commit();
 
     }
-
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(NewSpeech.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
 
     public void goToSpeechMenu() {
         Intent intent = new Intent(this, SpeechView.class);
