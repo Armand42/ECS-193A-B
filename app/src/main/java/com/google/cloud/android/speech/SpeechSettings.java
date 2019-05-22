@@ -1,11 +1,14 @@
 package com.google.cloud.android.speech;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +28,7 @@ public class SpeechSettings extends AppCompatActivity {
 
     EditText speechTime;
     long speechLengthMs;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +66,8 @@ public class SpeechSettings extends AppCompatActivity {
         // Get speech length from shared prefs (default value of 10 minutes)
         speechLengthMs = sharedPreferences.getLong("timerMilliseconds", 600000);
 
+
+
         videoPlayback.setChecked(sharedPreferences.getBoolean("videoPlayback", false));
         displaySpeech.setChecked(sharedPreferences.getBoolean("displaySpeech", false));
         timerDisplay.setChecked(sharedPreferences.getBoolean("timerDisplay", false));
@@ -84,8 +90,10 @@ public class SpeechSettings extends AppCompatActivity {
             // Set speechLength editText to be this value (in minutes = /60000)
             speechTime.setText(Long.toString(speechLengthMs / 60000));
             speechTime.setSelection(speechTime.getText().length());
+            //show numeric keyboard
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+
         } else {
             speechTimeLabel.setAlpha(128 / 255);
             speechTime.setText("");
@@ -94,19 +102,36 @@ public class SpeechSettings extends AppCompatActivity {
     }
 
     public void goToMainMenu(View view) {
+        hideKeyboard(view);
         Intent intent = new Intent(this, MainMenu.class);
         intent.putExtra("speechName", speechName);
+        hideSoftKeyboard(SpeechSettings.this);
         startActivity(intent);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        long maxMinutes = 0;
         int id = item.getItemId();
 
+        if (!(speechTime.getText().toString().trim().isEmpty())) {
+            maxMinutes = Long.parseLong(speechTime.getText().toString());
+        }
+
         if(id == R.id.action_save){
+         // if timer display is enabled check for a valid time
+            if(timerDisplay.isChecked()) {
+                if (speechTime.getText().toString().trim().isEmpty() || speechTime.getText().toString().equals("0") || maxMinutes > 60){
+                    invalidTimerValueDialog();
+                    return false;
+                }
+
+                hideSoftKeyboard(SpeechSettings.this);
+            }
+
             addToSharedPreferences();
             goToSpeechMenu();
-            return true;
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -124,16 +149,19 @@ public class SpeechSettings extends AppCompatActivity {
             EditText maxTimerText = (EditText) findViewById(R.id.speechTime);
             long seconds = Long.parseLong(maxTimerText.getText().toString());
             editor.putLong("timerMilliseconds", seconds * 60000);
+
         }
         editor.commit();
 
     }
-
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(NewSpeech.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
 
     public void goToSpeechMenu() {
         Intent intent = new Intent(this, SpeechView.class);
         intent.putExtra("speechName", speechName);
-        addToSharedPreferences();
         startActivity(intent);
     }
 
@@ -151,5 +179,21 @@ public class SpeechSettings extends AppCompatActivity {
         intent.putExtra("speechName", speechName);
         startActivity(intent);
         finish();
+    }
+
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) activity.getSystemService(
+                        Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(
+                activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    public void invalidTimerValueDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Invalid Timer Value")
+                .setMessage("Please enter a time from 1 - 60.")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 }

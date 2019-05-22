@@ -120,15 +120,6 @@ public class SpeechView extends AppCompatActivity {
     /**
      * Called when the user taps the Send button
      */
-    public void goToSpeechToText(View view) {
-        Intent intent = new Intent(this, RecordAudio.class);
-        intent.putExtra("speechName", speechName);
-        startActivity(intent);
-    }
-
-    /**
-     * Called when the user taps the Send button
-     */
     public void goToSpeechSettings(View view) {
         Intent intent = new Intent(this, SpeechSettings.class);
         intent.putExtra("speechName", speechName);
@@ -163,7 +154,7 @@ public class SpeechView extends AppCompatActivity {
     public void deleteSpeech(View view) {
         new AlertDialog.Builder(this)
                 .setTitle("Delete this speech?")
-                .setMessage("All associated files will be lost.")
+                .setMessage("All associated speech runs will be lost.")
 
                 // Specifying a listener allows you to take an action before dismissing the dialog.
                 // The dialog is automatically dismissed when a dialog button is clicked.
@@ -174,6 +165,10 @@ public class SpeechView extends AppCompatActivity {
                             //getting speechDisplayName value from set and then removing it from set
                             Set<String> speechNameSet = defaultPreferences.getStringSet("speechNameSet", new HashSet<String>());
                             speechNameSet.remove(defaultPreferences.getString(speechName, null));
+
+                            SharedPreferences.Editor defaultEditor = defaultPreferences.edit();
+                            defaultEditor.putStringSet("speechNameSet", speechNameSet);
+                            defaultEditor.commit();
 
                             File speechFolder = new File(SPEECH_FOLDER_PATH);
                             recursiveDelete(speechFolder);

@@ -1,72 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/light_gray"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="0dp"
+    android:background="@color/light_gray"
+    android:orientation="vertical"
     android:paddingLeft="0dp"
-    android:paddingRight="0dp"
     android:paddingTop="0dp"
-    android:orientation="vertical">
+    android:paddingRight="0dp"
+    android:paddingBottom="0dp">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
         style="@style/HeaderBar"
         android:layout_width="match_parent"
         android:layout_height="61dp"
-        android:layout_marginBottom="140dp"
         android:elevation="4dp"
         android:popupTheme="@style/ActionBarPopupThemeOverlay"
         android:theme="@style/ActionBarThemeOverlay" />
 
 
     <Button
+        android:id="@+id/replay"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_toLeftOf="@id/playButton"
+        android:background="@drawable/replay_24px"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/playButton"
+        app:layout_constraintHorizontal_bias="0.909"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scriptBodyWrapper"
+        app:layout_constraintVertical_bias="0.661" />
+
+    <Button
         android:id="@+id/playButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="false"
+        android:layout_centerInParent="false"
+        android:layout_centerHorizontal="false"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="140dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/play_arrow_24px"
-        android:layout_marginTop="600dp"
-        android:layout_centerHorizontal="true"
-        android:textSize="20dp"/>
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scriptBodyWrapper"
+        app:layout_constraintVertical_bias="0.661" />
 
-    <Button
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:id="@+id/fastForwardButton"
-        android:background="@drawable/fast_forward_24px"
-        android:layout_marginTop="600dp"
-        android:layout_marginLeft="20dp"
-        android:layout_toRightOf="@+id/playButton"
-        android:textSize="20dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
 
-    <Button
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:id="@+id/backButton"
-        android:background="@drawable/rewind_24px"
-        android:layout_marginTop="600dp"
-        android:layout_marginRight="20dp"
-        android:layout_toLeftOf="@+id/playButton"
-        android:textSize="20dp"/>
-
-    <SeekBar
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:id="@+id/audioSeekbar"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="570dp"/>
-
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Your Script:"
+        app:layout_constraintBottom_toTopOf="@+id/scriptBodyWrapper"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.024"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+        app:layout_constraintVertical_bias="0.578" />
 
     <ScrollView
         android:id="@+id/scriptBodyWrapper"
         android:layout_width="match_parent"
         android:layout_height="500dp"
-        android:layout_marginTop="61dp"
+        android:layout_marginTop="45dp"
+        android:layout_marginBottom="8dp"
         android:fillViewport="true"
-        android:scrollbars="vertical">
+        android:scrollbars="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+        app:layout_constraintVertical_bias="0.0">
 
         <TextView
             android:id="@+id/scriptBody"
@@ -75,4 +96,4 @@
             android:background="@drawable/rectangle" />
     </ScrollView>
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

@@ -11,6 +11,15 @@
     android:paddingTop="0dp"
     android:orientation="vertical">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        style="@style/HeaderBar"
+        android:layout_width="match_parent"
+        android:layout_height="61dp"
+        android:elevation="4dp"
+        android:popupTheme="@style/ActionBarPopupThemeOverlay"
+        android:theme="@style/ActionBarThemeOverlay" />
+
     <LinearLayout
 
         android:layout_width="match_parent"

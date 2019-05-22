@@ -255,7 +255,7 @@ public class PastRunsFragment extends Fragment {
     private void deleteRun(final String runName, final int position) {
         new android.support.v7.app.AlertDialog.Builder(getContext())
                 .setTitle("Delete this run?")
-                .setMessage("All associated files will be lost.")
+                .setMessage("All associated speech runs will be lost.")
 
                 // Specifying a listener allows you to take an action before dismissing the dialog.
                 // The dialog is automatically dismissed when a dialog button is clicked.
