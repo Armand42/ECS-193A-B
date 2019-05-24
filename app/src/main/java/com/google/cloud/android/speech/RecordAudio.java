@@ -426,13 +426,13 @@ public class RecordAudio extends AppCompatActivity
                         public void run() {
                             if(recording&&isFinal) {
                                 startButton.setEnabled(true);
-                                startButton.setBackground(getDrawable(R.drawable.ic_stop_red));
+//                                startButton.setBackground(getDrawable(R.drawable.ic_stop_red));
                                 if(listening!=null)
                                     listening.setVisibility(View.INVISIBLE);
                             }
                             else{
                                 startButton.setEnabled(false);
-                                startButton.setBackground(getDrawable(R.drawable.microphone));
+//                                startButton.setBackground(getDrawable(R.drawable.microphone));
                                 if(listening!=null)
                                     listening.setVisibility(View.VISIBLE);
 
