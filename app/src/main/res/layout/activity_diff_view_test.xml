@@ -6,6 +6,7 @@
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     android:orientation="vertical"
     android:paddingTop="0dp">
 
@@ -14,10 +15,15 @@
         style="@style/HeaderBar"
         android:layout_width="match_parent"
         android:layout_height="61dp"
-        android:layout_marginBottom="8dp"
-        android:elevation="4dp"
+        android:layout_marginBottom="2dp"
+        app:elevation="0dp"
         app:popupTheme="@style/ActionBarPopupThemeOverlay"
         app:theme="@style/ActionBarThemeOverlay" />
+
+    <View
+        android:layout_width="100dp"
+        android:layout_height="3dp"
+        android:background="#fff" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -31,19 +37,19 @@
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
             android:text="Errors: 0/0"
+            android:textColor="@color/light_gray"
             android:textSize="18sp" />
 
         <TextView
             android:id="@+id/scriptTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_top_tab_green"
             android:paddingLeft="16dp"
-            android:paddingTop="10dp"
+            android:paddingTop="6dp"
             android:paddingRight="16dp"
-            android:paddingBottom="2dp"
+            android:paddingBottom="6dp"
             android:text="Your Script"
-            android:textColor="@android:color/black" />
+            android:textColor="@color/light_gray" />
     </FrameLayout>
 
     <com.google.cloud.android.speech.ObservableScrollView
@@ -51,8 +57,8 @@
         android:layout_width="match_parent"
         android:layout_height="423dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/light_green_outline"
-        android:padding="16dp">
+        android:background="#f1f1f1"
+        android:padding="12dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -63,28 +69,36 @@
                 android:id="@+id/scriptBody"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Script Text" />
+                android:text="Script Text"
+                android:textSize="16sp" />
 
         </LinearLayout>
     </com.google.cloud.android.speech.ObservableScrollView>
+
+    <View
+        android:layout_width="210dp"
+        android:layout_height="3dp"
+        android:layout_gravity="right"
+        android:background="#fff" />
 
     <TextView
         android:id="@+id/speechToTextTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_top_tab_red"
+        android:layout_gravity="right"
         android:paddingLeft="16dp"
-        android:paddingTop="10dp"
+        android:paddingTop="6dp"
         android:paddingRight="16dp"
-        android:paddingBottom="2dp"
-        android:text="Your Speech-To-Text Result" />
+        android:paddingBottom="6dp"
+        android:text="Your Speech-To-Text Result"
+        android:textColor="@color/light_gray" />
 
     <com.google.cloud.android.speech.ObservableScrollView
         android:id="@+id/speechToTextScroll"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:background="@drawable/light_pink_outline"
-        android:padding="16dp">
+        android:background="#f1f1f1"
+        android:padding="12dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -95,7 +109,8 @@
                 android:id="@+id/speechToTextBody"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:text="TextView"
+                android:textSize="16sp" />
         </LinearLayout>
     </com.google.cloud.android.speech.ObservableScrollView>
 

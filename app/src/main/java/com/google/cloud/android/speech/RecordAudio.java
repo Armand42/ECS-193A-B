@@ -33,6 +33,7 @@ package com.google.cloud.android.speech;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -44,6 +45,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
@@ -62,12 +64,12 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
+import java.text.SimpleDateFormat;
 
 public class RecordAudio extends AppCompatActivity
-        implements  MessageDialogFragment.Listener,
+        implements MessageDialogFragment.Listener,
         TimerFragment.OnFragmentInteractionListener,
-        IMainActivity{
+        IMainActivity {
 
     private TimerFragment timerFragment;
 
@@ -86,6 +88,8 @@ public class RecordAudio extends AppCompatActivity
     private SharedPreferences sharedPreferences;
     private VoiceRecorder mVoiceRecorder;
     private ProgressDialog dialog;
+
+    private long startTime, endTime;
 
     private final VoiceRecorder.Callback mVoiceCallback = new VoiceRecorder.Callback() {
 
@@ -133,14 +137,14 @@ public class RecordAudio extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        dialog = new ProgressDialog(this);
-        dialog.setCanceledOnTouchOutside(false);
-
+//        dialog = new ProgressDialog(this);
+//        dialog.setCanceledOnTouchOutside(false);
+        speechToText = "";
         // Handle metadata
         speechName = intent.getStringExtra("speechName");
 
         //get settings from shared preferences for speech
-        sharedPreferences = getSharedPreferences(speechName,MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
         SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         filePath = sharedPreferences.getString("filepath", "error");
         displayScript = sharedPreferences.getBoolean("displaySpeech", false);
@@ -149,21 +153,22 @@ public class RecordAudio extends AppCompatActivity
 
         speechToText = "";
         //set appropriate content view based on settings
-        if(displayScript && displayTimer) {
+        if (displayScript && displayTimer) {
             setContentView(R.layout.activity_record_audio_with_script_timer);
             Log.d("RECORDAUDIO", "SCRIPT + TIMER");
-        }
-        else if(displayScript) {
+        } else if (displayScript) {
             setContentView(R.layout.record_audio_with_script);
             Log.d("RECORDAUDIO", "SCRIPT WITHOUT TIMER");
-        }else if(displayTimer) {
+
+        } else if (displayTimer) {
             setContentView(R.layout.activity_record_audio_without_script_timer);
             Log.d("RECORDAUDIO", "NO SCRIPT + TIMER");
-        }else {
+        } else {
             setContentView(R.layout.record_audio_without_script);
             Log.d("RECORDAUDIO", "NO SCRIPT + NO TIMER");
         }
-        if(displayScript){
+        if (displayScript) {
+
             try {
                 scriptText = FileService.readFromFile(filePath);
                 setScriptText();
@@ -175,9 +180,7 @@ public class RecordAudio extends AppCompatActivity
             }
         }
 
-
-
-        if(displayTimer){
+        if (displayTimer) {
             Log.d("timer", "TIMER IS HERE");
             timeLeftInMilliseconds = sharedPreferences.getLong("timerMilliseconds", 600000);
 
@@ -216,33 +219,54 @@ public class RecordAudio extends AppCompatActivity
                 // Code here executes on main thread after user presses button
                 // Stop button behavior
                 if (recording) {
+                    recording = false;
                     startButton.setEnabled(false);
+
                     Log.d("RECORD AUDIO", "Stopping...");
-                    dialog.setMessage("Preparing your speech!");
-                    dialog.show();
-                    Log.d("RECORD AUDIO", "Stopping Speech API");
-                    stopSpeechAPI();
-                    Log.d("RECORD AUDIO", "Stopping Voice Recorder");
-                    stopVoiceRecorder();
-
-                    new MyTask().execute();
+//                    dialog.setMessage("Preparing your speech!");
+//                    dialog.show();
 
 
-                    goToSpeechPerformance();
+                    // Timer on
+                    if(displayTimer && timerFragment != null) {
+                        timerFragment.stopTimer();
+                    } else {
+                        // Timer off, capture the time we stopped
+                        endTime = System.currentTimeMillis();
+
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        // TODO: Time for speeches without timer
+//                        editor.putLong("timeElapsed", endTime - startTime);
+                    }
+
+                    // Stop listening
+                    try {
+                        Log.d("RECORD AUDIO", "appending");
+                        appendToFile(apiResultPath, speechToText);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    goToSpeechPerformance(getCurrentFocus());
                 }
                 else {
 
                     recording = true;
-                    Log.d("RECORD AUDIO", "condition is " + (displayTimer && timerFragment != null));
+
+                    // Timer on
                     if(displayTimer && timerFragment != null) {
 
 
                         timerFragment.startTimer();
+                    } else {
+                        // Timer off, capture time we started
+                        startTime = System.currentTimeMillis();
                     }
                     //TextView message = (TextView) findViewById(R.id.textView3);
                     //message.setText("Tap again to stop");
-                    startButton.setBackground(getResources().getDrawable(R.drawable.redstopbut));
-
+                    startButton.setBackground(getResources().getDrawable(R.drawable.finalredstop));
+                    startButton.setEnabled(false);
                     // Start listening
                     startVoiceRecorder();
 
@@ -253,17 +277,10 @@ public class RecordAudio extends AppCompatActivity
         //getting speech path info to create a new run
         speechFolderPath = getApplicationContext().getFilesDir() + File.separator + "speechFiles" + File.separator
                 + speechName;
-        speechRunFolder = "run" + sharedPreferences.getInt("currRun",-1);
+        speechRunFolder = "run" + sharedPreferences.getInt("currRun", -1);
 
         apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
 
-    }
-
-
-    public void goToMainMenu(View view) {
-        Intent intent = new Intent(this, MainMenu.class);
-        intent.putExtra("speechName", speechName);
-        startActivity(intent);
     }
 
     @Override
@@ -322,9 +339,10 @@ public class RecordAudio extends AppCompatActivity
     protected void onStop() {
         // Stop listening to voice
 //        stopVoiceRecorder();
-
-// Stop listening
-
+        Log.d("RECORD AUDIO", "Stopping Voice Recorder");
+        stopVoiceRecorder();
+        Log.d("RECORD AUDIO", "Stopping Speech API");
+        stopSpeechAPI();
 
         super.onStop();
     }
@@ -383,19 +401,26 @@ public class RecordAudio extends AppCompatActivity
             new SpeechService.Listener() {
                 @Override
                 public void onSpeechRecognized(final String text, final boolean isFinal) {
-
-                    if (isFinal && !text.isEmpty()) {
-                        mVoiceRecorder.dismiss();
+                    if (isFinal && !TextUtils.isEmpty(text)) {
+                        if (mVoiceRecorder !=null)
+                            mVoiceRecorder.dismiss();
                         speechToText = speechToText.concat(text).concat(" ");
-                        Log.d("RECORD AUDIO","speechTo Text: " + speechToText);
-//
-//                        try {
-////                            appendToFile(apiResultPath, text);
-////                            appendToFile(apiResultPath, " ");
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
+
                     }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(recording&&isFinal) {
+                                startButton.setEnabled(true);
+                                startButton.setBackground(getDrawable(R.drawable.finalredstop));
+
+                            }
+                            else{
+                                startButton.setEnabled(false);
+                                startButton.setBackground(getDrawable(R.drawable.microphone));
+                            }
+                        }
+                    });
 
                 }
             };
@@ -403,6 +428,7 @@ public class RecordAudio extends AppCompatActivity
 
     private void appendToFile(String speechScriptPath, String apiResultText)throws IOException {
         Log.d("RECORD AUDIO", "APPENDING TO FILE: " + apiResultText);
+
         File file = new File(speechScriptPath);
 
         //This point and below is responsible for the write operation
@@ -420,6 +446,7 @@ public class RecordAudio extends AppCompatActivity
         }
 
     }
+
     @Override
     public void onFragmentInteraction(Uri uri) {
         //you can leave it empty
@@ -444,7 +471,7 @@ public class RecordAudio extends AppCompatActivity
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if(jsonObj != null){
+        if (jsonObj != null) {
             try {
                 jsonObj.put(speechRunFolder, speechFolderPath + File.separator + speechRunFolder);
             } catch (JSONException e) {
@@ -453,7 +480,7 @@ public class RecordAudio extends AppCompatActivity
         }
         editor.putString("runDisplayNameToFilepath", jsonObj.toString());
         editor.putString("apiResult", apiResultPath);
-        editor.putInt("currRun",1 + sharedPreferences.getInt("currRun",-1));
+        editor.putInt("currRun", 1 + sharedPreferences.getInt("currRun", -1));
         Log.d("ADD TO SHARED PREF", "incrementing curr Run");
         editor.commit();
     }
@@ -469,12 +496,55 @@ public class RecordAudio extends AppCompatActivity
             ex.printStackTrace();
         }
     }
+
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(RecordAudio.this, SpeechView.class);
+        // Start taking action for back press
+        final Intent intent = new Intent(RecordAudio.this, SpeechView.class);
         intent.putExtra("speechName", speechName);
-        startActivity(intent);
-        finish();
+        new AlertDialog.Builder(this)
+                .setTitle("Exit recording?")
+                .setMessage("Your current speech run will be lost.")
+
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO: Delete this speech run
+
+                        // Finish action for pressing back
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+
+                // A null listener allows the button to dismiss the dialog and take no further action.
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(R.drawable.ic_baseline_warning_24px)
+                .show();
+    }
+
+    public void goToMainMenu(View view) {
+        // Start taking action for home button press
+        final Intent intent = new Intent(this, MainMenu.class);
+        intent.putExtra("speechName", speechName);
+        new AlertDialog.Builder(this)
+                .setTitle("Exit recording?")
+                .setMessage("Your current speech run will be lost.")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO: Delete this speech run
+
+                        // Finish action for pressing back
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+
+                // A null listener allows the button to dismiss the dialog and take no further action.
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(R.drawable.ic_baseline_warning_24px)
+                .show();
     }
 
     private class MyTask extends AsyncTask<Void, Void, Void> {

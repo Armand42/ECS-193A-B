@@ -394,6 +394,8 @@ public class CameraToVideo extends Fragment
             case R.id.video: {
                 if (mIsFirstRecording) {
                     startRecordingVideo();
+                    setPauseButton();
+
                     if(displayTimer){
                         timerFragment.startTimer();
                     }
@@ -430,7 +432,6 @@ public class CameraToVideo extends Fragment
             }
             case R.id.restart: {
                 mIsFirstRecording = true;
-                mButtonVideo.setText("Start");
                 break;
             }
         }
@@ -789,13 +790,13 @@ public class CameraToVideo extends Fragment
 
     private void pauseVideo() {
         mIsRecordingVideo = false;
-        mButtonVideo.setText("Resume");
+        setRecordButton();
         mMediaRecorder.pause();
     }
 
     private void resumeVideo() {
         mIsRecordingVideo = true;
-        mButtonVideo.setText("Pause");
+        setPauseButton();
         mMediaRecorder.resume();
     }
 
@@ -805,7 +806,6 @@ public class CameraToVideo extends Fragment
         mCurrentVideoPath = mNextVideoAbsolutePath;
 
         mIsRecordingVideo = false;
-        mButtonVideo.setText(R.string.record);
         // Stop recording
         mMediaRecorder.stop();
         mMediaRecorder.reset();
@@ -1022,5 +1022,14 @@ public class CameraToVideo extends Fragment
         editor.putString("videoFilePath", VIDEO_FILE_PATH);
         editor.putInt("currRun", 1 + sharedPref.getInt("currRun", -1));
         editor.commit();
+    }
+
+    // Change background to pause button
+    private void setPauseButton() {
+        mButtonVideo.setBackground(getContext().getDrawable(R.drawable.ic_baseline_pause_circle_filled_24px));
+    }
+
+    private void setRecordButton() {
+        mButtonVideo.setBackground(getContext().getDrawable(R.drawable.ic_baseline_camera_alt_24px));
     }
 }

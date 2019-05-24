@@ -57,7 +57,6 @@ public class SpeechView extends AppCompatActivity {
         defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         final File dir = getDir(speechName, MODE_PRIVATE);
         filePath = sharedPreferences.getString("filepath", "error");
-        speechName = intent.getStringExtra("speechName");
         videoPlaybackState = sharedPreferences.getBoolean("videoPlayback", false);
         viewScriptState = sharedPreferences.getBoolean("displaySpeech", false);
         timerdisplayState = sharedPreferences.getBoolean("timerDisplay", false);
@@ -65,7 +64,7 @@ public class SpeechView extends AppCompatActivity {
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
-        setTitle("Speech View");
+        toolbar.setTitle("Speech View");
         toolbar.setSubtitle(defaultPreferences.getString(speechName, null));
         toolbar.setNavigationIcon(R.drawable.ic_baseline_home_24px);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -106,25 +105,16 @@ public class SpeechView extends AppCompatActivity {
 
         if(prevActivity != null && prevActivity.equals("speechPerformance")){
             TabLayout tabLayout = findViewById(R.id.tabs);
-            TabLayout.Tab tab = tabLayout.getTabAt(1);
+            TabLayout.Tab tab = tabLayout.getTabAt(0);
             tab.select();
         }
     }
 
     private void setupViewPager(ViewPager viewPager) {
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
-        adapter.addFragment(new ScriptViewFragment(scriptText), "Your script");
         adapter.addFragment(new PastRunsFragment(speechName, fileNames, SPEECH_FOLDER_PATH, dir), "Your past runs");
+        adapter.addFragment(new ScriptViewFragment(scriptText), "Your script");
         viewPager.setAdapter(adapter);
-    }
-
-    /**
-     * Called when the user taps the Send button
-     */
-    public void goToSpeechToText(View view) {
-        Intent intent = new Intent(this, RecordAudio.class);
-        intent.putExtra("speechName", speechName);
-        startActivity(intent);
     }
 
     /**
@@ -176,6 +166,10 @@ public class SpeechView extends AppCompatActivity {
                             Set<String> speechNameSet = defaultPreferences.getStringSet("speechNameSet", new HashSet<String>());
                             speechNameSet.remove(defaultPreferences.getString(speechName, null));
 
+                            SharedPreferences.Editor defaultEditor = defaultPreferences.edit();
+                            defaultEditor.putStringSet("speechNameSet", speechNameSet);
+                            defaultEditor.commit();
+
                             File speechFolder = new File(SPEECH_FOLDER_PATH);
                             recursiveDelete(speechFolder);
 
@@ -199,7 +193,7 @@ public class SpeechView extends AppCompatActivity {
 
                 // A null listener allows the button to dismiss the dialog and take no further action.
                 .setNegativeButton(android.R.string.no, null)
-                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setIcon(R.drawable.ic_baseline_warning_24px)
                 .show();
     }
 
