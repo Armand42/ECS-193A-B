@@ -39,10 +39,15 @@ public class SpeechSettings extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_baseline_home_24px);
+
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goToMainMenu(view);
+               homeSave(view);
+
+                //home button logic
+                //save here
+                //goToMainMenu(view);
 
             }
         });
@@ -105,21 +110,21 @@ public class SpeechSettings extends AppCompatActivity {
         hideKeyboard(view);
         Intent intent = new Intent(this, MainMenu.class);
         intent.putExtra("speechName", speechName);
-        hideSoftKeyboard(SpeechSettings.this);
+        //hideSoftKeyboard(SpeechSettings.this);
         startActivity(intent);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+
+
+    public boolean homeSave(View view) {
         long maxMinutes = 0;
-        int id = item.getItemId();
+        int id = view.getId();
 
         if (!(speechTime.getText().toString().trim().isEmpty())) {
             maxMinutes = Long.parseLong(speechTime.getText().toString());
         }
 
-        if(id == R.id.action_save){
-         // if timer display is enabled check for a valid time
+            // if timer display is enabled check for a valid time
             if(timerDisplay.isChecked()) {
                 if (speechTime.getText().toString().trim().isEmpty() || speechTime.getText().toString().equals("0") || maxMinutes > 60){
                     invalidTimerValueDialog();
@@ -130,11 +135,31 @@ public class SpeechSettings extends AppCompatActivity {
             }
 
             addToSharedPreferences();
-            goToSpeechMenu();
+            goToMainMenu(view);
 
+
+        return true;
+
+    }
+
+    public boolean backSave() {
+        long maxMinutes = 0;
+        if (!(speechTime.getText().toString().trim().isEmpty())) {
+            maxMinutes = Long.parseLong(speechTime.getText().toString());
         }
+        // if timer display is enabled check for a valid time
+        if(timerDisplay.isChecked()) {
+            if (speechTime.getText().toString().trim().isEmpty() || speechTime.getText().toString().equals("0") || maxMinutes > 60){
+                invalidTimerValueDialog();
+                return false;
+            }
 
-        return super.onOptionsItemSelected(item);
+            hideSoftKeyboard(SpeechSettings.this);
+        }
+        addToSharedPreferences();
+
+        return true;
+
     }
 
     public void addToSharedPreferences() {
@@ -168,17 +193,21 @@ public class SpeechSettings extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.new_speech_menu, menu);
+        getMenuInflater().inflate(R.menu.base_menu, menu);
         return true;
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        Intent intent = new Intent(SpeechSettings.this, SpeechView.class);
-        intent.putExtra("speechName", speechName);
-        startActivity(intent);
-        finish();
+        //save
+        if (backSave() == true) {
+            super.onBackPressed();
+            Intent intent = new Intent(SpeechSettings.this, SpeechView.class);
+            intent.putExtra("speechName", speechName);
+            startActivity(intent);
+            finish();
+        }
+
     }
 
     public static void hideSoftKeyboard(Activity activity) {
