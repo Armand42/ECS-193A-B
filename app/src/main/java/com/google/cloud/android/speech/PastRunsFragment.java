@@ -59,6 +59,8 @@ public class PastRunsFragment extends Fragment {
         dir = directory;
     }
 
+    public PastRunsFragment(){}
+
     @Override
     public void onViewCreated(View view,
                               Bundle savedInstanceState) {
@@ -98,14 +100,14 @@ public class PastRunsFragment extends Fragment {
                 e.printStackTrace();
             }
         }
-
+        Log.d("past runs fragment", "playbackListItems.size()" + playbackListItems.size());
         if (playbackListItems != null && playbackListItems.size() == 0) {
+//            Log.d("past runs", );
+            listView.setVisibility(View.GONE);
             noVid.setVisibility(View.VISIBLE);
         } else {
             noVid.setVisibility(View.GONE);
         }
-
-
     }
 
     private void getPlaybackListData() throws JSONException {

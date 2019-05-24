@@ -33,14 +33,16 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class MainMenu extends AppCompatActivity implements AdapterView.OnItemClickListener {
     ListView listView;
-    String[] fileNames;
-    ArrayList<String> fileNamesToDisplay;
+//    String[] fileNames;
+    ArrayList<String> fileNamesToDisplay, fileNames;
     private Toolbar mTopToolbar;
     private final String subTitleText = "Select a speech";
 
@@ -56,9 +58,9 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
         mTopToolbar.setSubtitle(Html.fromHtml("<font color='#ffffff'>" + subTitleText + "</font>"));
         setSupportActionBar(mTopToolbar);
 
-        getFileNames();
         listView = findViewById(R.id.speechNames);
         registerForContextMenu(listView);
+        getFileNames();
     }
 
     @Override
@@ -112,7 +114,7 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        String speechName = fileNames[position];
+        String speechName = fileNames.get(position);
         goToSpeechMenu(view, speechName);
     }
 
@@ -142,17 +144,23 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
         File dir = new File(getFilesDir() + File.separator + "speechFiles");
         dir.mkdirs();
         //get file names
-        fileNames = dir.list();
+//        fileNames = dir.list();
+        fileNames = new ArrayList<String>();
+        Collections.sort(fileNames);
+        Collections.addAll(fileNames, dir.list());
 
         listView = findViewById(R.id.speechNames);
         listView.setVisibility(View.VISIBLE);
-        TextView empty = (TextView)findViewById(R.id.emptyView);
+
+        TextView empty = findViewById(R.id.emptyView);
         empty.setVisibility(View.GONE);
-        if (fileNames != null && fileNames.length != 0) {
+        if (fileNames != null && fileNames.size() != 0) {
             fileNamesToDisplay = new ArrayList<>();
 
-            for (int i = 0; i < fileNames.length; i++) {
-                fileNamesToDisplay.add(defaultPreferences.getString(fileNames[i], ""));
+            for (int i = 0; i < fileNames.size(); i++) {
+                String displayedName = defaultPreferences.getString(fileNames.get(i), "");
+                Log.d("main menu", "fileNames[" + i + "] " + displayedName);
+                fileNamesToDisplay.add(displayedName);
             }
 
             ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, fileNamesToDisplay);
@@ -233,7 +241,7 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
 
             return true;
         } else if (i == R.id.deleteRun) {
-            deleteSpeech(fileNames[index]);
+            deleteSpeech(fileNames.get(index));
             return true;
         } else {
             return super.onContextItemSelected(item);
@@ -302,7 +310,7 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
 
     public void saveFile(String oldName, String newName, Integer index) {
         SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String speechFolderName = fileNames[index];
+        String speechFolderName = fileNames.get(index);
         // Get the value for the run counter
         Set<String> speechNameSet = defaultPreferences.getStringSet("speechNameSet", new HashSet<String>());
 

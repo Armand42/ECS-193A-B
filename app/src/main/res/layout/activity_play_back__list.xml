@@ -2,6 +2,7 @@
 
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,40 +10,37 @@
         android:id="@+id/text_view_id"
         android:layout_width="268dp"
         android:layout_height="57dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="520dp"
-        android:text="You don't have any recordings yet. Head back to the main menu and hit &quot;START&quot; to make one!"
+        android:layout_marginBottom="64dp"
+        android:lines="2"
+        android:text="You don't have any runs yet. \nHit &quot;START&quot; to make one!"
         android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        android:textColor="@color/black"
         android:textSize="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.952" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
         android:id="@+id/speechNames"
         android:layout_width="395dp"
         android:layout_height="672dp"
+        android:layout_gravity="start"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="124dp"
+        android:scrollbarSize="3dp"
+        android:scrollbars="vertical"
+        android:scrollingCache="true"
+        android:smoothScrollbar="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        android:scrollbarSize="3dp"
-        android:scrollbarStyle="outsideOverlay"
-        android:scrollbars="vertical"
-        android:scrollingCache="true"
-        android:smoothScrollbar="true" />
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </android.support.constraint.ConstraintLayout>
