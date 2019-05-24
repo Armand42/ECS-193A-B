@@ -263,7 +263,7 @@ public class RecordAudio extends AppCompatActivity
                     }
                     //TextView message = (TextView) findViewById(R.id.textView3);
                     //message.setText("Tap again to stop");
-                    startButton.setBackground(getResources().getDrawable(R.drawable.finalredstop));
+                    startButton.setBackground(getResources().getDrawable(R.drawable.ic_stop_red));
                     startButton.setEnabled(false);
                     // Start listening
                     startVoiceRecorder();
@@ -411,12 +411,12 @@ public class RecordAudio extends AppCompatActivity
                         public void run() {
                             if(recording&&isFinal) {
                                 startButton.setEnabled(true);
-                                startButton.setBackground(getDrawable(R.drawable.finalredstop));
+                                startButton.setBackground(getDrawable(R.drawable.ic_stop_red));
 
                             }
                             else{
                                 startButton.setEnabled(false);
-                                startButton.setBackground(getDrawable(R.drawable.microphone));
+                                startButton.setBackground(getDrawable(R.drawable.ic_redmicro));
                             }
                         }
                     });
@@ -501,49 +501,59 @@ public class RecordAudio extends AppCompatActivity
         // Start taking action for back press
         final Intent intent = new Intent(RecordAudio.this, SpeechView.class);
         intent.putExtra("speechName", speechName);
-        new AlertDialog.Builder(this)
-                .setTitle("Exit recording?")
-                .setMessage("Your current speech run will be lost.")
+        if (recording) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Exit recording?")
+                    .setMessage("Your current speech run will be lost.")
 
-                // Specifying a listener allows you to take an action before dismissing the dialog.
-                // The dialog is automatically dismissed when a dialog button is clicked.
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // TODO: Delete this speech run
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // TODO: Delete this speech run
 
-                        // Finish action for pressing back
-                        startActivity(intent);
-                        finish();
-                    }
-                })
+                            // Finish action for pressing back
+                            startActivity(intent);
+                            finish();
+                        }
+                    })
 
-                // A null listener allows the button to dismiss the dialog and take no further action.
-                .setNegativeButton(android.R.string.no, null)
-                .setIcon(R.drawable.ic_baseline_warning_24px)
-                .show();
+                    // A null listener allows the button to dismiss the dialog and take no further action.
+                    .setNegativeButton(android.R.string.no, null)
+                    .setIcon(R.drawable.ic_baseline_warning_24px)
+                    .show();
+        } else {
+            startActivity(intent);
+            finish();
+        }
     }
 
     public void goToMainMenu(View view) {
         // Start taking action for home button press
         final Intent intent = new Intent(this, MainMenu.class);
         intent.putExtra("speechName", speechName);
-        new AlertDialog.Builder(this)
-                .setTitle("Exit recording?")
-                .setMessage("Your current speech run will be lost.")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // TODO: Delete this speech run
+        if (recording) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Exit recording?")
+                    .setMessage("Your current speech run will be lost.")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // TODO: Delete this speech run
 
-                        // Finish action for pressing back
-                        startActivity(intent);
-                        finish();
-                    }
-                })
+                            // Finish action for pressing back
+                            startActivity(intent);
+                            finish();
+                        }
+                    })
 
-                // A null listener allows the button to dismiss the dialog and take no further action.
-                .setNegativeButton(android.R.string.no, null)
-                .setIcon(R.drawable.ic_baseline_warning_24px)
-                .show();
+                    // A null listener allows the button to dismiss the dialog and take no further action.
+                    .setNegativeButton(android.R.string.no, null)
+                    .setIcon(R.drawable.ic_baseline_warning_24px)
+                    .show();
+        } else {
+            startActivity(intent);
+            finish();
+        }
     }
 
 }
