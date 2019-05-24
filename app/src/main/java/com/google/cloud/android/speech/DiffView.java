@@ -144,7 +144,7 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
         diff_match_patch.Operation prevOperation = EQUAL;
         LinkedList<diff_match_patch.Diff> me;
 
-        me = dmp.diff_lineMode(scriptText.concat("END").replaceAll("[^a-zA-z0-9']", " ").toLowerCase(), speechToText.concat("END").replaceAll("[^a-zA-z0-9']", " ").toLowerCase());
+        me = dmp.diff_lineMode(scriptText.concat(" END").replaceAll("[^a-zA-z0-9']", " ").toLowerCase(), speechToText.concat(" END").replaceAll("[^a-zA-z0-9']", " ").toLowerCase());
         for(diff_match_patch.Diff temp: me)
         {
             switch(temp.operation)

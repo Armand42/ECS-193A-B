@@ -113,7 +113,6 @@ public class VoiceRecorder {
      * Stops recording audio.
      */
     public void stop() {
-        synchronized (mLock) {
             dismiss();
             if (mThread != null) {
                 mThread.interrupt();
@@ -125,7 +124,7 @@ public class VoiceRecorder {
                 mAudioRecord = null;
             }
             mBuffer = null;
-        }
+
     }
 
     /**
