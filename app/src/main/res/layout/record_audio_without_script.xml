@@ -42,7 +42,7 @@
             android:layout_height="116dp"
             android:layout_marginTop="240dp"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/redmicro"
+            android:background="@drawable/ic_redmicro"
             android:gravity="center_vertical|center_horizontal"
             android:textColor="#fff"
             android:textSize="20sp"
@@ -51,7 +51,7 @@
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.203" />
+            app:layout_constraintVertical_bias="0.929" />
 
         <FrameLayout
             android:id="@+id/timer_container"

@@ -16,14 +16,14 @@
 -->
 
 
-
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/light_gray"
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_gray"
+    android:elevation="0dp"
     tools:context="com.google.cloud.android.speech.RecordAudio">
 
     <android.support.v7.widget.Toolbar
@@ -42,7 +42,8 @@
         android:layout_height="100dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/redmicro"
+        android:background="@drawable/ic_redmicro"
+        android:elevation="10dp"
         android:gravity="center_vertical|center_horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
