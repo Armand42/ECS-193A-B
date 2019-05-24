@@ -80,6 +80,7 @@ public class RecordAudio extends AppCompatActivity
     private static String apiResultPath;
 
     private String filePath, speechName, scriptText, speechFolderPath, speechRunFolder;
+    private String speechToText;
     private Button startButton;
     private Boolean displayTimer, displayScript, recording;
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 1;
@@ -137,9 +138,9 @@ public class RecordAudio extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        dialog = new ProgressDialog(this);
-        dialog.setCanceledOnTouchOutside(false);
-
+//        dialog = new ProgressDialog(this);
+//        dialog.setCanceledOnTouchOutside(false);
+        speechToText = "";
         // Handle metadata
         speechName = intent.getStringExtra("speechName");
 
@@ -218,10 +219,12 @@ public class RecordAudio extends AppCompatActivity
                 // Code here executes on main thread after user presses button
                 // Stop button behavior
                 if (recording) {
+                    recording = false;
                     startButton.setEnabled(false);
+
                     Log.d("RECORD AUDIO", "Stopping...");
-                    dialog.setMessage("Preparing your speech!");
-                    dialog.show();
+//                    dialog.setMessage("Preparing your speech!");
+//                    dialog.show();
 
 
                     // Timer on
@@ -237,9 +240,14 @@ public class RecordAudio extends AppCompatActivity
                     }
 
                     // Stop listening
+                    try {
+                        Log.d("RECORD AUDIO", "appending");
+                        appendToFile(apiResultPath, speechToText);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
-                    Log.d("RECORD AUDIO", "Stopping Voice Recorder");
-                    stopVoiceRecorder();
+
                     goToSpeechPerformance(getCurrentFocus());
                 }
                 else {
@@ -249,15 +257,14 @@ public class RecordAudio extends AppCompatActivity
                     if(displayTimer && timerFragment != null) {
 
                         timerFragment.startTimer();
-                        Log.d("YOOOOOO", "TIMER HAS STARTED");
                     } else {
                         // Timer off, capture time we started
                         startTime = System.currentTimeMillis();
                     }
                     //TextView message = (TextView) findViewById(R.id.textView3);
                     //message.setText("Tap again to stop");
-                    startButton.setBackground(getResources().getDrawable(R.drawable.ic_stop_red));
-
+                    startButton.setBackground(getResources().getDrawable(R.drawable.finalredstop));
+                    startButton.setEnabled(false);
                     // Start listening
                     startVoiceRecorder();
 
@@ -331,6 +338,8 @@ public class RecordAudio extends AppCompatActivity
     protected void onStop() {
         // Stop listening to voice
 //        stopVoiceRecorder();
+        Log.d("RECORD AUDIO", "Stopping Voice Recorder");
+        stopVoiceRecorder();
         Log.d("RECORD AUDIO", "Stopping Speech API");
         stopSpeechAPI();
 
@@ -394,12 +403,23 @@ public class RecordAudio extends AppCompatActivity
                     if (isFinal && !TextUtils.isEmpty(text)) {
                         if (mVoiceRecorder !=null)
                             mVoiceRecorder.dismiss();
-                        try {
-                            appendToFile(apiResultPath, text.concat(" "));
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        speechToText = speechToText.concat(text).concat(" ");
+
                     }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(recording&&isFinal) {
+                                startButton.setEnabled(true);
+                                startButton.setBackground(getDrawable(R.drawable.finalredstop));
+
+                            }
+                            else{
+                                startButton.setEnabled(false);
+                                startButton.setBackground(getDrawable(R.drawable.microphone));
+                            }
+                        }
+                    });
 
                 }
             };
