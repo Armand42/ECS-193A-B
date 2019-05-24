@@ -6,7 +6,6 @@
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
     android:orientation="vertical"
     android:paddingTop="0dp">
 
@@ -20,14 +19,10 @@
         app:popupTheme="@style/ActionBarPopupThemeOverlay"
         app:theme="@style/ActionBarThemeOverlay" />
 
-    <View
-        android:layout_width="100dp"
-        android:layout_height="3dp"
-        android:background="#fff" />
-
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary">
 
         <TextView
             android:id="@+id/errorIndex"
@@ -52,12 +47,19 @@
             android:textColor="@color/light_gray" />
     </FrameLayout>
 
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:alpha=".3"
+        android:background="@color/black_overlay" />
+
     <com.google.cloud.android.speech.ObservableScrollView
         android:id="@+id/scriptScroll"
         android:layout_width="match_parent"
         android:layout_height="423dp"
         android:layout_marginBottom="8dp"
-        android:background="#f1f1f1"
+        android:background="@drawable/ic_diffoverlay"
         android:padding="12dp">
 
         <LinearLayout
@@ -75,28 +77,29 @@
         </LinearLayout>
     </com.google.cloud.android.speech.ObservableScrollView>
 
-    <View
-        android:layout_width="210dp"
-        android:layout_height="3dp"
-        android:layout_gravity="right"
-        android:background="#fff" />
 
-    <TextView
-        android:id="@+id/speechToTextTitle"
-        android:layout_width="wrap_content"
+    <FrameLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:paddingLeft="16dp"
-        android:paddingTop="6dp"
-        android:paddingRight="16dp"
-        android:paddingBottom="6dp"
-        android:text="Your Speech-To-Text Result"
-        android:textColor="@color/light_gray" />
+        android:background="@color/colorPrimary">
+
+        <TextView
+            android:id="@+id/speechToTextTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:paddingLeft="16dp"
+            android:paddingTop="6dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="6dp"
+            android:text="Your Speech-To-Text Result"
+            android:textColor="@color/light_gray" />
+    </FrameLayout>
 
     <com.google.cloud.android.speech.ObservableScrollView
         android:id="@+id/speechToTextScroll"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="108dp"
         android:background="#f1f1f1"
         android:padding="12dp">
 
@@ -109,7 +112,7 @@
                 android:id="@+id/speechToTextBody"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView"
+                android:text="Speech Result Text"
                 android:textSize="16sp" />
         </LinearLayout>
     </com.google.cloud.android.speech.ObservableScrollView>

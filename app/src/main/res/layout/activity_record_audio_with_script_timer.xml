@@ -45,7 +45,7 @@
         android:layout_height="100dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="29dp"
-        android:background="@drawable/redmicro"
+        android:background="@drawable/ic_redmicro"
         android:gravity="center_vertical|center_horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
