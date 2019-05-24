@@ -435,6 +435,7 @@ public class RecordAudio extends AppCompatActivity
                                 startButton.setBackground(getDrawable(R.drawable.microphone));
                                 if(listening!=null)
                                     listening.setVisibility(View.VISIBLE);
+
                             }
                         }
                     });

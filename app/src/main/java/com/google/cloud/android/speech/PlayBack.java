@@ -144,6 +144,9 @@ public class PlayBack extends AppCompatActivity implements View.OnClickListener 
     public void goToMainMenu(View view) {
         Intent intent = new Intent(this, MainMenu.class);
         intent.putExtra("speechName", speechName);
+        audioTrack.stop();
+        audioTrack.release();
+        audioTrack = null;
         startActivity(intent);
     }
 
@@ -178,6 +181,9 @@ public class PlayBack extends AppCompatActivity implements View.OnClickListener 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        audioTrack.stop();
+        audioTrack.release();
+        audioTrack = null;
         Intent intent = new Intent(PlayBack.this, SpeechView.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
@@ -288,8 +294,9 @@ public class PlayBack extends AppCompatActivity implements View.OnClickListener 
     }
 
     public void reset() throws IOException {
-        audioTrack = null;
-        initAudio();
+        audioTrack.stop();
+        audioTrack.reloadStaticData();
+        audioTrack.play();
         isAudioPlaying = true;
         playButton.setBackground(getResources().getDrawable(R.drawable.pause_24px));
     }
