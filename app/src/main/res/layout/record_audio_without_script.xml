@@ -32,43 +32,52 @@
         app:popupTheme="@style/ActionBarPopupThemeOverlay"
         app:theme="@style/ActionBarThemeOverlay" />
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/startButton"
-            android:layout_width="116dp"
-            android:layout_height="116dp"
-            android:layout_marginTop="240dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/redmicro"
-            android:gravity="center_vertical|center_horizontal"
-            android:textColor="#fff"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.203" />
+    <Button
+        android:id="@+id/startButton"
+        android:layout_width="116dp"
+        android:layout_height="116dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/redmicro"
+        android:gravity="center_vertical|center_horizontal"
+        android:textColor="#fff"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/listening" />
 
-        <FrameLayout
-            android:id="@+id/timer_container"
-            android:layout_width="408dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="74dp"
-            android:background="@color/cardview_shadow_end_color"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:context="com.google.cloud.android.speech.Timer">
+    <FrameLayout
+        android:id="@+id/timer_container"
+        android:layout_width="0dp"
+        android:layout_height="77dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="32dp"
+        android:background="@color/cardview_shadow_end_color"
+        app:layout_constraintBottom_toTopOf="@+id/listening"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:context="com.google.cloud.android.speech.Timer">
 
-        </FrameLayout>
+    </FrameLayout>
 
-
-    </android.support.constraint.ConstraintLayout>
-
+    <TextView
+        android:id="@+id/listening"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Listening"
+        android:textAlignment="center"
+        android:textColor="@color/status_not_hearing"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/startButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timer_container" />
 
 </android.support.constraint.ConstraintLayout>

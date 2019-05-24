@@ -81,6 +81,7 @@ public class RecordAudio extends AppCompatActivity
     private String filePath, speechName, scriptText, speechFolderPath, speechRunFolder;
     private String speechToText;
     private Button startButton;
+    private TextView listening;
     private Boolean displayTimer, displayScript, recording;
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 1;
     private Long timeLeftInMilliseconds;
@@ -150,6 +151,7 @@ public class RecordAudio extends AppCompatActivity
         displayScript = sharedPreferences.getBoolean("displaySpeech", false);
         displayTimer = sharedPreferences.getBoolean("timerDisplay", false);
         recording = false;
+
 
         speechToText = "";
         //set appropriate content view based on settings
@@ -247,8 +249,16 @@ public class RecordAudio extends AppCompatActivity
                         e.printStackTrace();
                     }
 
+                    addToSharedPreferences();
+                    try {
+                        Log.d("RECORD AUDIO", "before appending");
 
-                    goToSpeechPerformance(getCurrentFocus());
+                        appendToFile(apiResultPath, speechToText);
+                        Log.d("RECORD AUDIO", "after appending");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    goToSpeechPerformance();
                 }
                 else {
 
@@ -283,6 +293,8 @@ public class RecordAudio extends AppCompatActivity
 
     }
 
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -312,6 +324,8 @@ public class RecordAudio extends AppCompatActivity
     protected void onStart() {
         super.onStart();
 
+        listening = findViewById(R.id.listening);
+        Log.d("RECORD AUDIO", "listening is null? " + (listening == null));
         // Prepare Cloud Speech API
         bindService(new Intent(this, SpeechService.class), mServiceConnection, BIND_AUTO_CREATE);
 
@@ -401,7 +415,7 @@ public class RecordAudio extends AppCompatActivity
             new SpeechService.Listener() {
                 @Override
                 public void onSpeechRecognized(final String text, final boolean isFinal) {
-                    if (isFinal && !TextUtils.isEmpty(text)) {
+                    if (isFinal && !text.isEmpty()) {
                         if (mVoiceRecorder !=null)
                             mVoiceRecorder.dismiss();
                         speechToText = speechToText.concat(text).concat(" ");
@@ -413,11 +427,14 @@ public class RecordAudio extends AppCompatActivity
                             if(recording&&isFinal) {
                                 startButton.setEnabled(true);
                                 startButton.setBackground(getDrawable(R.drawable.finalredstop));
-
+                                if(listening!=null)
+                                    listening.setVisibility(View.INVISIBLE);
                             }
                             else{
                                 startButton.setEnabled(false);
                                 startButton.setBackground(getDrawable(R.drawable.microphone));
+                                if(listening!=null)
+                                    listening.setVisibility(View.VISIBLE);
                             }
                         }
                     });
@@ -547,20 +564,6 @@ public class RecordAudio extends AppCompatActivity
                 .show();
     }
 
-    private class MyTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            addToSharedPreferences();
-            try {
-                Log.d("RECORD AUDIO", "before appending");
 
-                appendToFile(apiResultPath, speechToText);
-                Log.d("RECORD AUDIO", "after appending");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
 
 }

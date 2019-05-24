@@ -129,8 +129,6 @@ public class NewSpeech extends AppCompatActivity {
         } else if (prevActivity.equals("scriptView")) {
             if (!selectedSpeechName.equals(speechDisplayName) && speechNameSet.contains(speechDisplayName))
                 speechAlreadyExistsDialog();
-            else
-                overwriteExistingSpeech(speechFileName, speechText, speechDisplayName);
         } else if (!speechNameSet.contains(speechDisplayName)) {
             Log.d("NEWSPEECH", "SPEECH NOT IN SET");
             try {
@@ -270,6 +268,36 @@ public class NewSpeech extends AppCompatActivity {
                 .setNegativeButton(android.R.string.no, null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+    }
+    @Override
+    public void onBackPressed(){
+        EditText speechName = (EditText) findViewById(R.id.speechName);
+        EditText speechText = (EditText) findViewById(R.id.editText);
+
+        String name = speechName.getText().toString();
+
+        if(!(name.isEmpty() && speechText.getText().toString().isEmpty()) && prevActivity.equals("mainMenu")) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Exit new speech?")
+                    .setMessage("Your new speech will not be saved.")
+
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // TODO: Delete this speech run
+                            NewSpeech.super.onBackPressed();
+                        }
+                    })
+
+                    // A null listener allows the button to dismiss the dialog and take no further action.
+                    .setNegativeButton(android.R.string.no, null)
+                    .setIcon(R.drawable.ic_baseline_warning_24px)
+                    .show();
+        }
+        else{
+        super.onBackPressed();
+        }
     }
 
     private void setOnFocusChangeListener(EditText editText) {
