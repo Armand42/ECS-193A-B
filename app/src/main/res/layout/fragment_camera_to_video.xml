@@ -62,8 +62,8 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginRight="25dp"
 
+                android:layout_marginRight="25dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/ic_baseline_camera_alt_24px"
                 android:fontFamily="@font/raleway"

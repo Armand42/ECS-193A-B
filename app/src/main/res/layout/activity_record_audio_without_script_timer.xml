@@ -38,7 +38,7 @@
         android:id="@+id/startButton"
         android:layout_width="116dp"
         android:layout_height="116dp"
-        android:background="@drawable/redmicro"
+        android:background="@drawable/ic_redmicro"
         android:gravity="center_vertical|center_horizontal"
         android:textColor="#fff"
         android:textSize="20sp"

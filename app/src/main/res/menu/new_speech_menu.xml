@@ -6,9 +6,10 @@
 
     <item
         android:id="@+id/action_save"
-        android:icon="@drawable/ic_newsave"
+        android:icon="@drawable/ic_done_white_35dp"
         android:orderInCategory="300"
         android:title="User"
+
         app:showAsAction="ifRoom"></item>
 
 </menu>

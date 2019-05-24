@@ -40,7 +40,8 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/redmicro"
+        android:background="@drawable/ic_redmicro"
+        android:elevation="10dp"
         android:gravity="center_vertical|center_horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -84,4 +85,3 @@
 
 
 </android.support.constraint.ConstraintLayout>
-
