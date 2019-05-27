@@ -25,9 +25,10 @@
     android:paddingRight="0dp"
     android:paddingTop="0dp"
     android:orientation="vertical">
+
     <FrameLayout
         android:id="@+id/timer_container"
-        android:layout_width="410dp"
+        android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@color/light_gray"
 
@@ -36,9 +37,9 @@
     <com.google.cloud.android.speech.AutoFitTextureView
         android:id="@+id/texture"
         android:layout_width="match_parent"
-        android:layout_height="1000dp"
-        android:layout_marginRight="20dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:foregroundGravity="center_vertical" />
 
     <LinearLayout
