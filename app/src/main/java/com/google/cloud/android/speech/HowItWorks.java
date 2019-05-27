@@ -32,12 +32,15 @@ public class HowItWorks extends AppCompatActivity {
         finish();
     }
 
+    //Function used in buttons to scroll to top
     public void toTop(View view)
     {
         ScrollView scrollView = (ScrollView) findViewById(R.id.scrollView);
         scrollView.scrollTo(0,0);
     }
 
+
+    //All the functions below scroll to different parts of the guide
     public void toHome(View view)
     {
         View v = (View) findViewById(R.id.layout_home);

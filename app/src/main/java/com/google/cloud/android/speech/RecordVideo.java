@@ -111,6 +111,7 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
         // Start taking action for back press
         final Intent intent = new Intent(RecordVideo.this, SpeechView.class);
         intent.putExtra("speechName", speechName);
+        //alerts user to ensure that they want to leave recording
         new AlertDialog.Builder(this)
                 .setTitle("Exit recording?")
                 .setMessage("Your current speech run will be lost.")

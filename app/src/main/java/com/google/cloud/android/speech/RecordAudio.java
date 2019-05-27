@@ -399,7 +399,7 @@ public class RecordAudio extends AppCompatActivity
                 }
             };
 
-    // Append resultant speech to file
+    // Append result of speech to file
     private void appendToFile(String speechScriptPath, String apiResultText) throws IOException {
 
         File file = new File(speechScriptPath);
@@ -437,6 +437,7 @@ public class RecordAudio extends AppCompatActivity
         editor.commit();
     }
 
+    //META DATA FOR RUNS
     public void addToSharedPreferences() {
         //CREATE the shared preference file and add necessary values
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -461,6 +462,7 @@ public class RecordAudio extends AppCompatActivity
         editor.commit();
     }
 
+    //Saves audio into file to allow playback
     private void convertBytesToFile(byte[] bytearray) {
         try {
 
@@ -478,6 +480,7 @@ public class RecordAudio extends AppCompatActivity
         // Start taking action for back press
         final Intent intent = new Intent(RecordAudio.this, SpeechView.class);
         intent.putExtra("speechName", speechName);
+        //checks if we are currently recording, if so alert the user
         if (recording) {
             new AlertDialog.Builder(this)
                     .setTitle("Exit recording?")
