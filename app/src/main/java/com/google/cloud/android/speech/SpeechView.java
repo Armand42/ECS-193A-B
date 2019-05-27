@@ -9,28 +9,14 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
-import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.SectionIndexer;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.content.SharedPreferences;
 
-
-import org.json.JSONException;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,7 +25,7 @@ public class SpeechView extends AppCompatActivity {
 
     private SectionsPageAdapter mSectionsPageAdapter;
     private ViewPager mViewPager;
-    private String filePath, speechName, scriptText, prevActivity;
+    private String speechName, scriptText, prevActivity;
     private Boolean videoPlaybackState, viewScriptState, timerdisplayState;
     private SharedPreferences defaultPreferences;
 
@@ -57,11 +43,7 @@ public class SpeechView extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
         defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        final File dir = getDir(speechName, MODE_PRIVATE);
-        filePath = sharedPreferences.getString("filepath", "error");
         videoPlaybackState = sharedPreferences.getBoolean("videoPlayback", false);
-        viewScriptState = sharedPreferences.getBoolean("displaySpeech", false);
-        timerdisplayState = sharedPreferences.getBoolean("timerDisplay", false);
 
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -104,12 +86,13 @@ public class SpeechView extends AppCompatActivity {
         // Start recording a new speech
         super.onStart();
 
-        if(prevActivity != null && prevActivity.equals("speechPerformance")){
+        if (prevActivity != null && prevActivity.equals("speechPerformance")) {
             TabLayout tabLayout = findViewById(R.id.tabs);
             TabLayout.Tab tab = tabLayout.getTabAt(0);
             tab.select();
         }
     }
+
     // Set up the split view between past runs and script
     private void setupViewPager(ViewPager viewPager) {
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
@@ -124,24 +107,27 @@ public class SpeechView extends AppCompatActivity {
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
+
     // Determine if user wishes to record video or audio
     public void goToSpeechRecord(View view) {
         Intent intent;
         // Only video
         if (videoPlaybackState)
             intent = new Intent(this, RecordVideo.class);
-        // Only Audio
+            // Only Audio
         else
             intent = new Intent(this, RecordAudio.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
+
     // Go to comparison screen
     public void goToDiffView(View view) {
         Intent intent = new Intent(this, DiffView.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
+
     // Go back to main menu
     public void goToMainMenu(View view) {
         Intent intent = new Intent(this, MainMenu.class);
@@ -150,7 +136,7 @@ public class SpeechView extends AppCompatActivity {
     }
 
     // Delete all associated speech runs
-    public void deleteSpeech(View view) {
+    public void deleteSpeech(final View view) {
         // Set warning message
         new AlertDialog.Builder(this)
                 .setTitle("Delete this speech?")
@@ -170,7 +156,7 @@ public class SpeechView extends AppCompatActivity {
                             defaultEditor.commit();
                             // Delete all files
                             File speechFolder = new File(SPEECH_FOLDER_PATH);
-                            recursiveDelete(speechFolder);
+                            FileService.recursiveDelete(speechFolder);
                             // If runs cannot be deleted
                             if (speechFolder.exists()) {
                                 throw new Exception("Error deleting script");
@@ -183,9 +169,8 @@ public class SpeechView extends AppCompatActivity {
                         SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
                         // Clear all preferences
                         sharedPreferences.edit().clear().apply();
-                        // Go back to main menu
-                        Intent intent = new Intent(SpeechView.this, MainMenu.class);
-                        startActivity(intent);
+
+                        goToMainMenu(view);
                     }
                 })
 
@@ -210,13 +195,11 @@ public class SpeechView extends AppCompatActivity {
             View view = findViewById(R.id.action_delete);
             deleteSpeech(view);
             return true;
-        }
-        else if (id == R.id.action_settings) {
+        } else if (id == R.id.action_settings) {
             View view = findViewById(R.id.action_settings);
             goToSpeechSettings(view);
             return true;
-        }
-        else if (id == R.id.action_edit) {
+        } else if (id == R.id.action_edit) {
             View view = findViewById(R.id.action_edit);
             goToEditSpeech(view);
             return true;
@@ -224,17 +207,7 @@ public class SpeechView extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    // Delete all associated runs with a script
-    public void recursiveDelete(File fileOrDirectory) {
 
-        if (fileOrDirectory.isDirectory()) {
-            for (File child : fileOrDirectory.listFiles()) {
-                recursiveDelete(child);
-            }
-        }
-
-        fileOrDirectory.delete();
-    }
     // Get name of speech
     private void getFileNames() {
         SPEECH_FOLDER_PATH = getFilesDir() + File.separator + "speechFiles" + File.separator + speechName;
@@ -254,6 +227,7 @@ public class SpeechView extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
     // Allow user to edit speech
     public void goToEditSpeech(View view) {
         Intent intent = new Intent(this, NewSpeech.class);

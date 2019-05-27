@@ -34,19 +34,12 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
         sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
         setContentView(R.layout.record_video);
 
-        //if video and timerDisplay
-        //  then camerafragmentwithtimer
-//        Log.d("recordvideo", "timerdisplay is " + sharedPreferences.getBoolean("timerDisplay", false));
-//        Log.d("recordvideo", "displaySpeech is " + sharedPreferences.getBoolean("displaySpeech", false));
-
-
         this.setTitle("Record a Speech");
 
-
         String speechFolderPath = getApplicationContext().getFilesDir() + File.separator + "speechFiles" + File.separator + speechName;
-        String speechRunFolder = "run" + sharedPreferences.getInt("currRun", -1);
+        String speechRunFolder = "Run " + sharedPreferences.getInt("currRun", -1);
 
-        apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
+        apiResultPath = speechFolderPath + File.separator + speechRunFolder;
     }
 
     @Override
@@ -98,9 +91,10 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
                         @Override
                         public void run() {
                             try {
-                                appendToFile(apiResultPath, text);
-
+                                FileService.writeToFile("apiResult", text, apiResultPath);
                             } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                             if (isFinal) {
@@ -111,25 +105,6 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
                 }
             };
 
-
-    private void appendToFile(String speechScriptPath, String apiResultText) throws IOException {
-        File file = new File(speechScriptPath);
-        Log.d("RECORDACTIVITY", "APPENDING TO FILE");
-        //This point and below is responsible for the write operation
-        FileOutputStream outputStream = null;
-        try {
-            //second argument of FileOutputStream constructor indicates whether
-            //to append or create new file if one exists -- for now we're creating a new file
-            outputStream = new FileOutputStream(file, true);
-
-            outputStream.write(apiResultText.getBytes());
-            outputStream.flush();
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
 
     public void goToSpeechPerformance() {
         Intent intent = new Intent(this, SpeechPerformance.class);

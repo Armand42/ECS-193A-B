@@ -1,8 +1,5 @@
 package com.google.cloud.android.speech;
 
-import android.util.Log;
-import android.widget.Toast;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,8 +15,9 @@ public class FileService {
     public static String readFromFile(String filepath) throws IOException {
         // Create new file object from given filepath
         File file = new File(filepath);
+
         StringBuilder text = new StringBuilder();
-        // Append string to file along with line breakers
+
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
@@ -29,34 +27,40 @@ public class FileService {
                 text.append('\n');
             }
             br.close();
+
             // Set text of scriptBody to be what we read from the file
             return text.toString();
         }
         catch (IOException e) {
+            //You'll need to add proper error handling here
             throw new IOException(e);
         }
     }
 
-
-    // Deletes a speech and associated files (script and video(s))
+    /*
+    Deletes a speech and associated files (script and video(s))
+     */
     public static void deleteSpeech(String scriptFilePath) throws Exception {
-        // Deletes script
+        // Deletes script file
         File script = new File(scriptFilePath);
         if (!script.delete()) {
             throw new Exception("Error deleting script");
         }
     }
-    // Create a new file in our speech scripts dir with given filename
+
     public static String writeToFile(String speechName, String speechText, String speechScriptPath) throws Exception {
+        //Create a new file in our speech scripts dir with given filename
         File file = new File(speechScriptPath, speechName);
-        // Responsible for the write operation
+
+        //This point and below is responsible for the write operation
         FileOutputStream outputStream = null;
         try {
             if(!file.exists())
                 file.createNewFile();
-            // Second argument of FileOutputStream constructor indicates whether
-            // to append or create new file if one exists -- for now we're creating a new file
-            outputStream = new FileOutputStream(file, false);
+
+            //second argument of FileOutputStream constructor indicates whether
+            //to append or create new file if one exists
+            outputStream = new FileOutputStream(file, true);
 
             outputStream.write(speechText.getBytes());
             outputStream.flush();
@@ -67,5 +71,16 @@ public class FileService {
         }
 
         return file.toString();
+    }
+
+    public static void recursiveDelete(File fileOrDirectory) {
+
+        if (fileOrDirectory.isDirectory()) {
+            for (File child : fileOrDirectory.listFiles()) {
+                recursiveDelete(child);
+            }
+        }
+
+        fileOrDirectory.delete();
     }
 }

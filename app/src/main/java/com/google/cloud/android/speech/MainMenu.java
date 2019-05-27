@@ -19,17 +19,13 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
-import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
-import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
-
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,10 +37,11 @@ import java.util.Set;
 
 public class MainMenu extends AppCompatActivity implements AdapterView.OnItemClickListener {
     ListView listView;
-//    String[] fileNames;
     ArrayList<String> fileNamesToDisplay, fileNames;
     private Toolbar mTopToolbar;
     private final String subTitleText = "Select a speech";
+    SharedPreferences defaultPreferences;
+    Set<String> speechNameSet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +58,7 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
         listView = findViewById(R.id.speechNames);
         registerForContextMenu(listView);
         getFileNames();
+        defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     }
 
     @Override
@@ -143,9 +141,9 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
         SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         File dir = new File(getFilesDir() + File.separator + "speechFiles");
         dir.mkdirs();
-        //get file names
-//        fileNames = dir.list();
-        fileNames = new ArrayList<String>();
+
+
+        fileNames = new ArrayList<>();
         Collections.sort(fileNames);
         Collections.addAll(fileNames, dir.list());
 
@@ -159,7 +157,6 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
 
             for (int i = 0; i < fileNames.size(); i++) {
                 String displayedName = defaultPreferences.getString(fileNames.get(i), "");
-                Log.d("main menu", "fileNames[" + i + "] " + displayedName);
                 fileNamesToDisplay.add(displayedName);
             }
 
@@ -167,7 +164,6 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
 
             // Connect this adapter to a listview to be populated
             listView.setAdapter(itemsAdapter);
-
             listView.setOnItemClickListener(this);
         }
         else
@@ -191,54 +187,64 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         final int index = info.position;
         final String oldName = fileNamesToDisplay.get(index);
-        Log.d("MAIN MENU", "speechDisplayName is " + oldName);
+
         int i = item.getItemId();
         if (i == R.id.edit) {
-            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-            builder.setTitle("Rename: " + oldName);
-
             LinearLayout layout = new LinearLayout(this);
             layout.setOrientation(LinearLayout.VERTICAL);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(50, 0, 30, 0);
 
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                    .setTitle("Rename: " + oldName)
+                    .setPositiveButton("OK",  new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            //Do nothing here because we override this button later to change the close behaviour.
+                            //However, we still need this because on older versions of Android unless we
+                            //pass a handler the button doesn't get instantiated
+                        }
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .setCancelable(false)
+                    .setView(layout);
+
+            final AlertDialog dialog = builder.create();
             final EditText textBox = new EditText(this);
-
-
             textBox.setInputType(InputType.TYPE_CLASS_TEXT);
             textBox.setSingleLine();
             textBox.setText(oldName);
             textBox.setSelection(textBox.getText().length());
             layout.addView(textBox, params);
 
-            builder.setView(layout);
-            builder.setCancelable(false);
-            // Set up the buttons
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+            dialog.getWindow().setSoftInputMode(
+                    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+            dialog.show();
+
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+            {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    String userInput = textBox.getText().toString();
+                public void onClick(View v)
+                {
+                    Boolean wantToCloseDialog = false;
+                    String userInput = textBox.getText().toString().trim();
                     if (userInput.isEmpty()) {
                         textBox.setError("The speech name cannot be empty.");
+                    } else if(speechNameSet.contains(userInput)){
+                        textBox.setError("This speech name already exists.");
                     } else {
                         saveFile(oldName, userInput, index);
+                        wantToCloseDialog = true;
                     }
+
+                    if(wantToCloseDialog)
+                        dialog.dismiss();
                 }
             });
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-
-            AlertDialog alertToShow = builder.create();
-            alertToShow.getWindow().setSoftInputMode(
-                    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-            alertToShow.show();
-
             return true;
         } else if (i == R.id.deleteRun) {
             deleteSpeech(fileNames.get(index));
@@ -260,26 +266,31 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
                     public void onClick(DialogInterface dialog, int which) {
                         // Continue with delete operation
                         try {
-                            SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                            speechNameSet = defaultPreferences.getStringSet("speechNameSet", new HashSet<String>());
+
                             String speechDisplayName = defaultPreferences.getString(speechName, null);
                             //getting speechDisplayName value from set and then removing it from set
-                            Set<String> speechNameSet = defaultPreferences.getStringSet("speechNameSet", new HashSet<String>());
                             speechNameSet.remove(speechDisplayName);
 
                             SharedPreferences.Editor defaultEditor = defaultPreferences.edit();
                             defaultEditor.putStringSet("speechNameSet", speechNameSet);
+                            defaultEditor.remove(speechName);
                             defaultEditor.commit();
+
+                            if(speechNameSet.isEmpty()){
+                                defaultPreferences.edit().clear().commit();
+                            }
 
                             String SPEECH_FOLDER_PATH = getFilesDir() + File.separator + "speechFiles" + File.separator + speechName;
                             File speechFolder = new File(SPEECH_FOLDER_PATH);
-                            recursiveDelete(speechFolder);
+                            FileService.recursiveDelete(speechFolder);
 
                             if (speechFolder.exists()) {
                                 throw new Exception("Error deleting script");
                             }
 
                             SharedPreferences sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
-                            sharedPreferences.edit().clear().apply(); //clears all preferences
+                            sharedPreferences.edit().clear().commit(); //clears all preferences
 
                             ArrayAdapter<String> adapter = (ArrayAdapter<String>) listView.getAdapter();
                             fileNamesToDisplay.remove(speechDisplayName);
@@ -297,29 +308,12 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
                 .show();
     }
 
-    public void recursiveDelete(File fileOrDirectory) {
-
-        if (fileOrDirectory.isDirectory()) {
-            for (File child : fileOrDirectory.listFiles()) {
-                recursiveDelete(child);
-            }
-        }
-
-        fileOrDirectory.delete();
-    }
-
     public void saveFile(String oldName, String newName, Integer index) {
-        SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String speechFolderName = fileNames.get(index);
-        // Get the value for the run counter
-        Set<String> speechNameSet = defaultPreferences.getStringSet("speechNameSet", new HashSet<String>());
 
 //         Check if speech script directory exists
-        if (newName.isEmpty()) {
-
-        } else if (!speechNameSet.contains(newName)) {
+        if (!speechNameSet.contains(newName)) {
             try {
-                //CREATE the shared preference file and add necessary values
                 SharedPreferences.Editor defaultEditor = defaultPreferences.edit();
                 speechNameSet.remove(oldName);
                 speechNameSet.add(newName);

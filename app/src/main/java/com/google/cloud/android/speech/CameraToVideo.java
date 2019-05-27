@@ -438,7 +438,7 @@ public class CameraToVideo extends Fragment
                 VIDEO_FILE_PATH = getVideoFilePath(getContext());
 
                 String speechFolderPath = getContext().getFilesDir() + File.separator + "speechFiles" + File.separator + speechName;
-                String speechRunFolder  = "run" + sharedPref.getInt("currRun", -1);
+                String speechRunFolder  = "Run " + sharedPref.getInt("currRun", -1);
 
                 apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
 
@@ -733,7 +733,7 @@ public class CameraToVideo extends Fragment
 
     private String getVideoFilePath(Context context) {
         String speechFolderPath = context.getFilesDir() + File.separator + "speechFiles" + File.separator + speechName;
-        String newRunFolder = "run" + sharedPref.getInt("currRun", -1);
+        String newRunFolder = "Run " + sharedPref.getInt("currRun", -1);
         File f = new File(speechFolderPath, newRunFolder);
         f.mkdirs();
         Log.d("CAMERA2VIDEO", "RUN CREATED");

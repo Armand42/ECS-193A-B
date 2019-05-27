@@ -135,7 +135,7 @@ public class PlayBack extends AppCompatActivity implements View.OnClickListener 
         });
         SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String speechDisplayName = defaultPreferences.getString(speechName, null);
-        this.setTitle(speechDisplayName + ": Run " + speechRunFolder.charAt(speechRunFolder.length() - 1));
+        this.setTitle(speechDisplayName + ": " + speechRunFolder);
     }
 
 

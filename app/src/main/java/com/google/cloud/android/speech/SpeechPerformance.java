@@ -94,7 +94,7 @@ public class SpeechPerformance extends BaseActivity {
 
         if (prevActivity.equals("recording")) {
             int speechRunNum = (sharedPreferences.getInt("currRun", -1) - 1);
-            speechRunFolder = "run" + speechRunNum;
+            speechRunFolder = "Run " + speechRunNum;
         } else if (prevActivity.equals("pastRuns")) {
             speechRunFolder = selectedRun;
         } else if (prevActivity.equals("DiffView")) {
