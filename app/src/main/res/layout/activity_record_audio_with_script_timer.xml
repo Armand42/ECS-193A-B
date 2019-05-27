@@ -28,9 +28,11 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
         style="@style/HeaderBar"
-        android:layout_width="411dp"
+        android:layout_width="0dp"
         android:layout_height="61dp"
         android:elevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:popupTheme="@style/ActionBarPopupThemeOverlay"
         app:theme="@style/ActionBarThemeOverlay" />
 
