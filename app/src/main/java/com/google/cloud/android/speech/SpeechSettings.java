@@ -22,10 +22,8 @@ public class SpeechSettings extends AppCompatActivity {
     String filePath;
     String speechName;
     Switch videoPlayback;
-    Switch displaySpeech; // display speech while recording
-
+    Switch displaySpeech;
     Switch timerDisplay;
-
     EditText speechTime;
     long speechLengthMs;
 
@@ -35,19 +33,15 @@ public class SpeechSettings extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.speech_settings);
 
-        // Set toolbar
+        // Initiate Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_baseline_home_24px);
-
+        // If home icon is tapped, save settings, and go home
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                homeSave(view);
-
-                //home button logic
-                //save here
-                //goToMainMenu(view);
 
             }
         });
@@ -57,12 +51,10 @@ public class SpeechSettings extends AppCompatActivity {
         Intent intent = getIntent();
 
         speechName = intent.getStringExtra("speechName");
-
-        /* Get views */
+        // Get views based on switch value
         videoPlayback = (Switch) findViewById(R.id.videoPlaybackSwitch);
         displaySpeech = (Switch) findViewById(R.id.displaySpeechSwitch);
         timerDisplay = (Switch) findViewById(R.id.displayTimerSwitch);
-
 
         speechTime = (EditText) findViewById(R.id.speechTime);
 
@@ -71,12 +63,10 @@ public class SpeechSettings extends AppCompatActivity {
         // Get speech length from shared prefs (default value of 10 minutes)
         speechLengthMs = sharedPreferences.getLong("timerMilliseconds", 600000);
 
-
-
         videoPlayback.setChecked(sharedPreferences.getBoolean("videoPlayback", false));
         displaySpeech.setChecked(sharedPreferences.getBoolean("displaySpeech", false));
         timerDisplay.setChecked(sharedPreferences.getBoolean("timerDisplay", false));
-
+        // Display default timer value to be edited if switch is on
         toggleTimeInput(timerDisplay.isChecked());
 
         timerDisplay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -86,7 +76,7 @@ public class SpeechSettings extends AppCompatActivity {
             }
         });
     }
-
+    // Toggle input line if timer is switched on
     public void toggleTimeInput(boolean isChecked) {
         TextView speechTimeLabel = findViewById(R.id.textView);
         speechTime.setEnabled(isChecked);
@@ -95,7 +85,7 @@ public class SpeechSettings extends AppCompatActivity {
             // Set speechLength editText to be this value (in minutes = /60000)
             speechTime.setText(Long.toString(speechLengthMs / 60000));
             speechTime.setSelection(speechTime.getText().length());
-            //show numeric keyboard
+            //Show numeric keyboard
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
 
@@ -105,17 +95,16 @@ public class SpeechSettings extends AppCompatActivity {
             speechTime.setBackground(null);
         }
     }
-
+    // Hide keyboard and go to Main Menu
     public void goToMainMenu(View view) {
         hideKeyboard(view);
         Intent intent = new Intent(this, MainMenu.class);
         intent.putExtra("speechName", speechName);
-        //hideSoftKeyboard(SpeechSettings.this);
         startActivity(intent);
     }
 
 
-
+    // Save state of settings by tapping the home icon
     public boolean homeSave(View view) {
         long maxMinutes = 0;
         int id = view.getId();
@@ -123,7 +112,6 @@ public class SpeechSettings extends AppCompatActivity {
         if (!(speechTime.getText().toString().trim().isEmpty())) {
             maxMinutes = Long.parseLong(speechTime.getText().toString());
         }
-
             // if timer display is enabled check for a valid time
             if(timerDisplay.isChecked()) {
                 if (speechTime.getText().toString().trim().isEmpty() || speechTime.getText().toString().equals("0") || maxMinutes > 60){
@@ -133,17 +121,16 @@ public class SpeechSettings extends AppCompatActivity {
 
                 hideSoftKeyboard(SpeechSettings.this);
             }
-
             addToSharedPreferences();
             goToMainMenu(view);
-
 
         return true;
 
     }
-
+    // Save state of settings by tapping the back button
     public boolean backSave() {
         long maxMinutes = 0;
+
         if (!(speechTime.getText().toString().trim().isEmpty())) {
             maxMinutes = Long.parseLong(speechTime.getText().toString());
         }
@@ -161,15 +148,14 @@ public class SpeechSettings extends AppCompatActivity {
         return true;
 
     }
-
+    // CREATE the shared preference file and add necessary values
     public void addToSharedPreferences() {
-        //CREATE the shared preference file and add necessary values
         SharedPreferences sharedPref = getSharedPreferences(speechName, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean("videoPlayback", videoPlayback.isChecked());
         editor.putBoolean("displaySpeech", displaySpeech.isChecked());
         editor.putBoolean("timerDisplay", timerDisplay.isChecked());
-
+        // Add timer value to preferences if switched on
         if(timerDisplay.isChecked()){
             EditText maxTimerText = (EditText) findViewById(R.id.speechTime);
             long seconds = Long.parseLong(maxTimerText.getText().toString());
@@ -179,11 +165,12 @@ public class SpeechSettings extends AppCompatActivity {
         editor.commit();
 
     }
+    // Hide keyboard
     public void hideKeyboard(View view) {
         InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(NewSpeech.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
-
+    // Go back to main speech menu
     public void goToSpeechMenu() {
         Intent intent = new Intent(this, SpeechView.class);
         intent.putExtra("speechName", speechName);
@@ -199,7 +186,7 @@ public class SpeechSettings extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        //save
+        // save settings if back button is tapped
         if (backSave() == true) {
             super.onBackPressed();
             Intent intent = new Intent(SpeechSettings.this, SpeechView.class);
@@ -209,7 +196,7 @@ public class SpeechSettings extends AppCompatActivity {
         }
 
     }
-
+    // Hide keyboard
     public static void hideSoftKeyboard(Activity activity) {
         InputMethodManager inputMethodManager =
                 (InputMethodManager) activity.getSystemService(
@@ -217,7 +204,7 @@ public class SpeechSettings extends AppCompatActivity {
         inputMethodManager.hideSoftInputFromWindow(
                 activity.getCurrentFocus().getWindowToken(), 0);
     }
-
+    // Prompt user to enter a valid time
     public void invalidTimerValueDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Invalid Timer Value")
