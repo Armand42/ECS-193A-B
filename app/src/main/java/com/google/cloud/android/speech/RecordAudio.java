@@ -242,13 +242,6 @@ public class RecordAudio extends AppCompatActivity
                     }
 
                     // Stop listening
-                    try {
-                        Log.d("RECORD AUDIO", "appending");
-                        appendToFile(apiResultPath, speechToText);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
                     addToSharedPreferences();
                     try {
                         Log.d("RECORD AUDIO", "before appending");
