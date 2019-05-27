@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.TimerTask;
+
 import static android.content.Context.MODE_PRIVATE;
 
 
@@ -30,8 +32,8 @@ public class TimerFragment extends Fragment {
 
     private CountDownTimer countDownTimer;
     private long timeLeftInMilliseconds; // 10 mins
-    private long totalSpeechLengthMs;
-    private boolean timerRunning;
+    private long totalSpeechLengthMs, countUp;
+    private boolean timerRunning, overtime;
 
     private IMainActivity mIMainActivity;
 
@@ -86,8 +88,7 @@ public class TimerFragment extends Fragment {
         countdownText = rootView.findViewById(R.id.countdown_text);
 
         Bundle bundle = getArguments();
-        timeLeftInMilliseconds = bundle.getLong("timeLeftMs");
-        totalSpeechLengthMs = bundle.getLong("timeLeftMs");
+        timeLeftInMilliseconds = totalSpeechLengthMs = bundle.getLong("timeLeftMs");
 
         // Return the inflated layout for this fragment
         return rootView;
@@ -156,12 +157,12 @@ public class TimerFragment extends Fragment {
             @Override
             public void onTick(long millisUntilFinished) {
                 timeLeftInMilliseconds = millisUntilFinished;
-                updateTimer();
+                updateTimer(timeLeftInMilliseconds);
             }
 
             @Override
             public void onFinish() {
-
+                startOvertime();
             }
         }.start();
 
@@ -171,20 +172,52 @@ public class TimerFragment extends Fragment {
     public void stopTimer() {
         countDownTimer.cancel();
         timerRunning = false;
-        mIMainActivity.stopButtonPressed(totalSpeechLengthMs - timeLeftInMilliseconds);
+        long totalTime;
+
+        if (overtime) {
+            // Defined length of our speech plus how much we went over
+            totalTime = totalSpeechLengthMs + countUp;
+        } else {
+            totalTime = totalSpeechLengthMs - timeLeftInMilliseconds;
+        }
+        mIMainActivity.stopButtonPressed(totalTime);
     }
 
-    public void updateTimer() {
-        int minutes = (int) timeLeftInMilliseconds / 60000;
-        int seconds = (int) timeLeftInMilliseconds % 60000 / 1000;
+    /* @milliseconds can either represent the time left (before overtime) or the time elapsed since
+    the timer hit zero (after overtime)
+     */
+    public void updateTimer(long milliseconds) {
+        int minutes = (int) milliseconds / 60000;
+        int seconds = (int) milliseconds % 60000 / 1000;
 
-        String timeLeftText;
+        String timeText;
 
-        timeLeftText = "" + minutes;
-        timeLeftText += ":";
-        if (seconds < 10) timeLeftText += "0";
-        timeLeftText += seconds;
+        timeText = "" + minutes;
+        timeText += ":";
+        if (seconds < 10) timeText += "0";
+        timeText += seconds;
 
-        countdownText.setText(timeLeftText);
+        countdownText.setText(timeText);
+    }
+
+    /* Timer has reached 0, so now we begin counting up */
+    public void startOvertime() {
+        countdownText.setTextColor(getResources().getColor(R.color.armandRed));
+        // Set timer text to red
+        timeLeftInMilliseconds = Long.MAX_VALUE;
+        countDownTimer = new CountDownTimer(timeLeftInMilliseconds, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                timeLeftInMilliseconds = millisUntilFinished;
+                countUp = Long.MAX_VALUE - timeLeftInMilliseconds + 1000;
+                updateTimer(countUp);
+            }
+
+            @Override
+            public void onFinish() { }
+        }.start();
+
+        timerRunning = true;
+        overtime = true;
     }
 }

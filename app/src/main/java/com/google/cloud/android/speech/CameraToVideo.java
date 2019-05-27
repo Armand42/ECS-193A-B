@@ -101,6 +101,8 @@ public class CameraToVideo extends Fragment
     RecordVideo recordVideoWithScript;
     Boolean displayTimer;
 
+    private long startTime, endTime, pauseStart, timePaused;
+
     private static final int SENSOR_ORIENTATION_DEFAULT_DEGREES = 90;
     private static final int SENSOR_ORIENTATION_INVERSE_DEGREES = 270;
     private static final SparseIntArray DEFAULT_ORIENTATIONS = new SparseIntArray();
@@ -398,10 +400,15 @@ public class CameraToVideo extends Fragment
 
                     if(displayTimer){
                         timerFragment.startTimer();
+                    } else {
+                        startTime = System.currentTimeMillis();
                     }
                 } else if (mIsRecordingVideo) {
+                    pauseStart = System.currentTimeMillis();
                     pauseVideo();
                 } else {
+                    // Accumulate all the time that was paused
+                    timePaused += pauseStart + System.currentTimeMillis();
                     resumeVideo();
                 }
                 break;
@@ -415,7 +422,17 @@ public class CameraToVideo extends Fragment
 
                 stopRecordingVideo();
                 if(displayTimer){
-                    timerFragment.startTimer();
+                    timerFragment.stopTimer();
+                } else {
+                    // Record the time when we stopped
+                    endTime = System.currentTimeMillis();
+
+                    // Add to shared prefs
+                    SharedPreferences.Editor editor = sharedPref.edit();
+
+                    long totalTime = (endTime - startTime) - (timePaused);
+                    editor.putLong("timeElapsed", totalTime);
+                    editor.commit();
                 }
 
                 VIDEO_FILE_PATH = getVideoFilePath(getContext());

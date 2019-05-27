@@ -165,6 +165,7 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
                 .show();
     }
 
+    // From timer fragment and associated interface
     @Override
     public void stopButtonPressed(Long speechTimeMs) {
         // Set time elapsed in shared prefs

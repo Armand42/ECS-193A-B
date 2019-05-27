@@ -222,7 +222,7 @@ public class SpeechSettings extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Invalid Timer Value")
                 .setMessage("Please enter a time from 1 - 60.")
-                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setIcon(R.drawable.ic_baseline_warning_24px)
                 .show();
     }
 }
