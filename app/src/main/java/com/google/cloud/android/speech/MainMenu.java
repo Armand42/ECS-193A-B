@@ -187,6 +187,7 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         final int index = info.position;
         final String oldName = fileNamesToDisplay.get(index);
+        speechNameSet = defaultPreferences.getStringSet("speechNameSet", new HashSet<String>());
 
         int i = item.getItemId();
         if (i == R.id.edit) {
