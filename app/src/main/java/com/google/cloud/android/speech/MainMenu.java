@@ -311,6 +311,7 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
 
     public void saveFile(String oldName, String newName, Integer index) {
         String speechFolderName = fileNames.get(index);
+        speechNameSet = defaultPreferences.getStringSet("speechNameSet", new HashSet<String>());
 
 //         Check if speech script directory exists
         if (!speechNameSet.contains(newName)) {
