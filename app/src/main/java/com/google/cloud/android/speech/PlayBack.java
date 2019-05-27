@@ -51,7 +51,6 @@ public class PlayBack extends AppCompatActivity implements View.OnClickListener 
     private SharedPreferences sharedPreferences;
     private Integer bufferFrames, lengthOfAudioClip;
     private Button playButton, replayButton;
-    private Runnable runnable;
     private AudioTrack audioTrack;
     private Toolbar mTopToolbar;
     FileInputStream fileInputStream;
@@ -144,9 +143,11 @@ public class PlayBack extends AppCompatActivity implements View.OnClickListener 
     public void goToMainMenu(View view) {
         Intent intent = new Intent(this, MainMenu.class);
         intent.putExtra("speechName", speechName);
-        audioTrack.stop();
-        audioTrack.release();
-        audioTrack = null;
+        if(audioTrack != null){
+            audioTrack.stop();
+            audioTrack.release();
+            audioTrack = null;
+        }
         startActivity(intent);
     }
 
@@ -181,9 +182,11 @@ public class PlayBack extends AppCompatActivity implements View.OnClickListener 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        audioTrack.stop();
-        audioTrack.release();
-        audioTrack = null;
+        if(audioTrack != null){
+            audioTrack.stop();
+            audioTrack.release();
+            audioTrack = null;
+        }
         Intent intent = new Intent(PlayBack.this, SpeechView.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);

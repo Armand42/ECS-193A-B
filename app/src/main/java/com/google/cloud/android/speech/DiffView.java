@@ -70,7 +70,7 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
 
             }
         });
-        this.setTitle("Diff View");
+        this.setTitle("Your Mistakes");
         // Make script viewable
         // Create the shared preference file and get necessary values
         SharedPreferences sharedPreferences = getSharedPreferences(intent.getStringExtra("speechName"), MODE_PRIVATE);
