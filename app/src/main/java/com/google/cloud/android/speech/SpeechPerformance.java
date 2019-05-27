@@ -70,9 +70,24 @@ public class SpeechPerformance extends BaseActivity {
         TextView speechTime = findViewById(R.id.speechTime);
         // Set speech time textview to the elapsed time from this speech
         long timeElapsed = sharedPreferences.getLong("timeElapsed", 0);
+        long overtime = sharedPreferences.getLong("overtime", 0);
+
         int minutes = (int) timeElapsed / 60000;
         int seconds = (int) timeElapsed % 60000 / 1000;
-        speechTime.setText(String.format("Speech time: %02d:%02d", minutes, seconds));
+
+        String baseTimeInfo = String.format("Speech time: %02d:%02d", minutes, seconds);
+
+        // At least a second over your target time
+        if (overtime >= 1000) {
+            int overtimeMins = (int) overtime / 60000;
+            int overtimeSecs = (int) overtime % 60000 / 1000;
+
+            String extraTimeInfo = String.format("   ( +%02d:%02d )", overtimeMins, overtimeSecs);
+
+            baseTimeInfo += extraTimeInfo;
+        }
+
+        speechTime.setText(baseTimeInfo);
 
         speechFolderPath = getApplicationContext().getFilesDir() + File.separator + "speechFiles" + File.separator
                 + speechName;
