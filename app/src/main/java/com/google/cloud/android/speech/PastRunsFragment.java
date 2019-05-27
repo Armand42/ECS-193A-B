@@ -103,7 +103,6 @@ public class PastRunsFragment extends Fragment {
         }
         Log.d("past runs fragment", "playbackListItems.size()" + playbackListItems.size());
         if (playbackListItems != null && playbackListItems.size() == 0) {
-//            Log.d("past runs", );
             listView.setVisibility(View.GONE);
             noVid.setVisibility(View.VISIBLE);
         } else {
@@ -118,7 +117,7 @@ public class PastRunsFragment extends Fragment {
 
         for (int i = 0; i < files.length; i++) {
             String runFilePath = files[i].getName();
-            if (runFilePath.startsWith("run")) {
+            if (runFilePath.startsWith("Run")) {
                 String jsonFilePath = files[i].toString() + File.separator + "metadata";
                 Log.d("playbacklist", "jsonFilePath" + jsonFilePath);
                 Integer percentAccuracy = 0;
