@@ -241,7 +241,7 @@ public class SpeechView extends AppCompatActivity {
 
         dir = new File(SPEECH_FOLDER_PATH);
 
-        //get file names
+        // Get file names
         fileNames = dir.listFiles();
     }
 
