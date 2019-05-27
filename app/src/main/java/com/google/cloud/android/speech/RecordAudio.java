@@ -237,8 +237,8 @@ public class RecordAudio extends AppCompatActivity
                         endTime = System.currentTimeMillis();
 
                         SharedPreferences.Editor editor = sharedPreferences.edit();
-                        // TODO: Time for speeches without timer
-//                        editor.putLong("timeElapsed", endTime - startTime);
+                        editor.putLong("timeElapsed", endTime - startTime);
+                        editor.commit();
                     }
 
                     // Stop listening
@@ -266,8 +266,6 @@ public class RecordAudio extends AppCompatActivity
 
                     // Timer on
                     if(displayTimer && timerFragment != null) {
-
-
                         timerFragment.startTimer();
                     } else {
                         // Timer off, capture time we started
@@ -276,7 +274,10 @@ public class RecordAudio extends AppCompatActivity
                     //TextView message = (TextView) findViewById(R.id.textView3);
                     //message.setText("Tap again to stop");
                     startButton.setBackground(getResources().getDrawable(R.drawable.ic_stop_red));
-                    startButton.setEnabled(false);
+
+                    // TODO: uncomment when done testing
+//                    startButton.setEnabled(false);
+
                     // Start listening
                     startVoiceRecorder();
 
@@ -475,6 +476,11 @@ public class RecordAudio extends AppCompatActivity
         // Set time elapsed in shared prefs
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putLong("timeElapsed", speechTimeMs);
+
+        // Exceeded max speech length
+        if (speechTimeMs >= timeLeftInMilliseconds) {
+            editor.putLong("overtime", speechTimeMs - timeLeftInMilliseconds);
+        }
         editor.commit();
     }
 

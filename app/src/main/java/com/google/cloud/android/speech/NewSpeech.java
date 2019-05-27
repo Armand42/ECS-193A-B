@@ -198,7 +198,7 @@ public class NewSpeech extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("A speech with this name already exists")
                 .setMessage("Please enter a different name for your speech.")
-                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setIcon(R.drawable.ic_baseline_warning_24px)
                 .show();
     }
 
@@ -206,7 +206,7 @@ public class NewSpeech extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Empty Speech Name")
                 .setMessage("Please enter a name for your speech.")
-                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setIcon(R.drawable.ic_baseline_warning_24px)
                 .show();
     }
 
@@ -214,7 +214,7 @@ public class NewSpeech extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Empty Speech")
                 .setMessage("Please enter text for your speech.")
-                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setIcon(R.drawable.ic_baseline_warning_24px)
                 .show();
     }
 
@@ -266,7 +266,7 @@ public class NewSpeech extends AppCompatActivity {
 
                 // A null listener allows the button to dismiss the dialog and take no further action.
                 .setNegativeButton(android.R.string.no, null)
-                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setIcon(R.drawable.ic_baseline_warning_24px)
                 .show();
     }
     @Override
