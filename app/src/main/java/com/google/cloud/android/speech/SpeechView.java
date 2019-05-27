@@ -171,7 +171,7 @@ public class SpeechView extends AppCompatActivity {
                             defaultEditor.commit();
 
                             File speechFolder = new File(SPEECH_FOLDER_PATH);
-                            recursiveDelete(speechFolder);
+                            FileService.recursiveDelete(speechFolder);
 
                             if (speechFolder.exists()) {
                                 throw new Exception("Error deleting script");
@@ -227,16 +227,7 @@ public class SpeechView extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void recursiveDelete(File fileOrDirectory) {
 
-        if (fileOrDirectory.isDirectory()) {
-            for (File child : fileOrDirectory.listFiles()) {
-                recursiveDelete(child);
-            }
-        }
-
-        fileOrDirectory.delete();
-    }
 
     private void getFileNames() {
         SPEECH_FOLDER_PATH = getFilesDir() + File.separator + "speechFiles" + File.separator + speechName;

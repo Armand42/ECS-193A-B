@@ -282,7 +282,7 @@ public class PastRunsFragment extends Fragment {
                             editor.commit();
 
                             File speechFolder = new File(runFolder);
-                            recursiveDelete(speechFolder);
+                            FileService.recursiveDelete(speechFolder);
 
                             playbackListItems.remove(position);
                             playbackListAdapter.notifyDataSetChanged();
@@ -303,13 +303,4 @@ public class PastRunsFragment extends Fragment {
                 .show();
     }
 
-    public void recursiveDelete(File fileOrDirectory) {
-        if (fileOrDirectory.isDirectory()) {
-            for (File child : fileOrDirectory.listFiles()) {
-                recursiveDelete(child);
-            }
-        }
-
-        fileOrDirectory.delete();
-    }
 }
