@@ -51,9 +51,18 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
 
         // Instantiate toolbar
         mTopToolbar = findViewById(R.id.my_toolbar);
+        setSupportActionBar(mTopToolbar);
+        mTopToolbar.setNavigationIcon(getDrawable(R.drawable.ic_help_black_24dp));
+        mTopToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToHowItWorks();
+            }
+        });
         mTopToolbar.setTitle("Home");
         mTopToolbar.setSubtitle(Html.fromHtml("<font color='#ffffff'>" + subTitleText + "</font>"));
-        setSupportActionBar(mTopToolbar);
+
+
 
         listView = findViewById(R.id.speechNames);
         registerForContextMenu(listView);
@@ -70,6 +79,13 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
         mTopToolbar.setTitle("Home");
         mTopToolbar.setSubtitle(Html.fromHtml("<font color='#ffffff'>" + subTitleText + "</font>"));
         setSupportActionBar(mTopToolbar);
+        mTopToolbar.setNavigationIcon(getDrawable(R.drawable.ic_help_black_24dp));
+        mTopToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToHowItWorks();
+            }
+        });
 
         getFileNames();
     }
@@ -107,6 +123,11 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemCli
     public void goToSpeechMenu(View view, String speechName) {
         Intent intent = new Intent(this, SpeechView.class);
         intent.putExtra("speechName", speechName);
+        startActivity(intent);
+    }
+
+    public void goToHowItWorks(){
+        Intent intent = new Intent(this, HowItWorks.class);
         startActivity(intent);
     }
 

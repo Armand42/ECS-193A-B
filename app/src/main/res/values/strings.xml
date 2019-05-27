@@ -53,5 +53,6 @@
     <string name="cancel_button">Cancel</string>
     <string name="new_speech">Add a new speech</string>
     <string name="diff_view">Diff View</string>
+    <string name="tutorial_intro">Welcome to Speaker Prep Pal! We are here to help you practice for your next big speech. Below is an index of all the screens you will encounter.</string>
 
 </resources>
