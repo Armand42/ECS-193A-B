@@ -1,6 +1,5 @@
 package com.google.cloud.android.speech;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.icu.text.SimpleDateFormat;
@@ -26,23 +25,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 
-import static java.nio.file.Paths.get;
-
-
 public class SpeechPerformance extends BaseActivity {
 
-    private String speechName, speechFolderPath, jsonFilePath;
-    private static String apiResultPath;
-    private static String selectedRunMediaPath;
-    private static String AUDIO_FILE_PATH;
-    private static final String TAG = "MyActivity";
-    private String prevActivity;
-    long timeElapsed;
-    SharedPreferences sharedPreferences;
-    Boolean videoPlaybackState;
-    String speechRunFolder;
-    private ProgressDialog dialog;
-    EditText notes;
+    private String speechName, speechFolderPath, jsonFilePath, apiResultPath, selectedRunMediaPath,
+            prevActivity, speechRunFolder;
+    private SharedPreferences sharedPreferences;
+    private Boolean videoPlaybackState;
+    private EditText notes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,13 +39,13 @@ public class SpeechPerformance extends BaseActivity {
         setContentView(R.layout.activity_speech_performance);
         Intent intent = getIntent();
         speechName = intent.getStringExtra("speechName");
-        Log.e("speechName", speechName);
         prevActivity = intent.getStringExtra("prevActivity");
         String selectedRun = intent.getStringExtra("selectedRun");
         SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
-        notes = (EditText) findViewById(R.id.note_body);
+
+        notes = findViewById(R.id.note_body);
         notes.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -66,8 +55,8 @@ public class SpeechPerformance extends BaseActivity {
             }
         });
 
-
         TextView speechTime = findViewById(R.id.speechTime);
+
         // Set speech time textview to the elapsed time from this speech
         long timeElapsed = sharedPreferences.getLong("timeElapsed", 0);
         long overtime = sharedPreferences.getLong("overtime", 0);
@@ -77,7 +66,7 @@ public class SpeechPerformance extends BaseActivity {
 
         String baseTimeInfo = String.format("Speech time: %02d:%02d", minutes, seconds);
 
-        // At least a second over your target time
+        // if at least a second over your target time
         if (overtime >= 1000) {
             int overtimeMins = (int) overtime / 60000;
             int overtimeSecs = (int) overtime % 60000 / 1000;
@@ -86,12 +75,12 @@ public class SpeechPerformance extends BaseActivity {
 
             baseTimeInfo += extraTimeInfo;
         }
-
         speechTime.setText(baseTimeInfo);
 
         speechFolderPath = getApplicationContext().getFilesDir() + File.separator + "speechFiles" + File.separator
                 + speechName;
 
+        //setting the speechRunFolder based on the previous screen
         if (prevActivity.equals("recording")) {
             int speechRunNum = (sharedPreferences.getInt("currRun", -1) - 1);
             speechRunFolder = "Run " + speechRunNum;
@@ -103,6 +92,7 @@ public class SpeechPerformance extends BaseActivity {
 
         apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
 
+        //setting the correct media path to pass to the playback screen based on whether a video exists
         String videoFilePath = speechFolderPath + File.separator + speechRunFolder + File.separator + "video.mp4";
         File videoFile = new File(videoFilePath);
 
@@ -111,24 +101,18 @@ public class SpeechPerformance extends BaseActivity {
         } else {
             selectedRunMediaPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "audio.wav";
         }
-        Log.d("apiResultPath", apiResultPath);
-        AUDIO_FILE_PATH = intent.getStringExtra("audioFilePath");
 
         videoPlaybackState = sharedPreferences.getBoolean("videoPlayback", false);
+
         int percentAccuracy = 100;
 
         jsonFilePath = speechFolderPath + File.separator + speechRunFolder + File.separator + "metadata";
         File jsonFile = new File(jsonFilePath);
 
         if (!jsonFile.exists()) {
+            //creating a new JSON if the run does not already exist
             percentAccuracy = calculateAccuracy();
             setAccuracy(percentAccuracy);
-
-            if (percentAccuracy == 100) {
-                Button diffViewBtn = (Button) findViewById(R.id.diffView);
-                diffViewBtn.setVisibility(View.GONE);
-            }
-
 
             final JSONObject jsonObj = new JSONObject();
             try {
@@ -151,6 +135,7 @@ public class SpeechPerformance extends BaseActivity {
                 e.printStackTrace();
             }
         } else {
+            //reading from the existing JSON if it exists
             try {
                 JSONObject jsonObj = new JSONObject(FileService.readFromFile(jsonFilePath));
                 percentAccuracy = jsonObj.getInt("percentAccuracy");
@@ -165,11 +150,12 @@ public class SpeechPerformance extends BaseActivity {
             }
 
         }
+
         // Performance message changes based on accuracy.
         setPerformanceMessage(percentAccuracy);
 
         // Set toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        Toolbar toolbar = findViewById(R.id.my_toolbar);
         toolbar.setSubtitle(defaultPreferences.getString(speechName, null));
         toolbar.setTitle("Speech Performance");
         setSupportActionBar(toolbar);
@@ -185,28 +171,8 @@ public class SpeechPerformance extends BaseActivity {
 
     }
 
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onStart() {
-        TextView speechTime = findViewById(R.id.speechTime);
-        if (timeElapsed == 0)
-            speechTime.setVisibility(View.GONE);
-
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
     public void goToPlayback(View view) {
-        saveSpeech();
+        saveSpeechNotes();
         Intent intent = new Intent(this, PlayBack.class);
         intent.putExtra("speechName", speechName);
         intent.putExtra("selectedRunMediaPath", selectedRunMediaPath);
@@ -215,7 +181,7 @@ public class SpeechPerformance extends BaseActivity {
     }
 
     public void goToDiffView(View view) {
-        saveSpeech();
+        saveSpeechNotes();
         Intent intent = new Intent(this, DiffView.class);
         intent.putExtra("speechName", speechName);
         intent.putExtra("apiResultPath", apiResultPath);
@@ -231,7 +197,7 @@ public class SpeechPerformance extends BaseActivity {
     }
 
     public void goToMainMenu(View view) {
-        saveSpeech();
+        saveSpeechNotes();
         Intent intent = new Intent(this, MainMenu.class);
         intent.putExtra("speechName", speechName);
         startActivity(intent);
@@ -239,15 +205,11 @@ public class SpeechPerformance extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-
         return super.onOptionsItemSelected(item);
     }
 
 
     private int calculateAccuracy() {
-
         String scriptText = "EMPTY SCRIPT FILE :(";
         String speechToText = "EMPTY SPEECH FILE :(";
         diff_match_patch dmp = new diff_match_patch();
@@ -307,7 +269,7 @@ public class SpeechPerformance extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        saveSpeech();
+        saveSpeechNotes();
         Intent intent = new Intent(SpeechPerformance.this, SpeechView.class);
         intent.putExtra("speechName", speechName);
         intent.putExtra("prevActivity", "speechPerformance");
@@ -321,8 +283,8 @@ public class SpeechPerformance extends BaseActivity {
         if (percentAccuracy == 100) {
             msg = "You didn't make a single mistake! Good job.";
 
-            // Hide diffview button
-            Button diffViewButton = (Button) findViewById(R.id.diffView);
+            // Hide diffview button if the user got 100% accuracy
+            Button diffViewButton = findViewById(R.id.diffView);
             diffViewButton.setVisibility(View.GONE);
         } else if (percentAccuracy > 70) {
             msg = "You're almost there! Keep practicing.";
@@ -337,7 +299,7 @@ public class SpeechPerformance extends BaseActivity {
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    private void saveSpeech() {
+    private void saveSpeechNotes() {
         try {
             JSONObject jsonObj = new JSONObject(FileService.readFromFile(jsonFilePath));
             jsonObj.put("note", notes.getText().toString());
