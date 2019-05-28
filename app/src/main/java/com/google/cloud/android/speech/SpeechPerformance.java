@@ -193,9 +193,6 @@ public class SpeechPerformance extends BaseActivity {
 
     @Override
     protected void onStart() {
-        TextView speechTime = findViewById(R.id.speechTime);
-        if (timeElapsed == 0)
-            speechTime.setVisibility(View.GONE);
 
         super.onStart();
     }
