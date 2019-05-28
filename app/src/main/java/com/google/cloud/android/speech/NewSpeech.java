@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +21,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.content.SharedPreferences;
 
@@ -61,7 +64,9 @@ public class NewSpeech extends AppCompatActivity {
         EditText speechNameET = findViewById(R.id.speechName);
         speechNameET.addTextChangedListener(new TextValidator(speechNameET) {
             @Override public void validate(TextView textView, String text) {
-                /* Validation code here */
+                String regex = "^[a-zA-Z0-9]+$";
+
+                Pattern pattern = Pattern.compile(regex);
             }
         });
 
@@ -123,67 +128,80 @@ public class NewSpeech extends AppCompatActivity {
         EditText speechNameET = findViewById(R.id.speechName);
         String speechDisplayName = speechNameET.getText().toString();
         speechDisplayName = speechDisplayName.trim();
-        String filePath;
-        String selectedSpeechName = defaultPreferences.getString(speechFileName, null);
-        // Get the value for the run counter
-        speechNameSet = defaultPreferences.getStringSet("speechNameSet", new HashSet<String>());
 
-        // Check if speech script directory exists
-        if (speechDisplayName.isEmpty()) {
-            emptySpeechNameDialog();
-        } else if (speechText.isEmpty()) {
-            emptySpeechContentDialog();
-        } else if (prevActivity.equals("mainMenu") && speechNameSet.contains(speechDisplayName)) {
-            speechAlreadyExistsDialog();
-        } else if (prevActivity.equals("scriptView")) {
-            if (!selectedSpeechName.equals(speechDisplayName) && speechNameSet.contains(speechDisplayName))
+        /* Validate speech name */
+        String regex = "^[a-zA-Z0-9,_.\\-]+$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(speechDisplayName);
+
+        // Valid name
+        if (matcher.matches()){
+            String filePath;
+            String selectedSpeechName = defaultPreferences.getString(speechFileName, null);
+            // Get the value for the run counter
+            speechNameSet = defaultPreferences.getStringSet("speechNameSet", new HashSet<String>());
+
+            // Check if speech script directory exists
+            if (speechDisplayName.isEmpty()) {
+                emptySpeechNameDialog();
+            } else if (speechText.isEmpty()) {
+                emptySpeechContentDialog();
+            } else if (prevActivity.equals("mainMenu") && speechNameSet.contains(speechDisplayName)) {
                 speechAlreadyExistsDialog();
-        } else if (!speechNameSet.contains(speechDisplayName)) {
-            Log.d("NEWSPEECH", "SPEECH NOT IN SET");
-            try {
-                int counter = defaultPreferences.getInt("counter", 1);
-                String speechName = "speech" + counter;
+            } else if (prevActivity.equals("scriptView")) {
+                if (!selectedSpeechName.equals(speechDisplayName) && speechNameSet.contains(speechDisplayName))
+                    speechAlreadyExistsDialog();
+            } else if (!speechNameSet.contains(speechDisplayName)) {
+                Log.d("NEWSPEECH", "SPEECH NOT IN SET");
+                try {
+                    int counter = defaultPreferences.getInt("counter", 1);
+                    String speechName = "speech" + counter;
 
-                SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + "speechFiles" + File.separator + speechName;
+                    SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + "speechFiles" + File.separator + speechName;
 
-                File f = new File(SPEECH_SCRIPT_PATH, "speech-script");
-                f.mkdirs();
+                    File f = new File(SPEECH_SCRIPT_PATH, "speech-script");
+                    f.mkdirs();
 
-                sharedPref = getSharedPreferences(speechName, MODE_PRIVATE);
+                    sharedPref = getSharedPreferences(speechName, MODE_PRIVATE);
 
-                //CREATE the shared preference file and add necessary values
-                SharedPreferences.Editor editor = sharedPref.edit();
-                SharedPreferences.Editor defaultEditor = defaultPreferences.edit();
-                JSONObject jsonObj = new JSONObject();
-                editor.putInt("currRun", 1);
-                editor.putInt("currScriptNum", 1);
-                editor.putString("runDisplayNameToFilepath", jsonObj.toString());
-                editor.commit();
+                    //CREATE the shared preference file and add necessary values
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    SharedPreferences.Editor defaultEditor = defaultPreferences.edit();
+                    JSONObject jsonObj = new JSONObject();
+                    editor.putInt("currRun", 1);
+                    editor.putInt("currScriptNum", 1);
+                    editor.putString("runDisplayNameToFilepath", jsonObj.toString());
+                    editor.commit();
 
-                speechNameSet.add(speechDisplayName);
-                defaultEditor.putStringSet("speechNameSet", speechNameSet);
-                defaultEditor.putInt("counter", counter + 1);
-                defaultEditor.putString(speechName, speechDisplayName);
-                defaultEditor.commit();
+                    speechNameSet.add(speechDisplayName);
+                    defaultEditor.putStringSet("speechNameSet", speechNameSet);
+                    defaultEditor.putInt("counter", counter + 1);
+                    defaultEditor.putString(speechName, speechDisplayName);
+                    defaultEditor.commit();
 
-                /* Write speech text to file */
-                filePath = FileService.writeToFile(speechName + "1", speechText,
-                        SPEECH_SCRIPT_PATH + File.separator + "speech-script");
-                Log.d("NEWSPEECH", filePath);
+                    /* Write speech text to file */
+                    filePath = FileService.writeToFile(speechName + "1", speechText,
+                            SPEECH_SCRIPT_PATH + File.separator + "speech-script");
+                    Log.d("NEWSPEECH", filePath);
 
-                editor.putString("filepath", filePath);
-                editor.commit();
+                    editor.putString("filepath", filePath);
+                    editor.commit();
 
-                // Send back to this speech's menu
-                Intent intent = new Intent(this, SpeechView.class);
-                intent.putExtra("speechName", speechName);
+                    // Send back to this speech's menu
+                    Intent intent = new Intent(this, SpeechView.class);
+                    intent.putExtra("speechName", speechName);
 
-                startActivity(intent);
-            } catch (Exception e) {
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        e.toString(), Toast.LENGTH_SHORT);
-                toast.show();
+                    startActivity(intent);
+                } catch (Exception e) {
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            e.toString(), Toast.LENGTH_SHORT);
+                    toast.show();
+                }
             }
+        } else {
+            // Display error on layout
+            TextView errors = (TextView) findViewById(R.id.speechNameError);
+            errors.setText("Your speech name can only include alphanumeric characters, commas, periods, and dashes");
         }
     }
 
