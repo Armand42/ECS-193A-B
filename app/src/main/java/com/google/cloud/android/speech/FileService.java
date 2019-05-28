@@ -60,7 +60,7 @@ public class FileService {
 
             //second argument of FileOutputStream constructor indicates whether
             //to append or create new file if one exists
-            outputStream = new FileOutputStream(file, true);
+            outputStream = new FileOutputStream(file, false);
 
             outputStream.write(speechText.getBytes());
             outputStream.flush();

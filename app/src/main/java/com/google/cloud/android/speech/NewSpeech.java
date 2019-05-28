@@ -151,6 +151,7 @@ public class NewSpeech extends AppCompatActivity {
                 editor.putInt("currRun", 1);
                 editor.putInt("currScriptNum", 1);
                 editor.putString("runDisplayNameToFilepath", jsonObj.toString());
+                editor.putStringSet("runNames", new HashSet<String>());
                 editor.commit();
 
                 speechNameSet.add(speechDisplayName);

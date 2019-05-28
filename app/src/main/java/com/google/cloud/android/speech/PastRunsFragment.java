@@ -50,6 +50,7 @@ public class PastRunsFragment extends Fragment {
     PlaybackListAdapter playbackListAdapter;
     SharedPreferences sharedPreferences;
     ListView listView;
+    private Set<String> runNames;
 
     public PastRunsFragment(String name, File[] files, String SFP, File directory) {
         speechName = name;
@@ -161,49 +162,64 @@ public class PastRunsFragment extends Fragment {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         final int index = info.position;
         final String originalRunName = playbackListItems.get(index).runNum;
+        runNames = sharedPreferences.getStringSet("runNames", null);
         int i = item.getItemId();
         if (i == R.id.edit) {
-            final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("Rename run");
-
             LinearLayout layout = new LinearLayout(getContext());
             layout.setOrientation(LinearLayout.VERTICAL);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(50, 0, 30, 0);
 
+            final AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
+                    .setTitle("Rename run")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //Do nothing here because we override this button later to change the close behaviour.
+                            //However, we still need this because on older versions of Android unless we
+                            //pass a handler the button doesn't get instantiated
+                        }
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .setCancelable(false)
+                    .setView(layout);;
+
             final EditText textBox = new EditText(getContext());
-
-
             textBox.setInputType(InputType.TYPE_CLASS_TEXT);
             textBox.setSingleLine();
             textBox.setText(originalRunName);
             textBox.setSelection(textBox.getText().length());
             layout.addView(textBox, params);
 
-            builder.setView(layout);
+
+            final AlertDialog dialog = builder.create();
+
+            dialog.getWindow().setSoftInputMode(
+                    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+            dialog.show();
 
             // Set up the buttons
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    userInputtedRunName = textBox.getText().toString();
-                    setNewRunName(originalRunName, userInputtedRunName, index);
-                    playbackListAdapter.notifyDataSetChanged();
+                public void onClick(View v) {
+                    Boolean wantToCloseDialog = false;
+                    String userInput = textBox.getText().toString().trim();
+                    if (userInput.isEmpty()) {
+                        textBox.setError("The run name cannot be empty.");
+                    } else if (runNames.contains(userInput)) {
+                        textBox.setError("This run name already exists.");
+                    } else {
+                        userInputtedRunName = textBox.getText().toString();
+                        setNewRunName(originalRunName, userInputtedRunName, index);
+                        playbackListAdapter.notifyDataSetChanged();
+                        wantToCloseDialog = true;
+                    }
+
+                    if (wantToCloseDialog)
+                        dialog.dismiss();
                 }
             });
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-
-            AlertDialog alertToShow = builder.create();
-            alertToShow.getWindow().setSoftInputMode(
-                    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-            alertToShow.show();
-
             return true;
         } else if (i == R.id.deleteRun) {
             deleteRun(originalRunName, index);
@@ -235,8 +251,12 @@ public class PastRunsFragment extends Fragment {
 
             FileService.writeToFile("metadata", jsonObj.toString(), runFolder);
 
+            runNames = sharedPreferences.getStringSet("runNames", null);
+            runNames.remove(oldRunName);
+            runNames.add(newRunName);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("runDisplayNameToFilepath", runJsonObj.toString());
+            editor.putStringSet("runNames", runNames);
             editor.commit();
 
         } catch (IOException e) {

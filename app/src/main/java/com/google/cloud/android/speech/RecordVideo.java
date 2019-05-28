@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 
@@ -34,7 +35,7 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
         String speechFolderPath = getApplicationContext().getFilesDir() + File.separator + "speechFiles" + File.separator + speechName;
         String speechRunFolder = "Run " + sharedPreferences.getInt("currRun", -1);
 
-        apiResultPath = speechFolderPath + File.separator + speechRunFolder;
+        apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
     }
 
     @Override
@@ -85,7 +86,7 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
                         @Override
                         public void run() {
                             try {
-                                FileService.writeToFile("apiResult", text, apiResultPath);
+                                appendToFile(apiResultPath, text);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             } catch (Exception e) {
@@ -141,6 +142,27 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
 
     @Override
     public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    // Append result of speech to file
+    private void appendToFile(String speechScriptPath, String apiResultText) throws IOException {
+
+        File file = new File(speechScriptPath);
+
+        //This point and below is responsible for the write operation
+        FileOutputStream outputStream = null;
+        try {
+            //second argument of FileOutputStream constructor indicates whether
+            //to append or create new file if one exists -- for now we're creating a new file
+            outputStream = new FileOutputStream(file, true);
+
+            outputStream.write(apiResultText.getBytes());
+            outputStream.flush();
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 

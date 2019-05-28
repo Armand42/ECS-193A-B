@@ -66,7 +66,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
@@ -1022,6 +1024,9 @@ public class CameraToVideo extends Fragment
         Log.d("CAMERA2VIDEO", "Shared Pref updated");
         SharedPreferences.Editor editor = sharedPref.edit();
         String runDisplayNameToFilepath = sharedPref.getString("runDisplayNameToFilepath", null);
+        Set<String> runNames = sharedPref.getStringSet("runNames", null);
+        runNames.add(speechRunFolder);
+
         JSONObject jsonObj = null;
         try {
             jsonObj = new JSONObject(runDisplayNameToFilepath);
@@ -1036,6 +1041,7 @@ public class CameraToVideo extends Fragment
             }
         }
         editor.putString("runDisplayNameToFilepath", jsonObj.toString());
+        editor.putStringSet("runNames", runNames);
         editor.putString("videoFilePath", VIDEO_FILE_PATH);
         editor.putInt("currRun", 1 + sharedPref.getInt("currRun", -1));
         editor.commit();

@@ -60,6 +60,8 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class RecordAudio extends AppCompatActivity
@@ -346,6 +348,10 @@ public class RecordAudio extends AppCompatActivity
 
         File f = new File(speechFolderPath, speechRunFolder);
         f.mkdirs();
+
+        Set<String> runNames = sharedPreferences.getStringSet("runNames", null);
+        runNames.add(speechRunFolder);
+        sharedPreferences.edit().putStringSet("runNames", runNames).commit();
     }
 
     // Stop voice recording
