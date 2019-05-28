@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -55,6 +56,14 @@ public class NewSpeech extends AppCompatActivity {
             }
         });
         defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Set up listener for speech name validation
+        EditText speechNameET = findViewById(R.id.speechName);
+        speechNameET.addTextChangedListener(new TextValidator(speechNameET) {
+            @Override public void validate(TextView textView, String text) {
+                /* Validation code here */
+            }
+        });
 
         // Get extras for editing a script (if they exist)
         Intent intent = getIntent();
