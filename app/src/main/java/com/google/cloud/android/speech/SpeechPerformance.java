@@ -171,6 +171,23 @@ public class SpeechPerformance extends BaseActivity {
 
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onStart() {
+
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
     public void goToPlayback(View view) {
         saveSpeechNotes();
         Intent intent = new Intent(this, PlayBack.class);
