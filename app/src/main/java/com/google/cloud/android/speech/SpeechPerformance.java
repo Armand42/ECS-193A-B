@@ -31,7 +31,7 @@ import static java.nio.file.Paths.get;
 
 public class SpeechPerformance extends BaseActivity {
 
-    private String speechName, speechFolderPath,jsonFilePath;
+    private String speechName, speechFolderPath, jsonFilePath;
     private static String apiResultPath;
     private static String selectedRunMediaPath;
     private static String AUDIO_FILE_PATH;
@@ -130,7 +130,6 @@ public class SpeechPerformance extends BaseActivity {
             }
 
 
-
             final JSONObject jsonObj = new JSONObject();
             try {
                 jsonObj.put("percentAccuracy", percentAccuracy);
@@ -195,7 +194,7 @@ public class SpeechPerformance extends BaseActivity {
     @Override
     protected void onStart() {
         TextView speechTime = findViewById(R.id.speechTime);
-        if(timeElapsed==0)
+        if (timeElapsed == 0)
             speechTime.setVisibility(View.GONE);
 
         super.onStart();
@@ -206,24 +205,12 @@ public class SpeechPerformance extends BaseActivity {
         super.onStop();
     }
 
-    public void goToPastRuns(View view) {
-        Intent intent = new Intent(this, SpeechView.class);
-        intent.putExtra("speechName", speechName);
-        startActivity(intent);
-    }
-
     public void goToPlayback(View view) {
         saveSpeech();
         Intent intent = new Intent(this, PlayBack.class);
         intent.putExtra("speechName", speechName);
         intent.putExtra("selectedRunMediaPath", selectedRunMediaPath);
         intent.putExtra("speechRunFolder", speechRunFolder);
-        startActivity(intent);
-    }
-
-    public void goToSpeechView(View view) {
-        Intent intent = new Intent(this, SpeechView.class);
-        intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
 
@@ -250,18 +237,9 @@ public class SpeechPerformance extends BaseActivity {
         startActivity(intent);
     }
 
-    public void addToSharedPreferences(String apiResultText) {
-        //CREATE the shared preference file and add necessary values
-        SharedPreferences sharedPref = getSharedPreferences(speechName, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("apiResult", apiResultPath);
-        editor.commit();
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
 
 
         return super.onOptionsItemSelected(item);
@@ -346,28 +324,27 @@ public class SpeechPerformance extends BaseActivity {
             // Hide diffview button
             Button diffViewButton = (Button) findViewById(R.id.diffView);
             diffViewButton.setVisibility(View.GONE);
-        }
-        else if (percentAccuracy > 70) {
+        } else if (percentAccuracy > 70) {
             msg = "You're almost there! Keep practicing.";
-        }
-        else {
+        } else {
             msg = "Practice makes perfect, keep it up!";
         }
         performanceMessage.setText(msg);
     }
+
     public void hideKeyboard(View view) {
-        InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(NewSpeech.INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(NewSpeech.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
-    private void saveSpeech()
-    {
-        try{
-        JSONObject jsonObj = new JSONObject(FileService.readFromFile(jsonFilePath));
-        jsonObj.put("note", notes.getText().toString());
-        FileService.writeToFile("metadata", jsonObj.toString(),
-                speechFolderPath + File.separator + speechRunFolder);
+
+    private void saveSpeech() {
+        try {
+            JSONObject jsonObj = new JSONObject(FileService.readFromFile(jsonFilePath));
+            jsonObj.put("note", notes.getText().toString());
+            FileService.writeToFile("metadata", jsonObj.toString(),
+                    speechFolderPath + File.separator + speechRunFolder);
         } catch (JSONException e) {
-        e.printStackTrace();
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
