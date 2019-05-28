@@ -18,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -42,10 +41,6 @@ public class NewSpeech extends AppCompatActivity {
         EditText speechName = (EditText) findViewById(R.id.speechName);
         EditText speechText = (EditText) findViewById(R.id.editText);
 
-        // Set what happens when focus changes for our EditTexts
-        setOnFocusChangeListener(speechName);
-        setOnFocusChangeListener(speechText);
-
         // Set toolbar
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
@@ -59,16 +54,6 @@ public class NewSpeech extends AppCompatActivity {
             }
         });
         defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        // Set up listener for speech name validation
-        EditText speechNameET = findViewById(R.id.speechName);
-        speechNameET.addTextChangedListener(new TextValidator(speechNameET) {
-            @Override public void validate(TextView textView, String text) {
-                String regex = "^[a-zA-Z0-9]+$";
-
-                Pattern pattern = Pattern.compile(regex);
-            }
-        });
 
         // Get extras for editing a script (if they exist)
         Intent intent = getIntent();
@@ -91,7 +76,7 @@ public class NewSpeech extends AppCompatActivity {
     }
 
     public void hideKeyboard(View view) {
-        InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(NewSpeech.INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(NewSpeech.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
@@ -114,8 +99,9 @@ public class NewSpeech extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void goToSpeechView(View view) {
+    public void goToSpeechView(View view, String speechName) {
         Intent intent = new Intent(this, SpeechView.class);
+        intent.putExtra("speechName", speechName);
         startActivity(intent);
     }
 
@@ -130,12 +116,12 @@ public class NewSpeech extends AppCompatActivity {
         speechDisplayName = speechDisplayName.trim();
 
         /* Validate speech name */
-        String regex = "^[a-zA-Z0-9,_.\\-]+$";
+        String regex = "^[a-zA-Z0-9,_.\\- ]+$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(speechDisplayName);
 
         // Valid name
-        if (matcher.matches()){
+        if (matcher.matches()) {
             String filePath;
             String selectedSpeechName = defaultPreferences.getString(speechFileName, null);
             // Get the value for the run counter
@@ -187,11 +173,8 @@ public class NewSpeech extends AppCompatActivity {
                     editor.putString("filepath", filePath);
                     editor.commit();
 
-                    // Send back to this speech's menu
-                    Intent intent = new Intent(this, SpeechView.class);
-                    intent.putExtra("speechName", speechName);
+                    goToSpeechView(view, speechName);
 
-                    startActivity(intent);
                 } catch (Exception e) {
                     Toast toast = Toast.makeText(getApplicationContext(),
                             e.toString(), Toast.LENGTH_SHORT);
@@ -200,17 +183,7 @@ public class NewSpeech extends AppCompatActivity {
             }
         } else {
             // Display error on layout
-            TextView errors = (TextView) findViewById(R.id.speechNameError);
-            errors.setText("Your speech name can only include alphanumeric characters, commas, periods, and dashes");
-        }
-    }
-
-    private void printAllFilesInDir() {
-        File dir = new File(SPEECH_SCRIPT_PATH);
-        // Get all files saved to speech scripts
-        File[] files = dir.listFiles();
-        for (File file : files) {
-            System.out.println(file);
+            invalidSpeechNameDialog();
         }
     }
 
@@ -225,6 +198,14 @@ public class NewSpeech extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("A speech with this name already exists")
                 .setMessage("Please enter a different name for your speech.")
+                .setIcon(R.drawable.ic_baseline_warning_24px)
+                .show();
+    }
+
+    public void invalidSpeechNameDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Invalid speech name.")
+                .setMessage("Your speech name can only include alphanumeric characters, commas, periods, and dashes.")
                 .setIcon(R.drawable.ic_baseline_warning_24px)
                 .show();
     }
@@ -245,65 +226,49 @@ public class NewSpeech extends AppCompatActivity {
                 .show();
     }
 
-    public void overwriteExistingSpeech(final String speechFileName, final String speechContent, final String speechDisplayName) {
-        new AlertDialog.Builder(this)
-                .setTitle("Edit Speech")
-                .setMessage("Are you sure you want to edit this speech?")
-                // Specifying a listener allows you to take an action before dismissing the dialog.
-                // The dialog is automatically dismissed when a dialog button is clicked.
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Continue with delete operation
-                        try {
-                            SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + "speechFiles" + File.separator + speechFileName;
+    public void overwriteExistingSpeech(View view, final String speechFileName, final String speechContent, final String speechDisplayName) {
+        SPEECH_SCRIPT_PATH = getFilesDir() + File.separator + "speechFiles" + File.separator + speechFileName;
 
-                            File f = new File(SPEECH_SCRIPT_PATH, "speech-script");
-                            f.mkdirs();
+        File f = new File(SPEECH_SCRIPT_PATH, "speech-script");
+        f.mkdirs();
 
+        sharedPref = getSharedPreferences(speechFileName, MODE_PRIVATE);
+        int currScriptNum = sharedPref.getInt("currScriptNum", -1) + 1;
 
-                            sharedPref = getSharedPreferences(speechFileName, MODE_PRIVATE);
-                            int currScriptNum = sharedPref.getInt("currScriptNum", -1) + 1;
+        SharedPreferences.Editor editor = sharedPref.edit();
+        SharedPreferences.Editor defaultEditor = defaultPreferences.edit();
 
-                            SharedPreferences.Editor editor = sharedPref.edit();
-                            SharedPreferences.Editor defaultEditor = defaultPreferences.edit();
+        editor.putInt("currScriptNum", currScriptNum);
+        editor.commit();
 
-                            editor.putInt("currScriptNum", currScriptNum);
-                            editor.commit();
+        speechNameSet.remove(defaultPreferences.getString(speechFileName, null));
+        speechNameSet.add(speechDisplayName);
+        defaultEditor.putString(speechFileName, speechDisplayName);
+        defaultEditor.putStringSet("speechNameSet", speechNameSet);
+        defaultEditor.commit();
 
-                            speechNameSet.remove(defaultPreferences.getString(speechFileName, null));
-                            speechNameSet.add(speechDisplayName);
-                            defaultEditor.putString(speechFileName, speechDisplayName);
-                            defaultEditor.putStringSet("speechNameSet", speechNameSet);
-                            defaultEditor.commit();
+        String filePath = null;
+        try {
+            filePath = FileService.writeToFile(speechFileName + currScriptNum, speechContent,
+                    SPEECH_SCRIPT_PATH + File.separator + "speech-script");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-                            String filePath = FileService.writeToFile(speechFileName + currScriptNum, speechContent,
-                                    SPEECH_SCRIPT_PATH + File.separator + "speech-script");
+        editor.putString("filepath", filePath);
+        editor.commit();
 
-                            editor.putString("filepath", filePath);
-                            editor.commit();
-                        } catch (Exception e) {
-                            Toast toast = Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT);
-                            toast.show();
-                        }
-
-                        Intent intent = new Intent(NewSpeech.this, MainMenu.class);
-                        startActivity(intent);
-                    }
-                })
-
-                // A null listener allows the button to dismiss the dialog and take no further action.
-                .setNegativeButton(android.R.string.no, null)
-                .setIcon(R.drawable.ic_baseline_warning_24px)
-                .show();
+        goToSpeechView(view, speechFileName);
     }
+
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         EditText speechName = (EditText) findViewById(R.id.speechName);
         EditText speechText = (EditText) findViewById(R.id.editText);
 
         String name = speechName.getText().toString();
 
-        if(!(name.isEmpty() && speechText.getText().toString().isEmpty()) && prevActivity.equals("mainMenu")) {
+        if (!(name.isEmpty() && speechText.getText().toString().isEmpty()) && prevActivity.equals("mainMenu")) {
             new AlertDialog.Builder(this)
                     .setTitle("Exit new speech?")
                     .setMessage("Your new speech will not be saved.")
@@ -321,9 +286,8 @@ public class NewSpeech extends AppCompatActivity {
                     .setNegativeButton(android.R.string.no, null)
                     .setIcon(R.drawable.ic_baseline_warning_24px)
                     .show();
-        }
-        else{
-        super.onBackPressed();
+        } else {
+            super.onBackPressed();
         }
     }
 

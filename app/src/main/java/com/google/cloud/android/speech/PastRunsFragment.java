@@ -44,13 +44,11 @@ import static android.content.Context.MODE_PRIVATE;
 import static android.support.v4.content.ContextCompat.getSystemService;
 
 public class PastRunsFragment extends Fragment {
-    private String speechName, userInputtedRunName;
+    private String speechName, userInputtedRunName, SPEECH_FOLDER_PATH;
     private File fileNames[], dir;
     ArrayList<PlaybackListItem> playbackListItems;
     PlaybackListAdapter playbackListAdapter;
-    private String SPEECH_FOLDER_PATH;
     SharedPreferences sharedPreferences;
-
     ListView listView;
 
     public PastRunsFragment(String name, File[] files, String SFP, File directory) {
@@ -60,16 +58,15 @@ public class PastRunsFragment extends Fragment {
         dir = directory;
     }
 
-    public PastRunsFragment(){}
+    public PastRunsFragment() {
+    }
 
     @Override
-    public void onViewCreated(View view,
-                              Bundle savedInstanceState) {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         TextView noVid = getView().findViewById(R.id.text_view_id);
         sharedPreferences = getActivity().getSharedPreferences(speechName, MODE_PRIVATE);
         if (fileNames != null) {
 
-            // Connect this adapter to a listview to be populated
             listView = getView().findViewById(R.id.speechNames);
             registerForContextMenu(listView);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -101,9 +98,7 @@ public class PastRunsFragment extends Fragment {
                 e.printStackTrace();
             }
         }
-        Log.d("past runs fragment", "playbackListItems.size()" + playbackListItems.size());
         if (playbackListItems != null && playbackListItems.size() == 0) {
-//            Log.d("past runs", );
             listView.setVisibility(View.GONE);
             noVid.setVisibility(View.VISIBLE);
         } else {
@@ -118,9 +113,9 @@ public class PastRunsFragment extends Fragment {
 
         for (int i = 0; i < files.length; i++) {
             String runFilePath = files[i].getName();
-            if (runFilePath.startsWith("run")) {
+            if (runFilePath.startsWith("Run")) {
                 String jsonFilePath = files[i].toString() + File.separator + "metadata";
-                Log.d("playbacklist", "jsonFilePath" + jsonFilePath);
+
                 Integer percentAccuracy = 0;
                 String date = "", runDisplayName = "";
                 JSONObject jsonObj = null;
@@ -282,7 +277,7 @@ public class PastRunsFragment extends Fragment {
                             editor.commit();
 
                             File speechFolder = new File(runFolder);
-                            recursiveDelete(speechFolder);
+                            FileService.recursiveDelete(speechFolder);
 
                             playbackListItems.remove(position);
                             playbackListAdapter.notifyDataSetChanged();
@@ -303,13 +298,4 @@ public class PastRunsFragment extends Fragment {
                 .show();
     }
 
-    public void recursiveDelete(File fileOrDirectory) {
-        if (fileOrDirectory.isDirectory()) {
-            for (File child : fileOrDirectory.listFiles()) {
-                recursiveDelete(child);
-            }
-        }
-
-        fileOrDirectory.delete();
-    }
 }

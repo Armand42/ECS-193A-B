@@ -1,8 +1,5 @@
 package com.google.cloud.android.speech;
 
-import android.util.Log;
-import android.widget.Toast;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -60,9 +57,10 @@ public class FileService {
         try {
             if(!file.exists())
                 file.createNewFile();
+
             //second argument of FileOutputStream constructor indicates whether
-            //to append or create new file if one exists -- for now we're creating a new file
-            outputStream = new FileOutputStream(file, false);
+            //to append or create new file if one exists
+            outputStream = new FileOutputStream(file, true);
 
             outputStream.write(speechText.getBytes());
             outputStream.flush();
@@ -73,5 +71,16 @@ public class FileService {
         }
 
         return file.toString();
+    }
+
+    public static void recursiveDelete(File fileOrDirectory) {
+
+        if (fileOrDirectory.isDirectory()) {
+            for (File child : fileOrDirectory.listFiles()) {
+                recursiveDelete(child);
+            }
+        }
+
+        fileOrDirectory.delete();
     }
 }

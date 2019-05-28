@@ -9,17 +9,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
-
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+
 
 public class RecordVideo extends BaseActivity implements IMainActivity, TimerFragment.OnFragmentInteractionListener {
     private String apiResultPath, speechName;
@@ -27,31 +21,25 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Create video record view
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        speechName = intent.getStringExtra("speechName");
 
+        speechName = intent.getStringExtra("speechName");
         sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
         setContentView(R.layout.record_video);
 
-        //if video and timerDisplay
-        //  then camerafragmentwithtimer
-//        Log.d("recordvideo", "timerdisplay is " + sharedPreferences.getBoolean("timerDisplay", false));
-//        Log.d("recordvideo", "displaySpeech is " + sharedPreferences.getBoolean("displaySpeech", false));
-
-
         this.setTitle("Record a Speech");
 
-
         String speechFolderPath = getApplicationContext().getFilesDir() + File.separator + "speechFiles" + File.separator + speechName;
-        String speechRunFolder = "run" + sharedPreferences.getInt("currRun", -1);
+        String speechRunFolder = "Run " + sharedPreferences.getInt("currRun", -1);
 
-        apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
+        apiResultPath = speechFolderPath + File.separator + speechRunFolder;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Inflate the menu; this adds items to the action bar if it is present
         getMenuInflater().inflate(R.menu.base_menu, menu);
         return true;
     }
@@ -59,13 +47,12 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
-
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     protected void onStart() {
+        // Start recording
         super.onStart();
         getFragmentManager().beginTransaction()
                 .replace(R.id.container, CameraToVideo.newInstance())
@@ -98,9 +85,10 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
                         @Override
                         public void run() {
                             try {
-                                appendToFile(apiResultPath, text);
-
+                                FileService.writeToFile("apiResult", text, apiResultPath);
                             } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                             if (isFinal) {
@@ -110,26 +98,6 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
                     });
                 }
             };
-
-
-    private void appendToFile(String speechScriptPath, String apiResultText) throws IOException {
-        File file = new File(speechScriptPath);
-        Log.d("RECORDACTIVITY", "APPENDING TO FILE");
-        //This point and below is responsible for the write operation
-        FileOutputStream outputStream = null;
-        try {
-            //second argument of FileOutputStream constructor indicates whether
-            //to append or create new file if one exists -- for now we're creating a new file
-            outputStream = new FileOutputStream(file, true);
-
-            outputStream.write(apiResultText.getBytes());
-            outputStream.flush();
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
 
     public void goToSpeechPerformance() {
         Intent intent = new Intent(this, SpeechPerformance.class);
@@ -143,22 +111,19 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
         // Start taking action for back press
         final Intent intent = new Intent(RecordVideo.this, SpeechView.class);
         intent.putExtra("speechName", speechName);
+        //alerts user to ensure that they want to leave recording
         new AlertDialog.Builder(this)
                 .setTitle("Exit recording?")
                 .setMessage("Your current speech run will be lost.")
-
                 // Specifying a listener allows you to take an action before dismissing the dialog.
                 // The dialog is automatically dismissed when a dialog button is clicked.
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        // TODO: Delete this speech run
-
                         // Finish action for pressing back
                         startActivity(intent);
                         finish();
                     }
                 })
-
                 // A null listener allows the button to dismiss the dialog and take no further action.
                 .setNegativeButton(android.R.string.no, null)
                 .setIcon(R.drawable.ic_baseline_warning_24px)
@@ -179,23 +144,4 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
 
     }
 
-    private void displayWarningDialog(String destination) {
-        new AlertDialog.Builder(this)
-                .setTitle("Exit recording?")
-                .setMessage("Your current speech run will be lost.")
-
-                // Specifying a listener allows you to take an action before dismissing the dialog.
-                // The dialog is automatically dismissed when a dialog button is clicked.
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // TODO: Delete this speech run
-
-                    }
-                })
-
-                // A null listener allows the button to dismiss the dialog and take no further action.
-                .setNegativeButton(android.R.string.no, null)
-                .setIcon(R.drawable.ic_baseline_warning_24px)
-                .show();
-    }
 }

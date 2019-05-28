@@ -40,11 +40,6 @@
                 android:value=".SpeechView" />
         </activity>
         <activity
-            android:name=".TitleScreen"
-            android:screenOrientation="portrait">
-
-        </activity>
-        <activity
             android:name=".BaseActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -62,9 +57,6 @@
 
         <activity
             android:name=".PlayBack"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".GoogleDriveActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".SpeechPerformance"
