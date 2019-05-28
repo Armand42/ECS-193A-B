@@ -252,7 +252,7 @@ public class RecordAudio extends AppCompatActivity
         // Getting speech path info to create a new run
         speechFolderPath = getApplicationContext().getFilesDir() + File.separator + "speechFiles" + File.separator
                 + speechName;
-        speechRunFolder = "run" + sharedPreferences.getInt("currRun", -1);
+        speechRunFolder = "Run " + sharedPreferences.getInt("currRun", -1);
 
         apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
 
