@@ -7,7 +7,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingTop="0dp">
+    android:paddingTop="0dp"
+    android:weightSum="100">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
@@ -29,11 +30,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top|right"
+            android:layout_marginTop="4dp"
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
             android:text="Errors: 0/0"
             android:textColor="@color/light_gray"
-            android:textSize="18sp" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/scriptTitle"
@@ -57,7 +59,8 @@
     <com.google.cloud.android.speech.ObservableScrollView
         android:id="@+id/scriptScroll"
         android:layout_width="match_parent"
-        android:layout_height="423dp"
+        android:layout_height="0dp"
+        android:layout_weight="75"
         android:layout_marginBottom="8dp"
         android:padding="12dp">
 
@@ -86,7 +89,6 @@
             android:id="@+id/speechToTextTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
             android:paddingLeft="16dp"
             android:paddingTop="6dp"
             android:paddingRight="16dp"
@@ -98,7 +100,8 @@
     <com.google.cloud.android.speech.ObservableScrollView
         android:id="@+id/speechToTextScroll"
         android:layout_width="match_parent"
-        android:layout_height="108dp"
+        android:layout_height="0dp"
+        android:layout_weight="25"
         android:background="#f1f1f1"
         android:padding="12dp">
 

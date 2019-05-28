@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Layout;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
@@ -35,7 +36,9 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
 
     String scriptText, speechToText, speechName, speechRunFolder;
 
-    SpannableString scriptFull, speechFull;
+    boolean scriptNewLinesAdded;
+
+    SpannableString scriptFull, speechFull, scriptNewLines, speechNewLines;
 
     ObservableScrollView scriptScroll, speechToTextScroll;
     int scriptStart= -1,  scriptEnd= -1,  speechStart = -1,  speechEnd = -1, errorsIndex = 0;
@@ -87,7 +90,6 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
             readToast.show();
         }
 
-
         setErrorIndexText();
 
         // Deal with synced ScrollViews
@@ -132,6 +134,9 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
     }
 
     private void setScriptText() {
+        // To facilitate better scrolling
+        calculateNewLines();
+
         SpannableString script = new SpannableString(scriptText);
         SpannableString speech = new SpannableString(speechToText);
 
@@ -326,12 +331,17 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
 
     private void setDiffTexts()
     {
-        // Script
-        TextView scriptBody = (TextView) findViewById(R.id.scriptBody);
-        scriptBody.setText(scriptFull);
+        // Get TextViews
+        final TextView scriptBody = (TextView) findViewById(R.id.scriptBody);
+        final TextView speechToTextBody = (TextView) findViewById(R.id.speechToTextBody);
 
-        // Speech to text
-        TextView speechToTextBody = (TextView) findViewById(R.id.speechToTextBody);
+        if (scriptNewLines != null && speechNewLines != null) {
+            scriptFull = new SpannableString(TextUtils.concat(scriptFull, scriptNewLines));
+            speechFull = new SpannableString(TextUtils.concat(speechFull, speechNewLines));
+        }
+
+        // Set TextViews
+        scriptBody.setText(scriptFull);
         speechToTextBody.setText(speechFull);
     }
 
@@ -426,5 +436,65 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
     {
         scriptScroll.setScrollViewListener(null);
         speechToTextScroll.setScrollViewListener(null);
+    }
+
+    /* Appends whitespace to keep consistent synced scrolling */
+    private void calculateNewLines() {
+        // Get TextViews
+        final TextView scriptBody = (TextView) findViewById(R.id.scriptBody);
+        final TextView speechToTextBody = (TextView) findViewById(R.id.speechToTextBody);
+
+        // TESTING ONLY
+        scriptText = "What the fuck did you just fucking say about me, you little bitch? I'll have you know I graduated top of my class in the Navy Seals, and I've been involved in numerous secret raids on Al-Quaeda, and I have over 300 confirmed kills. I am trained in gorilla warfare and I'm the top sniper in the entire US armed forces. You are nothing to me but just another target. I will wipe you the fuck out with precision the likes of which has never been seen before on this Earth, mark my fucking words. You think you can get away with saying that shit to me over the Internet? Think again, fucker. As we speak I am contacting my secret network of spies across the USA and your IP is being traced right now so you better prepare for the storm, maggot. The storm that wipes out the pathetic little thing you call your life. You're fucking dead, kid. I can be anywhere, anytime, and I can kill you in over seven hundred ways, and that's just with my bare hands. Not only am I extensively trained in unarmed combat, but I have access to the entire arsenal of the United States Marine Corps and I will use it to its full extent to wipe your miserable ass off the face of the continent, you little shit. If only you could have known what unholy retribution your little \"clever\" comment was about to bring down upon you, maybe you would have held your fucking tongue. But you couldn't, you didn't, and now you're paying the price, you goddamn idiot. I will shit fury all over you and you will drown in it. You're fucking dead, kiddo.";
+        speechToText = "What the heck heck heck heck heck heck heck heck heck heck heck heck heck heck heck heck heck did you just hecking say about me, you little heck? I'll have you know I graduated top of my class in the Navy Seals, and I've been involved in numerous secret raids on Al-Quaeda, and I have over 300 confirmed kills. I am trained in gorilla warfare and I'm the top sniper in the entire US armed forces. You are nothing to me but just another target. I will wipe you the fuck out with precision the likes of which has never been seen before on this Earth, mark my fucking words. You think you can get away with saying that shit to me over the Internet? Think again, fucker. As we speak I am contacting my secret network of spies across the USA and your IP is being traced right now so you better prepare for the storm, maggot. The storm that wipes out the pathetic little thing you call your life. You're fucking dead, kid. I can be anywhere, anytime, and I can kill you in over seven hundred ways, and that's just with my bare hands. Not only am I extensively trained in unarmed combat, but I have access to the entire arsenal of the United States Marine Corps and I will use it to its full extent to wipe your miserable ass off the face of the continent, you little shit. If only you could have known what unholy retribution your little \"clever\" comment was about to bring down upon you, maybe you would have held your fucking tongue. But you couldn't, you didn't, and now you're paying the price, you goddamn idiot. I will shit fury all over you and you will drown in it. You're fucking dead, kiddo.";
+
+        // Set TextViews
+        scriptBody.setText(scriptFull);
+        speechToTextBody.setText(speechFull);
+
+        // Handle line number differences for scrolling purposes
+        scriptBody.post(new Runnable() {
+            @Override
+            public void run() {
+                int scriptBodyLineCount = scriptBody.getLineCount();
+                int speechBodyLineCount = speechToTextBody.getLineCount();
+                String scrptNewLines = "";
+                String spchNewLines = "";
+
+                // Append whitespace to script since its 75% of the layout and speech is 25%
+//                double dNumNewlines = Math.ceil((double)(2.0/3.0) * scriptBodyLineCount);
+//                int iNumNewlines = (int)dNumNewlines;
+
+                int iNumNewlines = 14;
+
+                if (!scriptNewLinesAdded) {
+                    for (int i=0; i<iNumNewlines; i++) {
+                        scrptNewLines += "\n";
+                    }
+                    scriptNewLinesAdded = true;
+                }
+
+                // Append whitespace to the TextView with fewer lines
+                if (scriptBodyLineCount < speechBodyLineCount) {
+                    int lines = speechBodyLineCount - scriptBodyLineCount;
+                    // Make a new string with repeates newlines to account for line difference
+                    for (int i=0; i<lines; i++) {
+                        scrptNewLines += "\n";
+                    }
+
+                }
+                else if (speechBodyLineCount < scriptBodyLineCount) {
+                    int lines = scriptBodyLineCount - speechBodyLineCount;
+                    for (int i=0; i<lines; i++) {
+                        scrptNewLines += "\n";
+                    }
+                }
+
+                scriptNewLines = new SpannableString(scrptNewLines);
+                speechNewLines = new SpannableString(spchNewLines);
+
+                setDiffTexts();
+            }
+        });
     }
 }
