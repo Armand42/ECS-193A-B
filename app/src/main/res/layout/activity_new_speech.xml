@@ -6,41 +6,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
+    tools:context=".NewSpeech"
     android:clickable="true"
-    android:focusableInTouchMode="true"
-    tools:context=".NewSpeech">
+    android:focusableInTouchMode="true" >
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
         style="@style/HeaderBar"
         android:layout_width="match_parent"
         android:layout_height="61dp"
+        android:layout_marginBottom="8dp"
         android:elevation="4dp"
         app:popupTheme="@style/ActionBarPopupThemeOverlay"
         app:theme="@style/ActionBarThemeOverlay" />
 
     <EditText
         android:id="@+id/speechName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="32dp"
+        android:layout_width="359dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="20dp"
         android:ems="10"
         android:hint="Name your speech"
         android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/editText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+        app:layout_constraintVertical_bias="0.569" />
 
     <EditText
         android:id="@+id/editText"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="40dp"
+        android:layout_width="357dp"
+        android:layout_height="476dp"
+        android:layout_marginBottom="24dp"
         android:background="@drawable/rectangle"
         android:ems="10"
         android:gravity="top|left"
@@ -52,6 +51,6 @@
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/speechName" />
+        app:layout_constraintHorizontal_bias="0.518"
+        app:layout_constraintStart_toStartOf="parent" />
 </android.support.constraint.ConstraintLayout>

@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Layout;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
@@ -35,7 +36,9 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
 
     String scriptText, speechToText, speechName, speechRunFolder;
 
-    SpannableString scriptFull, speechFull;
+    boolean scriptNewLinesAdded;
+
+    SpannableString scriptFull, speechFull, scriptNewLines, speechNewLines;
 
     ObservableScrollView scriptScroll, speechToTextScroll;
     int scriptStart= -1,  scriptEnd= -1,  speechStart = -1,  speechEnd = -1, errorsIndex = 0;
@@ -87,7 +90,6 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
             readToast.show();
         }
 
-
         setErrorIndexText();
 
         // Deal with synced ScrollViews
@@ -132,6 +134,9 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
     }
 
     private void setScriptText() {
+        // To facilitate better scrolling
+        calculateNewLines();
+
         SpannableString script = new SpannableString(scriptText);
         SpannableString speech = new SpannableString(speechToText);
 
@@ -326,12 +331,17 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
 
     private void setDiffTexts()
     {
-        // Script
-        TextView scriptBody = (TextView) findViewById(R.id.scriptBody);
-        scriptBody.setText(scriptFull);
+        // Get TextViews
+        final TextView scriptBody = (TextView) findViewById(R.id.scriptBody);
+        final TextView speechToTextBody = (TextView) findViewById(R.id.speechToTextBody);
 
-        // Speech to text
-        TextView speechToTextBody = (TextView) findViewById(R.id.speechToTextBody);
+        if (scriptNewLines != null && speechNewLines != null) {
+            scriptFull = new SpannableString(TextUtils.concat(scriptFull, scriptNewLines));
+            speechFull = new SpannableString(TextUtils.concat(speechFull, speechNewLines));
+        }
+
+        // Set TextViews
+        scriptBody.setText(scriptFull);
         speechToTextBody.setText(speechFull);
     }
 
@@ -426,5 +436,61 @@ public class DiffView extends AppCompatActivity implements IScrollListener {
     {
         scriptScroll.setScrollViewListener(null);
         speechToTextScroll.setScrollViewListener(null);
+    }
+
+    /* Appends whitespace to keep consistent synced scrolling */
+    private void calculateNewLines() {
+        // Get TextViews
+        final TextView scriptBody = (TextView) findViewById(R.id.scriptBody);
+        final TextView speechToTextBody = (TextView) findViewById(R.id.speechToTextBody);
+
+        // Set TextViews
+        scriptBody.setText(scriptFull);
+        speechToTextBody.setText(speechFull);
+
+        // Handle line number differences for scrolling purposes
+        scriptBody.post(new Runnable() {
+            @Override
+            public void run() {
+                int scriptBodyLineCount = scriptBody.getLineCount();
+                int speechBodyLineCount = speechToTextBody.getLineCount();
+                String scrptNewLines = "";
+                String spchNewLines = "";
+
+                // Append whitespace to script since its 75% of the layout and speech is 25%
+//                double dNumNewlines = Math.ceil((double)(2.0/3.0) * scriptBodyLineCount);
+//                int iNumNewlines = (int)dNumNewlines;
+
+                int iNumNewlines = 14;
+
+                if (!scriptNewLinesAdded) {
+                    for (int i=0; i<iNumNewlines; i++) {
+                        scrptNewLines += "\n";
+                    }
+                    scriptNewLinesAdded = true;
+                }
+
+                // Append whitespace to the TextView with fewer lines
+                if (scriptBodyLineCount < speechBodyLineCount) {
+                    int lines = speechBodyLineCount - scriptBodyLineCount;
+                    // Make a new string with repeates newlines to account for line difference
+                    for (int i=0; i<lines; i++) {
+                        scrptNewLines += "\n";
+                    }
+
+                }
+                else if (speechBodyLineCount < scriptBodyLineCount) {
+                    int lines = scriptBodyLineCount - speechBodyLineCount;
+                    for (int i=0; i<lines; i++) {
+                        scrptNewLines += "\n";
+                    }
+                }
+
+                scriptNewLines = new SpannableString(scrptNewLines);
+                speechNewLines = new SpannableString(spchNewLines);
+
+                setDiffTexts();
+            }
+        });
     }
 }
