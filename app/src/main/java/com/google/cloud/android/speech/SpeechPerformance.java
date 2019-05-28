@@ -37,7 +37,7 @@ public class SpeechPerformance extends BaseActivity {
     private static String AUDIO_FILE_PATH;
     private static final String TAG = "MyActivity";
     private String prevActivity;
-
+    long timeElapsed;
     SharedPreferences sharedPreferences;
     Boolean videoPlaybackState;
     String speechRunFolder;
@@ -194,6 +194,10 @@ public class SpeechPerformance extends BaseActivity {
 
     @Override
     protected void onStart() {
+        TextView speechTime = findViewById(R.id.speechTime);
+        if(timeElapsed==0)
+            speechTime.setVisibility(View.GONE);
+
         super.onStart();
     }
 
