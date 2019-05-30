@@ -32,6 +32,7 @@ public class SpeechPerformance extends BaseActivity {
     private SharedPreferences sharedPreferences;
     private Boolean videoPlaybackState;
     private EditText notes;
+    private long timeElapsed, overtime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,9 @@ public class SpeechPerformance extends BaseActivity {
         Intent intent = getIntent();
         speechName = intent.getStringExtra("speechName");
         prevActivity = intent.getStringExtra("prevActivity");
+        timeElapsed = intent.getLongExtra("timeElapsed", 0);
+        overtime = intent.getLongExtra("overtime", 0);
+
         String selectedRun = intent.getStringExtra("selectedRun");
         SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -56,26 +60,6 @@ public class SpeechPerformance extends BaseActivity {
         });
 
         TextView speechTime = findViewById(R.id.speechTime);
-
-        // Set speech time textview to the elapsed time from this speech
-        long timeElapsed = sharedPreferences.getLong("timeElapsed", 0);
-        long overtime = sharedPreferences.getLong("overtime", 0);
-
-        int minutes = (int) timeElapsed / 60000;
-        int seconds = (int) timeElapsed % 60000 / 1000;
-
-        String baseTimeInfo = String.format("Speech time: %02d:%02d", minutes, seconds);
-
-        // if at least a second over your target time
-        if (overtime >= 1000) {
-            int overtimeMins = (int) overtime / 60000;
-            int overtimeSecs = (int) overtime % 60000 / 1000;
-
-            String extraTimeInfo = String.format("   ( +%02d:%02d )", overtimeMins, overtimeSecs);
-
-            baseTimeInfo += extraTimeInfo;
-        }
-        speechTime.setText(baseTimeInfo);
 
         speechFolderPath = getApplicationContext().getFilesDir() + File.separator + "speechFiles" + File.separator
                 + speechName;
@@ -122,6 +106,7 @@ public class SpeechPerformance extends BaseActivity {
                 jsonObj.put("videoPlayback", videoPlaybackState);
                 jsonObj.put("runDisplayName", speechRunFolder);
                 jsonObj.put("note", "Enter notes here.");
+                jsonObj.put("overtime", overtime);
                 Date todayDate = Calendar.getInstance().getTime();
                 SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
                 String currentDateTimeString = formatter.format(todayDate);
@@ -143,13 +128,33 @@ public class SpeechPerformance extends BaseActivity {
                 String note = jsonObj.getString("note");
                 notes.setText(note);
 
+                // Deal with overtime
+                overtime = jsonObj.getLong("overtime");
+                timeElapsed = jsonObj.getLong("timeElapsed");
+
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
+
+        int minutes = (int) timeElapsed / 60000;
+        int seconds = (int) timeElapsed % 60000 / 1000;
+
+        String baseTimeInfo = String.format("Speech time: %02d:%02d", minutes, seconds);
+
+        // if at least a second over your target time
+        if (overtime >= 1000) {
+            int overtimeMins = (int) overtime / 60000;
+            int overtimeSecs = (int) overtime % 60000 / 1000;
+
+            String extraTimeInfo = String.format("   ( +%02d:%02d )", overtimeMins, overtimeSecs);
+
+            baseTimeInfo += extraTimeInfo;
+        }
+
+        speechTime.setText(baseTimeInfo);
 
         // Performance message changes based on accuracy.
         setPerformanceMessage(percentAccuracy);

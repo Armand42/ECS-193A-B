@@ -85,6 +85,9 @@ public class RecordAudio extends AppCompatActivity
     private SharedPreferences sharedPreferences;
     private VoiceRecorder mVoiceRecorder;
 
+    private long timeElapsed;
+    private long overtime;
+
 
     private long startTime, endTime;
 
@@ -141,6 +144,8 @@ public class RecordAudio extends AppCompatActivity
         speechToText = "";
         // Handle metadata
         speechName = intent.getStringExtra("speechName");
+
+        overtime = 0;
 
         // Get settings from shared preferences for speech
         sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
@@ -279,6 +284,10 @@ public class RecordAudio extends AppCompatActivity
         Intent intent = new Intent(this, SpeechPerformance.class);
         intent.putExtra("speechName", speechName);
         intent.putExtra("prevActivity", "recording");
+
+        // Intents for speech timing
+        intent.putExtra("timeElapsed", timeElapsed);
+        intent.putExtra("overtime", overtime);
         startActivity(intent);
     }
 
@@ -426,15 +435,11 @@ public class RecordAudio extends AppCompatActivity
 
     @Override
     public void stopButtonPressed(Long speechTimeMs) {
-        // Set time elapsed in shared prefs
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putLong("timeElapsed", speechTimeMs);
+        timeElapsed = speechTimeMs;
 
         // Exceeded max speech length
-        if (speechTimeMs >= timeLeftInMilliseconds) {
-            editor.putLong("overtime", speechTimeMs - timeLeftInMilliseconds);
-        }
-        editor.commit();
+        if (speechTimeMs >= timeLeftInMilliseconds)
+            overtime = speechTimeMs - timeLeftInMilliseconds;
     }
 
     //META DATA FOR RUNS

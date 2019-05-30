@@ -19,6 +19,8 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
     private String apiResultPath, speechName;
     private SharedPreferences sharedPreferences;
 
+    private long timeElapsed, overtime, timeLeftInMilliseconds;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Create video record view
@@ -27,6 +29,8 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
 
         speechName = intent.getStringExtra("speechName");
         sharedPreferences = getSharedPreferences(speechName, MODE_PRIVATE);
+
+        timeLeftInMilliseconds = sharedPreferences.getLong("timerMilliseconds", 600000);
         setContentView(R.layout.record_video);
 
         this.setTitle("Record a Speech");
@@ -103,6 +107,10 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
         Intent intent = new Intent(this, SpeechPerformance.class);
         intent.putExtra("speechName", speechName);
         intent.putExtra("prevActivity", "recording");
+
+        // Intents for speech timing
+        intent.putExtra("timeElapsed", timeElapsed);
+        intent.putExtra("overtime", overtime);
         startActivity(intent);
     }
 
@@ -133,10 +141,12 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
     // From timer fragment and associated interface
     @Override
     public void stopButtonPressed(Long speechTimeMs) {
-        // Set time elapsed in shared prefs
-        SharedPreferences.Editor editor = getSharedPreferences(speechName, MODE_PRIVATE).edit();
-        editor.putLong("timeElapsed", speechTimeMs);
-        editor.commit();
+        // Set time elapsed
+        timeElapsed = speechTimeMs;
+
+        // Exceeded max speech length
+        if (speechTimeMs >= timeLeftInMilliseconds)
+            overtime = speechTimeMs - timeLeftInMilliseconds;
     }
 
     @Override
