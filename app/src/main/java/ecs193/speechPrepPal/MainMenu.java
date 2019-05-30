@@ -1,4 +1,4 @@
-package speechPrepPal;
+package ecs193.speechPrepPal;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -25,7 +25,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import speechPrepPal.R;
+import ecs193.speechPrepPal.R;
 
 import java.io.File;
 import java.util.ArrayList;

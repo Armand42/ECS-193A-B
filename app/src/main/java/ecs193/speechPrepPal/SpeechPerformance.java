@@ -1,4 +1,4 @@
-package speechPrepPal;
+package ecs193.speechPrepPal;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
