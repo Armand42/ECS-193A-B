@@ -32,9 +32,9 @@
         android:layout_height="60dp"
         android:background="@color/light_gray"
 
-        tools:context="com.google.cloud.android.speech.Timer" />
+        tools:context="ecs193.speechPrepPal.Timer" />
 
-    <com.google.cloud.android.speech.AutoFitTextureView
+    <ecs193.speechPrepPal.AutoFitTextureView
         android:id="@+id/texture"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

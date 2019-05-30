@@ -21,7 +21,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#fff"
-    tools:context="com.google.cloud.android.speech.RecordAudio">
+    tools:context="ecs193.speechPrepPal.RecordAudio">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
@@ -63,7 +63,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
         app:layout_constraintVertical_chainStyle="packed"
-        tools:context="com.google.cloud.android.speech.Timer">
+        tools:context="ecs193.speechPrepPal.Timer">
 
     </FrameLayout>
 

@@ -24,7 +24,7 @@
     android:layout_height="match_parent"
     android:background="@color/light_gray"
 
-    tools:context="com.google.cloud.android.speech.RecordAudio">
+    tools:context="ecs193.speechPrepPal.RecordAudio">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
