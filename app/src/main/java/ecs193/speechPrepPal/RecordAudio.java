@@ -47,6 +47,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -208,8 +209,16 @@ public class RecordAudio extends AppCompatActivity
         });
         setTitle("Practice: " + defaultPreferences.getString(speechName, null));
 
+        // Getting speech path info to create a new run
+        speechFolderPath = getApplicationContext().getFilesDir() + File.separator + "speechFiles" + File.separator
+                + speechName;
+        speechRunFolder = "Run " + sharedPreferences.getInt("currRun", -1);
+
+        apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
+
         // Handle start button click
         startButton = findViewById(R.id.startButton);
+
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
@@ -233,6 +242,8 @@ public class RecordAudio extends AppCompatActivity
                     // Stop listening
                     addToSharedPreferences();
                     try {
+                        Log.d("apiResultPath", apiResultPath);
+
                         appendToFile(apiResultPath, speechToText);
 
                     } catch (IOException e) {
@@ -257,12 +268,7 @@ public class RecordAudio extends AppCompatActivity
             }
         });
 
-        // Getting speech path info to create a new run
-        speechFolderPath = getApplicationContext().getFilesDir() + File.separator + "speechFiles" + File.separator
-                + speechName;
-        speechRunFolder = "Run " + sharedPreferences.getInt("currRun", -1);
 
-        apiResultPath = speechFolderPath + File.separator + speechRunFolder + File.separator + "apiResult";
 
     }
 

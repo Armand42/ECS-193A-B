@@ -84,7 +84,20 @@ public class TimerFragment extends Fragment {
 
         Bundle bundle = getArguments();
         timeLeftInMilliseconds = totalSpeechLengthMs = bundle.getLong("timeLeftMs");
+        // Set timer view
+        int minutes = (int) timeLeftInMilliseconds / 60000;
+        int seconds = (int) timeLeftInMilliseconds % 60000 / 1000;
 
+        String timeText;
+
+        timeText = "" + minutes;
+        timeText += ":";
+        if (seconds < 10) timeText += "0";
+        timeText += seconds;
+
+
+        countdownText.setText(timeText);
+        ;
         // Return the inflated layout for this fragment
         return rootView;
     }

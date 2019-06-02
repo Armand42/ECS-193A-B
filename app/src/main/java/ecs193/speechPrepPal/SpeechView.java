@@ -15,7 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import speechPrepPal.R;
+import ecs193.speechPrepPal.R;
 
 import java.io.File;
 import java.io.IOException;
