@@ -213,6 +213,7 @@ public class RecordAudio extends AppCompatActivity
 
         // Handle start button click
         startButton = findViewById(R.id.startButton);
+
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 timerFragment = (TimerFragment) getFragmentManager().findFragmentById(R.id.timer_container);
