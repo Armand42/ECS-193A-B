@@ -27,7 +27,7 @@
     android:paddingBottom="0dp">
 
 
-    <com.google.cloud.android.speech.AutoFitTextureView
+    <ecs193.speechPrepPal.AutoFitTextureView
 
         android:id="@+id/texture"
         android:layout_width="match_parent"

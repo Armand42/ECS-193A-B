@@ -12,6 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/cardview_light_background"
-        tools:context="com.google.cloud.android.speech.Timer" />
+        tools:context="ecs193.speechPrepPal.Timer" />
 
 </RelativeLayout>
