@@ -118,8 +118,9 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
             intent.putExtra("timeElapsed", timeElapsed);
             intent.putExtra("overtime", overtime);
         } else {
+            overtime = timeElapsed - timeLeftInMilliseconds;
             intent.putExtra("timeElapsed", sharedPreferences.getLong("timeElapsed", 0));
-            intent.putExtra("overtime", sharedPreferences.getLong("overtime", 0));
+            intent.putExtra("overtime", overtime);
         }
 
         startActivity(intent);
