@@ -112,9 +112,17 @@ public class RecordVideo extends BaseActivity implements IMainActivity, TimerFra
         intent.putExtra("speechName", speechName);
         intent.putExtra("prevActivity", "recording");
 
-        // Intents for speech timing
-        intent.putExtra("timeElapsed", timeElapsed);
-        intent.putExtra("overtime", overtime);
+        boolean displayTimer = sharedPreferences.getBoolean("timerDisplay", false);
+        if (displayTimer) {
+            // Intents for speech timing
+            intent.putExtra("timeElapsed", timeElapsed);
+            intent.putExtra("overtime", overtime);
+        } else {
+            overtime = timeElapsed - timeLeftInMilliseconds;
+            intent.putExtra("timeElapsed", sharedPreferences.getLong("timeElapsed", 0));
+            intent.putExtra("overtime", overtime);
+        }
+
         startActivity(intent);
     }
 
